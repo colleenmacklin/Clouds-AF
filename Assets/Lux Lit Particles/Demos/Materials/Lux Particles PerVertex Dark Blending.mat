@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Lux Particles PerVertex Dark Blending
+  m_Shader: {fileID: 4800000, guid: 05d2553398f1f4a17b9b565e905a98d1, type: 3}
+  m_ShaderKeywords: GEOM_TYPE_FROND _FLIPBOOK_BLENDING
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpHeightMap:
+        m_Texture: {fileID: 2800000, guid: d7983fca80abf404fad64e558e87913a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: ca2d8d7e916a0ce40afef61600d6a1c1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: dbef12805ad6d4211a1390baf0c2d8ea, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _AddLightsPerPixel: 0
+    - _AlphaInfluence: 1.5
+    - _CamFadeDistance: 8
+    - _Cutoff: 1
+    - _EnableFlipbookBlending: 1
+    - _EnableShadows: 1
+    - _HelpFlip: 0
+    - _InvFade: 1
+    - _LightWrap: 0.3
+    - _PixelLightCount: 1
+    - _ShadowDensity: 1
+    - _ShadowExtrude: 1
+    - _ShadowsPerPixel: 0
+    - _Spotlight_Quality: 1
+    - _Tess: 5
+    - _Translucency: 0.3
+    - _TranslucencyWrap: 0
+    - _WrappedDiffuse: 0.3
+    m_Colors:
+    - _AmbientColor: {r: 0.5566038, g: 0.49621752, b: 0.49621752, a: 0}
+    - _CamFadeDistance: {r: 5, g: 150, b: 25, a: 0}
+    - _Color: {r: 0.8014706, g: 0.8014706, b: 0.8014706, a: 0.8117647}
+    - _TessRange: {r: 25, g: 40, b: 0, a: 0}

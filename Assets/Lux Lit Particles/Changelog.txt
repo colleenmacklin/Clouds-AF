@@ -1,0 +1,29 @@
+# Lux Lit Particles Changelog
+
+## Version 1.03
+
+### Added
+- Lux LWRP Lit Particles added (supporting Unity 2019.1 and Unity 2019.2).
+
+
+## Version 1.02
+
+### Changed
+- Near Fade now allows you to specify a start distance.
+
+
+## Version 1.01
+
+### Fixed
+- Lux Lit Particles Tess Bumped shader: Missing emission feature added.
+- LuxParticles_AmbientLighting.cs: Ambient lighting is calculated OnEnable.
+
+### Added
+- Per pixel ambient lighting support.
+- Light Probe support.
+- Dedicated albedo texture support.
+
+
+## Version 1.0
+
+Initial Version

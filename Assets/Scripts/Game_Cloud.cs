@@ -48,11 +48,15 @@ public class Game_Cloud : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("SpawnShape", SpawnShape);
+        EventManager.StartListening("TurnOffCloud", turnOff);
+
     }
 
     void OnDisable()
     {
         EventManager.StopListening("SpawnShape", SpawnShape);
+        EventManager.StopListening("TurnOffCloud", turnOff);
+
     }
 
 
@@ -81,16 +85,16 @@ public class Game_Cloud : MonoBehaviour
     void SpawnShape() //called from CloudManager
     {
 
-        target = GameObject.FindWithTag("CloudManager").GetComponent<CloudManager>().chosenCloud;
-        //Debug.Log("spawnshape  called, target is: " + target.name);
+        target = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenCloud;
+        Debug.Log("spawnshape  called, target is: " + target.name);
 
 
-        if (target == cloudName)
+        if (target == cloudName) //if that's me
         {
             isShape = true;
 
             //do stuff
-            var shape = GameObject.FindWithTag("CloudManager").GetComponent<CloudManager>().chosenShape;
+            var shape = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
 
             var ns = ps.shape;
             ns.shapeType = ParticleSystemShapeType.Sprite;
@@ -120,7 +124,7 @@ public class Game_Cloud : MonoBehaviour
         s.shapeType = ParticleSystemShapeType.Sprite;
         Sprite newSprite = cloudShapes[cloudNum];
         s.sprite = newSprite;
-        //print("hi, " + this.gameObject.name + " is a :" + s.sprite.name);
+        //print("hi, " + this.gameObject.name + " is a : " + s.sprite.name);
 
 
     }
@@ -139,7 +143,6 @@ public class Game_Cloud : MonoBehaviour
     void OnMouseOver()
     {
         EventManager.TriggerEvent("openEye");
-        Debug.Log("+++++++++OPEN EYE++++++++");
     }
 
     void OnMouseExit()
@@ -151,11 +154,10 @@ public class Game_Cloud : MonoBehaviour
 
     public void turnOff()
     {
-        //stop the cloud from constantly shifting cloud shapes
+            //stop the cloud from constantly shifting cloud shapes
+        Debug.Log("turning off cloud");
         isShape = false;
         InvokeRepeating("ChangeCloudShape", spawnTime, spawnDelay);
-
-        //ChangeCloudShape();//go back to turning into normal shapes
     }
 
 

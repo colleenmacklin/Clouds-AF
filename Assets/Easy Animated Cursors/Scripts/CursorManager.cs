@@ -5,14 +5,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class CursorManager : MonoBehaviour {
+public class CursorManager : MonoBehaviour
+{
 
     // Public Variables
     public bool iHaveCanvas;
     [ConditionalField("iHaveCanvas")] public GameObject CanvasObject;
     [ConditionalField("iHaveCanvas")] public bool iHaveImage = false;
     [ConditionalField("iHaveImage")] public Image UserImage;
-    public Sprite[] CursorSprite;
+    public Sprite[] CursorSprites;
     [ConditionalField("iHaveImage")] public bool ModifyImage = false;
     [ConditionalField("ModifyImage")] public Material CursorMaterial;
     public float CursorSize = 1;
@@ -20,6 +21,7 @@ public class CursorManager : MonoBehaviour {
     public float MarginY = 0;
     public bool IsAnimated;
     [ConditionalField("IsAnimated")] public float AnimationSpeed = 1;
+
 
     //Private Variables
     private readonly string ASSET_NAME = "Easy Animated Cursors";
@@ -29,11 +31,31 @@ public class CursorManager : MonoBehaviour {
     private bool HaveError = false;
     private bool getSize = true;
 
-    // Starter
-    void Start() {
+    void OnEnable()
+    {
+        EventManager.StartListening("openEye", openEyes);
+        EventManager.StartListening("closeEye", closeEyes);
+        EventManager.StartListening("glowEye", glowEyes);
+        EventManager.StartListening("shapeEye", shapeEyes);
+    }
+
+    void OnDisable()
+    {
+        EventManager.StopListening("openeye", openEyes);
+        EventManager.StopListening("closeeye", closeEyes);
+        EventManager.StopListening("glowEye", glowEyes);
+        EventManager.StopListening("shapeEye", shapeEyes);
+
+    }
+
+
+
+    void Start()
+    {
         Cursor.visible = false;
         GameObject tmp;
 
+        //call on event manager
 
         if (!iHaveCanvas)
         {
@@ -46,18 +68,24 @@ public class CursorManager : MonoBehaviour {
                 GameObject obj = Instantiate(prefab) as GameObject;
                 CanvasObject = obj.transform.GetChild(0).gameObject;
             }
-            catch(System.Exception e) {
+            catch (System.Exception e)
+            {
                 HaveError = true;
-                throw new System.Exception(e.Message + "Please check asset path! It should be under Assets. Example Assets/" + ASSET_NAME  + "/ \nPlease reimport package or fix it manually");
+                throw new System.Exception(e.Message + "Please check asset path! It should be under Assets. Example Assets/" + ASSET_NAME + "/ \nPlease reimport package or fix it manually");
             }
-        } else {
+        }
+        else
+        {
             tmp = new GameObject();
         }
 
-        if (!iHaveImage) {
+        if (!iHaveImage)
+        {
             cursorImage = tmp.AddComponent<Image>();
             cursorImage.raycastTarget = false;
-        } else {
+        }
+        else
+        {
             if (UserImage == null)
             {
                 throw new System.Exception("You should set an User Image!");
@@ -66,11 +94,11 @@ public class CursorManager : MonoBehaviour {
         }
 
         tmp.transform.SetParent(CanvasObject.transform);
-        cursorImage.sprite = CursorSprite[0];
-        cursorImage.overrideSprite = CursorSprite[0];
+        cursorImage.sprite = CursorSprites[0];
+        cursorImage.overrideSprite = CursorSprites[0];
         if (ModifyImage)
         {
-            if (CursorMaterial== null)
+            if (CursorMaterial == null)
             {
                 throw new System.Exception("You should set an material!");
             }
@@ -79,20 +107,24 @@ public class CursorManager : MonoBehaviour {
             cursorImage.rectTransform.sizeDelta = new Vector2(cursorImage.sprite.rect.width * CursorSize, cursorImage.sprite.rect.height * CursorSize);
         }
 
-        if(!iHaveImage)
+        if (!iHaveImage)
         {
             cursorImage.preserveAspect = true;
             cursorImage.rectTransform.sizeDelta = new Vector2(cursorImage.sprite.rect.width * CursorSize, cursorImage.sprite.rect.height * CursorSize);
         }
 
-        if (IsAnimated) {
-            SpriteLenght = CursorSprite.Length;
-            InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed*10);
+        if (IsAnimated)
+        {
+            SpriteLenght = CursorSprites.Length;
+            //InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed*10);
+            //InvokeRepeating("ImageSwapper", 0f, 1);
+
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
         if (HaveError) return;
 #if UNITY_ANDROID || UNITY_IOS
         Vector3 MousePos = Input.GetTouch(0).position;
@@ -100,22 +132,41 @@ public class CursorManager : MonoBehaviour {
         Vector3 MousePos = Input.mousePosition;
 #endif
         cursorImage.transform.position = new Vector3(MousePos.x + MarginX, MousePos.y + MarginY);
-	}
+        //Press the space bar to apply no locking to the Cursor
+        if (Input.GetKey(KeyCode.Space))
+            Cursor.lockState = CursorLockMode.None;
+
+    }
 
     // Swap images.
     private void ImageSwapper()
     {
-        if (SpriteLenght-1 >= SpriteLoc + 1)
+        if (SpriteLenght - 1 >= SpriteLoc + 1)
         {
             SpriteLoc++;
-        } else
-        {
-            SpriteLoc = 0;
+            //} else
+            //{
+            //  SpriteLoc = 0;
         }
-        cursorImage.overrideSprite = CursorSprite[SpriteLoc];
+        cursorImage.overrideSprite = CursorSprites[SpriteLoc];
     }
 
-  
+
+    // Swap images in reverse.
+
+    private void ImageSwapperbwds()
+    {
+        while (SpriteLoc > 0)
+        {
+       // if (SpriteLoc - 1 >= 0) //used to work - doesn't now! the mystery!
+        //{
+            SpriteLoc--;
+        //}
+        }
+
+        cursorImage.overrideSprite = CursorSprites[SpriteLoc];
+
+    }
     // Public Internal Calls.
 
     /// <summary>
@@ -129,7 +180,7 @@ public class CursorManager : MonoBehaviour {
         {
             throw new System.Exception("Sprite array cannot be null or empty! Please double check. ");
         }
-        CursorSprite = newSpriteArr;
+        CursorSprites = newSpriteArr;
         SpriteLoc = 0;
         cursorImage.preserveAspect = true;
         SpriteLenght = newSpriteArr.Length;
@@ -139,11 +190,11 @@ public class CursorManager : MonoBehaviour {
     // Overloading with single.
     public bool SetCursor(Sprite newSpriteArr)
     {
-        if (newSpriteArr == null )
+        if (newSpriteArr == null)
         {
             throw new System.Exception("Sprite array cannot be null! Please double check. ");
         }
-        CursorSprite = new Sprite[] { newSpriteArr };
+        CursorSprites = new Sprite[] { newSpriteArr };
         IsAnimated = false;
         SpriteLenght = 1;
         StopAnimation();
@@ -160,8 +211,9 @@ public class CursorManager : MonoBehaviour {
     {
         CursorSize = newCursorSize;
         cursorImage.rectTransform.sizeDelta = new Vector2(cursorImage.sprite.rect.width * CursorSize, cursorImage.sprite.rect.height * CursorSize);
+        Debug.Log("Cursor size: " + CursorSize);
     }
-    
+
     /// <summary>
     /// Set Animation speed on runtime.
     /// </summary>
@@ -169,7 +221,8 @@ public class CursorManager : MonoBehaviour {
     public void SetAnimationSpeed(float newAnimSpeed)
     {
         AnimationSpeed = newAnimSpeed;
-        StartAnimation();
+        //openEyes();
+        //StartAnimation();
     }
 
     /// <summary>
@@ -188,21 +241,56 @@ public class CursorManager : MonoBehaviour {
     /// <summary>
     /// Start Animation. This will modify IsAnimated property automatically. 
     /// </summary>
+    ///
+    void openEyes()
+    {
+        IsAnimated = true;
+        StopAnimation();
+        SpriteLenght = CursorSprites.Length;
+        InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
+        // InvokeRepeating("ImageSwapper", 0f, 1);
+
+    }
+
+    void closeEyes()
+    {
+        IsAnimated = true;
+        StopAnimation();
+        SpriteLenght = CursorSprites.Length;
+        // InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
+        InvokeRepeating("ImageSwapperbwds", 0f, 1 / AnimationSpeed * 10);
+
+    }
+
+    void glowEyes()
+    {
+        //do something cool here when you mousedown - change it depending? show emanating shape?
+    }
+
+    void shapeEyes()
+    {
+        //show the sshape?
+    }
+    /*
     public void StartAnimation()
     {
         IsAnimated = true;
         StopAnimation();
-        SpriteLenght = CursorSprite.Length;
+        SpriteLenght = CursorSprites.Length;
         InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
     }
-
+    */
     /// <summary>
     /// Stop Animation. This will stop animation
     /// </summary>
+    ///
+
     public void StopAnimation()
     {
-        IsAnimated = false;
+        //IsAnimated = false;
         CancelInvoke("ImageSwapper");
+        CancelInvoke("ImageSwapperbwds");
+
     }
 
 }

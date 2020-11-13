@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CloudManager : MonoBehaviour
+public class Game_CloudManager : MonoBehaviour
 {
 	public GameObject cloud;
 	public Sprite[] ShapeArray;
@@ -78,7 +78,7 @@ public class CloudManager : MonoBehaviour
 
         EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
 
-        //maybe trigger Talk once the cloud has become a shape?
+        //maybe trigger this once the cloud has become a shape?
 
         EventManager.TriggerEvent("Talk"); //start talking about the shape
 

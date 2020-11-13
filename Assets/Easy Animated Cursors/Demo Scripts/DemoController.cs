@@ -77,8 +77,7 @@ public class DemoController : MonoBehaviour {
         cursorScript.IsAnimated = true;
         cursorScript.SetAnimationSpeed(100f);
         cursorScript.SetCursorSize(0.4f);
-        //cursorScript.StartAnimation();
-        //cursorScript.openEyes();
+        cursorScript.StartAnimation();
     }
 
     public void KillOnHoverEnd()

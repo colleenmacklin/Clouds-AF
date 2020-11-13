@@ -78,7 +78,7 @@ public class CloudManager : MonoBehaviour
 
         EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
 
-        //maybe trigger this once the cloud has become a shape?
+        //maybe trigger Talk once the cloud has become a shape?
 
         EventManager.TriggerEvent("Talk"); //start talking about the shape
 
@@ -87,7 +87,8 @@ public class CloudManager : MonoBehaviour
 
     private void TurnOffCloud()
     {
-        chosenCloud.GetComponent<Cloud>().turnOff();
+        //chosenCloud.GetComponent<Game_Cloud>().turnOff();
+        EventManager.TriggerEvent("TurnOffCloud"); //message received on cloud object 
     }
 
     // Update is called once per frame

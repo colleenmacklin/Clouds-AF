@@ -48,11 +48,14 @@ public class Cloud : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("SpawnShape", SpawnShape);
+        EventManager.StartListening("TurnOffCloud", turnOff);
+
     }
 
     void OnDisable()
     {
         EventManager.StopListening("SpawnShape", SpawnShape);
+        EventManager.StopListening("TurnOffCloud", turnOff);
     }
 
 
@@ -148,14 +151,17 @@ public class Cloud : MonoBehaviour
         EventManager.TriggerEvent("closeEye");
     }
 
-
     public void turnOff()
     {
-        //stop the cloud from constantly shifting cloud shapes
-        isShape = false;
-        InvokeRepeating("ChangeCloudShape", spawnTime, spawnDelay);
+        if (isShape)
+        {
+            //stop the cloud from constantly shifting cloud shapes
+            Debug.Log("turning off cloud");
+            isShape = false;
+            InvokeRepeating("ChangeCloudShape", spawnTime, spawnDelay);
 
-        //ChangeCloudShape();//go back to turning into normal shapes
+            //ChangeCloudShape();//go back to turning into normal shapes
+        }
     }
 
 

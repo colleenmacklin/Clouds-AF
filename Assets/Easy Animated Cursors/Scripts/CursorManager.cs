@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class CursorManager : MonoBehaviour {
+public class CursorManager : MonoBehaviour
+{
 
     // Public Variables
     public bool iHaveCanvas;
@@ -49,7 +50,8 @@ public class CursorManager : MonoBehaviour {
 
 
 
-    void Start() {
+    void Start()
+    {
         Cursor.visible = false;
         GameObject tmp;
 
@@ -66,18 +68,24 @@ public class CursorManager : MonoBehaviour {
                 GameObject obj = Instantiate(prefab) as GameObject;
                 CanvasObject = obj.transform.GetChild(0).gameObject;
             }
-            catch(System.Exception e) {
+            catch (System.Exception e)
+            {
                 HaveError = true;
-                throw new System.Exception(e.Message + "Please check asset path! It should be under Assets. Example Assets/" + ASSET_NAME  + "/ \nPlease reimport package or fix it manually");
+                throw new System.Exception(e.Message + "Please check asset path! It should be under Assets. Example Assets/" + ASSET_NAME + "/ \nPlease reimport package or fix it manually");
             }
-        } else {
+        }
+        else
+        {
             tmp = new GameObject();
         }
 
-        if (!iHaveImage) {
+        if (!iHaveImage)
+        {
             cursorImage = tmp.AddComponent<Image>();
             cursorImage.raycastTarget = false;
-        } else {
+        }
+        else
+        {
             if (UserImage == null)
             {
                 throw new System.Exception("You should set an User Image!");
@@ -90,7 +98,7 @@ public class CursorManager : MonoBehaviour {
         cursorImage.overrideSprite = CursorSprites[0];
         if (ModifyImage)
         {
-            if (CursorMaterial== null)
+            if (CursorMaterial == null)
             {
                 throw new System.Exception("You should set an material!");
             }
@@ -99,22 +107,24 @@ public class CursorManager : MonoBehaviour {
             cursorImage.rectTransform.sizeDelta = new Vector2(cursorImage.sprite.rect.width * CursorSize, cursorImage.sprite.rect.height * CursorSize);
         }
 
-        if(!iHaveImage)
+        if (!iHaveImage)
         {
             cursorImage.preserveAspect = true;
             cursorImage.rectTransform.sizeDelta = new Vector2(cursorImage.sprite.rect.width * CursorSize, cursorImage.sprite.rect.height * CursorSize);
         }
 
-        if (IsAnimated) {
+        if (IsAnimated)
+        {
             SpriteLenght = CursorSprites.Length;
             //InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed*10);
             //InvokeRepeating("ImageSwapper", 0f, 1);
 
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         if (HaveError) return;
 #if UNITY_ANDROID || UNITY_IOS
         Vector3 MousePos = Input.GetTouch(0).position;
@@ -131,12 +141,12 @@ public class CursorManager : MonoBehaviour {
     // Swap images.
     private void ImageSwapper()
     {
-        if (SpriteLenght-1 >= SpriteLoc + 1)
+        if (SpriteLenght - 1 >= SpriteLoc + 1)
         {
             SpriteLoc++;
-        //} else
-        //{
-          //  SpriteLoc = 0;
+            //} else
+            //{
+            //  SpriteLoc = 0;
         }
         cursorImage.overrideSprite = CursorSprites[SpriteLoc];
     }
@@ -146,26 +156,25 @@ public class CursorManager : MonoBehaviour {
 
     private void ImageSwapperbwds()
     {
-        //while (SpriteLoc > 0)
-       // {
-        if (SpriteLoc-1 >= 0)
+        while (SpriteLoc > 0)
         {
+       // if (SpriteLoc - 1 >= 0) //used to work - doesn't now! the mystery!
+        //{
             SpriteLoc--;
-           // Debug.Log(SpriteLoc);
         //}
         }
 
-cursorImage.overrideSprite = CursorSprites[SpriteLoc];
-   
-}
-// Public Internal Calls.
+        cursorImage.overrideSprite = CursorSprites[SpriteLoc];
 
-/// <summary>
-/// Change cursor sprite on runtime
-/// </summary>
-/// <param name="newSpriteArr"></param>
-/// <returns> true or false </returns>
-public bool SetCursor(Sprite[] newSpriteArr)
+    }
+    // Public Internal Calls.
+
+    /// <summary>
+    /// Change cursor sprite on runtime
+    /// </summary>
+    /// <param name="newSpriteArr"></param>
+    /// <returns> true or false </returns>
+    public bool SetCursor(Sprite[] newSpriteArr)
     {
         if (newSpriteArr == null || newSpriteArr.Length == 0)
         {
@@ -181,7 +190,7 @@ public bool SetCursor(Sprite[] newSpriteArr)
     // Overloading with single.
     public bool SetCursor(Sprite newSpriteArr)
     {
-        if (newSpriteArr == null )
+        if (newSpriteArr == null)
         {
             throw new System.Exception("Sprite array cannot be null! Please double check. ");
         }
@@ -204,7 +213,7 @@ public bool SetCursor(Sprite[] newSpriteArr)
         cursorImage.rectTransform.sizeDelta = new Vector2(cursorImage.sprite.rect.width * CursorSize, cursorImage.sprite.rect.height * CursorSize);
         Debug.Log("Cursor size: " + CursorSize);
     }
-    
+
     /// <summary>
     /// Set Animation speed on runtime.
     /// </summary>
@@ -238,8 +247,8 @@ public bool SetCursor(Sprite[] newSpriteArr)
         IsAnimated = true;
         StopAnimation();
         SpriteLenght = CursorSprites.Length;
-       InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
-       // InvokeRepeating("ImageSwapper", 0f, 1);
+        InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
+        // InvokeRepeating("ImageSwapper", 0f, 1);
 
     }
 
@@ -250,7 +259,6 @@ public bool SetCursor(Sprite[] newSpriteArr)
         SpriteLenght = CursorSprites.Length;
         // InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
         InvokeRepeating("ImageSwapperbwds", 0f, 1 / AnimationSpeed * 10);
-
 
     }
 

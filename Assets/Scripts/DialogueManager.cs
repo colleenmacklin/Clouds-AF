@@ -77,7 +77,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue()
     {
-        var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<CloudManager>().chosenShape;
+        var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
         var targetName = myTarget.name;
         myName = targetName;
 

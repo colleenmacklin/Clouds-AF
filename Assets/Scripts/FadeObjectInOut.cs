@@ -29,6 +29,18 @@ public class FadeObjectInOut : MonoBehaviour
     // store colours
     private Color[] colors;
 
+    void OnEnable()
+    {
+        EventManager.StartListening("FadeIn", FadeIn);
+        EventManager.StartListening("FadeOut", FadeOut);
+    }
+
+    void OnDisable()
+    { 
+        EventManager.StopListening("FadeIn", FadeIn);
+        EventManager.StopListening("FadeOut", FadeOut);
+}
+
     // allow automatic fading on the start of the scene
     IEnumerator Start()
     {

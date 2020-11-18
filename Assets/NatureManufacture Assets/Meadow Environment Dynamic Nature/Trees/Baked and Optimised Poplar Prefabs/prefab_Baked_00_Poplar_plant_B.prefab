@@ -54,6 +54,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -132,6 +133,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -211,6 +213,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -280,7 +283,7 @@ LODGroup:
   serializedVersion: 2
   m_LocalReferencePoint: {x: -0.13276994, y: 1.2820706, z: -0.54120773}
   m_Size: 3.054436
-  m_FadeMode: 1
+  m_FadeMode: 0
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
@@ -288,11 +291,11 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 23759846430758166}
-  - screenRelativeHeight: 0.09808599
+  - screenRelativeHeight: 0.5049016
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 23446390790654656}
-  - screenRelativeHeight: 0.026640095
+  - screenRelativeHeight: 0.095012695
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 23643944097646328}

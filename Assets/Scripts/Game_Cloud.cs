@@ -22,11 +22,6 @@ public class Game_Cloud : MonoBehaviour
 
     public string myName; //store the name of the underlying shape here
 
-    public Color m_MouseOverColor = Color.red;
-
-    //This stores the GameObject’s original color
-    public Color m_OriginalColor;
-
     //Get the GameObject’s mesh renderer to access the GameObject’s material and color
     public MeshRenderer m_Renderer;
     Renderer rend;
@@ -66,7 +61,6 @@ public class Game_Cloud : MonoBehaviour
         ps = this.GetComponent<ParticleSystem>();
 
         //rotate to look at the camera
-    
         camera = Camera.main.transform;
         transform.LookAt(camera, Vector3.back);
 
@@ -77,9 +71,6 @@ public class Game_Cloud : MonoBehaviour
 
         //Fetch the mesh renderer component from the GameObject
         m_Renderer = GetComponent<MeshRenderer>();
-        //Fetch the original color of the GameObject
-        //m_OriginalColor = m_Renderer.material.color;
-        //m_OriginalColor = gameObject.GetComponent<MeshRenderer>().materials[0].GetColor;
 
     }
     void SpawnShape() //called from CloudManager
@@ -119,14 +110,13 @@ public class Game_Cloud : MonoBehaviour
 
             return;
         }
+
         cloudNum = (Random.Range(0, cloudShapes.Length));
         var s = ps.shape;
         s.shapeType = ParticleSystemShapeType.Sprite;
         Sprite newSprite = cloudShapes[cloudNum];
         s.sprite = newSprite;
         //print("hi, " + this.gameObject.name + " is a : " + s.sprite.name);
-
-
     }
 
     private void OnMouseDown()
@@ -147,14 +137,13 @@ public class Game_Cloud : MonoBehaviour
 
     void OnMouseExit()
     {
-        //rend.material.SetColor("_TintColor", m_OriginalColor);
         EventManager.TriggerEvent("closeEye");
     }
 
 
     public void turnOff()
     {
-            //stop the cloud from constantly shifting cloud shapes
+        //stop the cloud from constantly shifting cloud shapes
         Debug.Log("turning off cloud");
         isShape = false;
         InvokeRepeating("ChangeCloudShape", spawnTime, spawnDelay);

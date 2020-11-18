@@ -87,7 +87,9 @@ public class DialogueManager : MonoBehaviour
         currentLine += 1;
         disableSpaceButton(space);
         StopAllCoroutines();
-        StartCoroutine(ShowSentence(textLines[currentLine]));
+        //StartCoroutine(ShowSentence(textLines[currentLine]));
+        StartCoroutine(ShowQuestion(textLines[currentLine]));
+
         //StartCoroutine(TypeSentence(textLines[currentLine]));
     }
 
@@ -100,16 +102,15 @@ public class DialogueManager : MonoBehaviour
 
         if (textLines[currentLine + 1].Contains("#") || currentLine + 1 == endAtLine) //if there's no more lines of dialogue left
         {
-            disableSpaceButton(space);
             StopAllCoroutines();
             //type it out
             //StartCoroutine(TypeSentence(textLines[currentLine]));
-            StartCoroutine(ShowSentence(textLines[currentLine]));
+            StartCoroutine(ShowFinalSentence(textLines[currentLine]));
             currentLine += 1;
         }
         else
         {
-            enableSpaceButton(space);
+            //enableSpaceButton(space);
         }
 
 
@@ -123,7 +124,6 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        enableSpaceButton(space);
 
         //animation to type out sentences
         //StopAllCoroutines();
@@ -132,6 +132,8 @@ public class DialogueManager : MonoBehaviour
         //StartCoroutine(TypeSentence(textLines[currentLine]));
 
         //currentLine += 1;
+        //enableSpaceButton(space);
+
     }
 
     public void Respond()
@@ -166,9 +168,26 @@ public class DialogueManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         dialogueText.text = sentence;
+        animator.SetBool("isOpen", true);
+        enableSpaceButton(space);
+    }
 
+    IEnumerator ShowFinalSentence(string sentence)
+    {
+        yield return new WaitForSeconds(1);
+        dialogueText.text = sentence;
+        animator.SetBool("isOpen", true);
+        disableSpaceButton(space);
+    }
+
+
+    IEnumerator ShowQuestion(string sentence)
+    {
+        yield return new WaitForSeconds(1);
+        dialogueText.text = sentence;
         animator.SetBool("isOpen", true);
     }
+
     /*
     void EndDialogue()
     {
@@ -181,19 +200,19 @@ public class DialogueManager : MonoBehaviour
 
     }
     */
-    
+
     // function to enable continueButton
     public void enableSpaceButton(GameObject space)
     {
         EventManager.TriggerEvent("FadeIn");
-        //space.SetActive(true);
+        space.SetActive(true);
     }
 
     // function to disable continueButton
     public void disableSpaceButton(GameObject space)
     {
         EventManager.TriggerEvent("FadeOut");
-        //space.SetActive(false);
+        space.SetActive(false);
     }
     
 

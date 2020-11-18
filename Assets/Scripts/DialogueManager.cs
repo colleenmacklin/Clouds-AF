@@ -98,7 +98,7 @@ public class DialogueManager : MonoBehaviour
         currentLine += 1;
         }
 
-        if (textLines[currentLine + 1].Contains("#") || currentLine + 1 == endAtLine) //if there's only one line of dialogue left
+        if (textLines[currentLine + 1].Contains("#") || currentLine + 1 == endAtLine) //if there's no more lines of dialogue left
         {
             disableSpaceButton(space);
             StopAllCoroutines();
@@ -186,14 +186,14 @@ public class DialogueManager : MonoBehaviour
     public void enableSpaceButton(GameObject space)
     {
         EventManager.TriggerEvent("FadeIn");
-        space.SetActive(true);
+        //space.SetActive(true);
     }
 
     // function to disable continueButton
     public void disableSpaceButton(GameObject space)
     {
         EventManager.TriggerEvent("FadeOut");
-        space.SetActive(false);
+        //space.SetActive(false);
     }
     
 

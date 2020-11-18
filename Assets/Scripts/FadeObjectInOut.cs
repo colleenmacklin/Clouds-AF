@@ -147,11 +147,13 @@ public class FadeObjectInOut : MonoBehaviour
 
     void FadeIn()
     {
+        Debug.Log("fading in");
         FadeIn(fadeTime);
     }
 
     void FadeOut()
     {
+        Debug.Log("fading out");
         FadeOut(fadeTime);
     }
 

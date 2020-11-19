@@ -8,7 +8,7 @@ public class Game_Cloud : MonoBehaviour
 
 
     //stuff to do:
-    // --add timers to shape changing
+    // --add slightly different timers to shape changing
     // --destroy myself when I blow offscreen
 
     public bool stopSpawning = false;
@@ -44,14 +44,12 @@ public class Game_Cloud : MonoBehaviour
     {
         EventManager.StartListening("SpawnShape", SpawnShape);
         EventManager.StartListening("TurnOffCloud", turnOff);
-
     }
 
     void OnDisable()
     {
         EventManager.StopListening("SpawnShape", SpawnShape);
         EventManager.StopListening("TurnOffCloud", turnOff);
-
     }
 
 
@@ -66,7 +64,7 @@ public class Game_Cloud : MonoBehaviour
 
         cloudNum = (Random.Range(0, cloudShapes.Length));
 
-        InvokeRepeating("ChangeCloudShape", spawnTime, spawnDelay);
+        InvokeRepeating("ChangeCloudShape", 0, 0);
 
 
         //Fetch the mesh renderer component from the GameObject
@@ -103,11 +101,9 @@ public class Game_Cloud : MonoBehaviour
 
     void ChangeCloudShape() //this should be on some kind of timer. Should Cloudmanager call this?
     {
-        if (isShape)
+        if (isShape) //if this is a special shape cloud, we ignore the constant changing of underlying cloud shapes
         {
             CancelInvoke("ChangeCloudShape");
-            Debug.Log("hi, cancelling invoke");
-
             return;
         }
 

@@ -4743,7 +4743,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 10, z: 5}
+  m_Size: {x: 15, y: 15, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2001774632
 MeshRenderer:
@@ -4810,8 +4810,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03293753a8ecb42f19d51eab65d0bb2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
-  maxNeighbours: 16
+  radius: 5
+  maxNeighbours: 3
 --- !u!114 &405810277324860990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4826,11 +4826,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stopSpawning: 0
   spawnTime: 10
-  spawnDelay: 0
+  spawnDelay: 5
   ps: {fileID: 19800000}
   cloudName: {fileID: 100000}
   cloudShapes:
   - {fileID: 21300000, guid: 905e5fdf7e443475daa80a669d3fded7, type: 3}
+  - {fileID: 21300000, guid: 07088ea9221d24318a5ca7f2ecfb3782, type: 3}
+  - {fileID: 21300000, guid: 137d745cd15324f8a8d5e7b5e36e7712, type: 3}
+  - {fileID: 21300000, guid: 39d4c79552af44a81966ef371adb0808, type: 3}
+  - {fileID: 21300000, guid: 72340f11290aa490c99f82bdd825a7b6, type: 3}
   isShape: 0
   myName: 
   m_Renderer: {fileID: 0}

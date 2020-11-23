@@ -49,6 +49,7 @@ public class ShowPenetration : MonoBehaviour
             // draw a line showing the depenetration direction if overlapped
             if (overlapped)
             {
+                Debug.Log("+++++++++COLLISION++++++++");
                 Gizmos.color = Color.red;
                 Gizmos.DrawRay(otherPosition, direction * distance);
             }

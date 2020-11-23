@@ -29,7 +29,7 @@ public class Game_CloudManager : MonoBehaviour
 
     //behaviors:
     //tell EventManager to "SpawnShape" (CloudArray[n], ShapeArray[n])
-    //tell EventManager to remove "SpawnShape" (CloudArray[n])??
+    //tell EventManager to remove "SpawnShape" (CloudArray[n])
     void OnEnable()
     {
         EventManager.StartListening("FoundCloud", TurnOffCloud);
@@ -47,12 +47,8 @@ public class Game_CloudManager : MonoBehaviour
 	{
         //start some kind of timer?
         //set the possible locations for clouds
-
         SetRanges();
         InstantiateRandomObjects();
-
-        //cloudNum = (Random.Range(0, CloudArray.Length));
-        //chosenCloud = CloudArray[cloudNum];
         shapeCloud();
 
 
@@ -61,8 +57,8 @@ public class Game_CloudManager : MonoBehaviour
     private void SetRanges()
     {
         //(left/right, far/near, up/down)
-        Min = new Vector3(-40, 20, -40); //Random value.
-        Max = new Vector3(40, 30, 40); //Another random value, just for the example.
+        Min = new Vector3(-30, 20, -30); //Random location value not behind trees.
+        Max = new Vector3(30, 30, 30); //Another random value, not behind trees.
     }
 
     private void shapeCloud()
@@ -74,20 +70,16 @@ public class Game_CloudManager : MonoBehaviour
         chosenCloud = CloudArray[cloudNum];
         Debug.Log("chosenCloud: " + chosenCloud);
 
-        TurnOffCloud(); //tells cloud that it is not a shae anymore, changes it's shape...
+        TurnOffCloud(); //tells cloud that it is not a shape anymore, changes it's shape...
 
         EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
 
         //maybe trigger this once the cloud has become a shape?
-
-        EventManager.TriggerEvent("Talk"); //start talking about the shape
-
-        
+        EventManager.TriggerEvent("Talk"); //Friend starts talking about the shape (on a timer)
     }
 
     private void TurnOffCloud()
     {
-        //chosenCloud.GetComponent<Game_Cloud>().turnOff();
         EventManager.TriggerEvent("TurnOffCloud"); //message received on cloud object 
     }
 
@@ -105,7 +97,7 @@ public class Game_CloudManager : MonoBehaviour
     }
     //for prefab instantiation, see: https://docs.unity3d.com/Manual/InstantiatingPrefabs.html
 
-    private void InstantiateRandomObjects()
+    private void InstantiateRandomObjects() //need to check to make sure these clouds are not too close / intersecting
     {
         if (_canInstantiate)
         {
@@ -114,20 +106,13 @@ public class Game_CloudManager : MonoBehaviour
             //Debug.Log("_xAxis: " + _yAxis);
             for (int i = 0; i < CloudArray.Length; i++)
                 {
-
                 _xAxis = Random.Range(Min.x, Max.x);
                 _yAxis = Random.Range(Min.y, Max.y);
                 _zAxis = Random.Range(Min.z, Max.z);
                 _randomPosition = new Vector3(_xAxis, _yAxis, _zAxis);
-
-
-                CloudArray[i] = (GameObject)Instantiate(cloud, _randomPosition, Quaternion.EulerRotation(-90, 0, 0));
-
+                CloudArray[i] = (GameObject)Instantiate(cloud, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); //clouds are always rotated to show their face to the person lying down (x = -90)
                 CloudArray[i].name = "Cloud" + i;
                 Debug.Log("cloud instantiated: " + CloudArray[i].name);
-
-
-
             }
         }
 

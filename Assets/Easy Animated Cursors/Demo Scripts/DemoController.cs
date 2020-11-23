@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DemoController : MonoBehaviour {
+public class DemoController : MonoBehaviour
+{
 
     public GameObject CursorManager;
     public Sprite[] LoadingCursorArray;
@@ -16,13 +17,15 @@ public class DemoController : MonoBehaviour {
 
     private CursorManager cursorScript;
 
-	void Start () {
+    void Start()
+    {
         cursorScript = CursorManager.GetComponent<CursorManager>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+    }
 
     public void LoadMyCursor()
     {

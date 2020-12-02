@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 2001774634}
   - component: {fileID: 2001774633}
   - component: {fileID: 2001774632}
-  - component: {fileID: 2001774631}
   - component: {fileID: 4733231868507827601}
   - component: {fileID: 5672606324179841226}
   m_Layer: 0
@@ -4784,34 +4783,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &2001774631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18fe3bb7c658d48c9b4845beb6d91f55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stopSpawning: 0
-  spawnTime: 5
-  spawnDelay: 5
-  ps: {fileID: 19800000}
-  cloudName: {fileID: 100000}
-  cloudShapes:
-  - {fileID: 21300000, guid: 905e5fdf7e443475daa80a669d3fded7, type: 3}
-  - {fileID: 21300000, guid: a8653c843b55f4c55a68b17e56160caf, type: 3}
-  - {fileID: 21300000, guid: 6dd9b9dcb77f34e5ea1dea0bd98e767e, type: 3}
-  - {fileID: 21300000, guid: 6242334c73a1e4128b71d2fa648c3836, type: 3}
-  - {fileID: 21300000, guid: fc6359861fb5847d8b7cbf808885ec61, type: 3}
-  isShape: 0
-  myName: 
-  m_MouseOverColor: {r: 1, g: 0.92156863, b: 1, a: 0.26666668}
-  m_OriginalColor: {r: 1, g: 1, b: 0.99602437, a: 0.2509804}
-  m_Renderer: {fileID: 2001774632}
 --- !u!114 &4733231868507827601
 MonoBehaviour:
   m_ObjectHideFlags: 0

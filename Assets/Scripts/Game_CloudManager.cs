@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Game_CloudManager : MonoBehaviour
 {
-	public GameObject cloud;
+	public GameObject cloudGroup;
 	public Sprite[] ShapeArray;
     public bool isShape;
     public bool timerReset;
@@ -57,8 +57,8 @@ public class Game_CloudManager : MonoBehaviour
     private void SetRanges()
     {
         //(left/right, far/near, up/down)
-        Min = new Vector3(-30, 20, -30); //Random location value not behind trees.
-        Max = new Vector3(30, 30, 30); //Another random value, not behind trees.
+        Min = new Vector3(-20, 30, -20); //Random location value not behind trees.
+        Max = new Vector3(20, 40, 20); //Another random value, not behind trees.
     }
 
     private void shapeCloud()
@@ -110,7 +110,7 @@ public class Game_CloudManager : MonoBehaviour
                 _yAxis = Random.Range(Min.y, Max.y);
                 _zAxis = Random.Range(Min.z, Max.z);
                 _randomPosition = new Vector3(_xAxis, _yAxis, _zAxis);
-                CloudArray[i] = (GameObject)Instantiate(cloud, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); //clouds are always rotated to show their face to the person lying down (x = -90)
+                CloudArray[i] = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); //clouds are always rotated to show their face to the person lying down (x = -90)
                 CloudArray[i].name = "Cloud" + i;
                 Debug.Log("cloud instantiated: " + CloudArray[i].name);
             }

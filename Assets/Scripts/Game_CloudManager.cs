@@ -19,8 +19,8 @@ public class Game_CloudManager : MonoBehaviour
     public float radius = 5f;
 
     // Ranges for positioning clouds when they spawn
-    private Vector3 Min;
-    private Vector3 Max;
+    public Vector3 Min;
+    public Vector3 Max;
     private float _xAxis;
     private float _yAxis;
     private float _zAxis; //If you need this, use it
@@ -57,8 +57,8 @@ public class Game_CloudManager : MonoBehaviour
     private void SetRanges()
     {
         //(left/right, far/near, up/down)
-        Min = new Vector3(-20, 30, -20); //Random location value not behind trees.
-        Max = new Vector3(20, 40, 20); //Another random value, not behind trees.
+        Min = new Vector3(-30, 25, -30); //Random location value not behind trees.
+        Max = new Vector3(30, 40, 30); //Another random value, not behind trees.
     }
 
     private void shapeCloud()

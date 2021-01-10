@@ -5,12 +5,12 @@ using UnityEngine;
 public class Game_CloudManager : MonoBehaviour
 {
 	public GameObject cloudGroup;
-	public Sprite[] ShapeArray;
+	public Texture2D[] ShapeArray;
     public bool isShape;
     public bool timerReset;
     public GameObject chosenCloud;
     public int cloudNum;
-    public Sprite chosenShape;
+    public Texture2D chosenShape;
     public GameObject[] CloudArray;
     private GameObject[] chosenCloudArray; //keep track of the clouds that have been chosen
 

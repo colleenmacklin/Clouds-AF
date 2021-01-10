@@ -59,6 +59,7 @@ public class GameCloudLayerGroup : MonoBehaviour
         camera = Camera.main.transform;
         transform.LookAt(camera, Vector3.back);
         //transform.LookAt(camera, Vector3.forward);
+        //transform.LookAt(camera, Vector3.up);
         curr_Shape = h_ps.shape.texture;
 
         cloudNum = (Random.Range(0, cloudShapes.Length));

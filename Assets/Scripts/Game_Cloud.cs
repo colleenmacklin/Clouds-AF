@@ -8,6 +8,8 @@ public class Game_Cloud : MonoBehaviour
 
     //Get the cloud's particle system, make available for cloudgroup
     public ParticleSystem ps;
+    public ParticleSystem.ShapeModule myShape;
+
     //Get the GameObject’s mesh renderer to access the GameObject’s material and color
     public MeshRenderer m_Renderer;
     Renderer rend;

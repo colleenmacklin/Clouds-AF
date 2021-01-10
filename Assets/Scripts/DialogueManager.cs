@@ -87,7 +87,6 @@ public class DialogueManager : MonoBehaviour
         currentLine += 1;
         disableSpaceButton(space);
         StopAllCoroutines();
-        //StartCoroutine(ShowSentence(textLines[currentLine]));
         StartCoroutine(ShowQuestion(textLines[currentLine]));
 
         //StartCoroutine(TypeSentence(textLines[currentLine]));

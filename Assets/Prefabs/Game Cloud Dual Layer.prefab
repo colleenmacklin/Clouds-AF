@@ -66,7 +66,11 @@ MonoBehaviour:
   spawnDelay: 5
   cloudName: {fileID: 3145382850756663975}
   cloudShapes:
-  - {fileID: 21300000, guid: 905e5fdf7e443475daa80a669d3fded7, type: 3}
+  - {fileID: 21300000, guid: d0a97bec7e8be44cda435f991fe42fd6, type: 3}
+  - {fileID: 21300000, guid: ad65923c9b8b4448cbbc1e3db75e4942, type: 3}
+  - {fileID: 21300000, guid: 72340f11290aa490c99f82bdd825a7b6, type: 3}
+  - {fileID: 21300000, guid: eef1ec0332b464955b6ec3d92b3b231c, type: 3}
+  - {fileID: 21300000, guid: 07088ea9221d24318a5ca7f2ecfb3782, type: 3}
   isShape: 0
   myName: 
 --- !u!65 &6982716671875634180

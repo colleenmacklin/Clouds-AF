@@ -5,12 +5,12 @@ using UnityEngine;
 public class Game_CloudManager : MonoBehaviour
 {
 	public GameObject cloudGroup;
-	public Sprite[] ShapeArray;
+	public Texture2D[] ShapeArray;
     public bool isShape;
     public bool timerReset;
     public GameObject chosenCloud;
     public int cloudNum;
-    public Sprite chosenShape;
+    public Texture2D chosenShape;
     public GameObject[] CloudArray;
     private GameObject[] chosenCloudArray; //keep track of the clouds that have been chosen
 
@@ -18,7 +18,7 @@ public class Game_CloudManager : MonoBehaviour
                           //timer
     public float radius = 5f;
 
-    // Ranges for positioning clouds when they spawn
+    // Ranges for positioning clouds when they spawn (left/right, far/near, up/down)
     private Vector3 Min;
     private Vector3 Max;
     private float _xAxis;
@@ -26,6 +26,12 @@ public class Game_CloudManager : MonoBehaviour
     private float _zAxis; //If you need this, use it
     private Vector3 _randomPosition;
     public bool _canInstantiate;
+
+    private float sMin;
+    private float sMax;
+    private float scaleNum;
+    private Vector3 scaleChange;
+
 
     //behaviors:
     //tell EventManager to "SpawnShape" (CloudArray[n], ShapeArray[n])
@@ -53,12 +59,13 @@ public class Game_CloudManager : MonoBehaviour
 
 
     }
-    //possible locations for clouds
+    //possible locations for clouds /scales
     private void SetRanges()
     {
-        //(left/right, far/near, up/down)
-        Min = new Vector3(-20, 30, -20); //Random location value not behind trees.
-        Max = new Vector3(20, 40, 20); //Another random value, not behind trees.
+        Min = new Vector3(-30, 25, -30); //Random location value not behind trees.
+        Max = new Vector3(30, 40, 30); //Another random value, not behind trees.
+        sMin = 1;
+        sMax = 2;
     }
 
     private void shapeCloud()
@@ -106,12 +113,18 @@ public class Game_CloudManager : MonoBehaviour
             //Debug.Log("_xAxis: " + _yAxis);
             for (int i = 0; i < CloudArray.Length; i++)
                 {
+                //set up scales
+                scaleNum = Random.Range(sMin, sMax);
+                scaleChange = new Vector3(scaleNum, scaleNum, scaleNum);
+                //set up locations
                 _xAxis = Random.Range(Min.x, Max.x);
                 _yAxis = Random.Range(Min.y, Max.y);
                 _zAxis = Random.Range(Min.z, Max.z);
                 _randomPosition = new Vector3(_xAxis, _yAxis, _zAxis);
-                CloudArray[i] = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); //clouds are always rotated to show their face to the person lying down (x = -90)
+    
+                CloudArray[i] = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); ; //clouds are always rotated to show their face to the person lying down (x = -90)
                 CloudArray[i].name = "Cloud" + i;
+                CloudArray[i].transform.localScale = scaleChange;
                 Debug.Log("cloud instantiated: " + CloudArray[i].name);
             }
         }

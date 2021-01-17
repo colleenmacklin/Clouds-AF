@@ -40,6 +40,10 @@ public class GameCloudLayerGroup : MonoBehaviour
     private ParticleSystem.ShapeModule ShapeH;
     private ParticleSystem.ShapeModule ShapeL;
 
+    //for debugging
+    public Rect hiRect;
+    public GameObject UnderlyingShape;
+
     void OnEnable()
     {
         EventManager.StartListening("SpawnShape", SpawnShape);
@@ -61,16 +65,17 @@ public class GameCloudLayerGroup : MonoBehaviour
         //transform.LookAt(camera, Vector3.forward);
         //transform.LookAt(camera, Vector3.up);
         curr_Shape = h_ps.shape.texture;
+        hiRect = UnderlyingShape.GetComponent<myShape>().myRect;
 
         cloudNum = (Random.Range(0, cloudShapes.Length));
         InvokeRepeating("ChangeCloudShape", 0, 0);
+
     }
 
     void SpawnShape() //called from CloudManager
     {
 
         target = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenCloud;
-
 
         if (target == cloudName) //if that's me
         {
@@ -81,15 +86,16 @@ public class GameCloudLayerGroup : MonoBehaviour
             var shape = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
             Debug.Log("spawnshape  called, target is: " + target.name + " shape is: " + shape.name);
 
-
             ShapeH = h_ps.shape;
             ShapeL = l_ps.shape;
-            
+
             ShapeH.texture = shape;
             ShapeL.texture = shape;
 
             //Debug.Log("hi, I am a shape: " + low_ns.sprite.name);
             CancelInvoke("ChangeCloudShape");
+
+            EventManager.TriggerEvent("UpdateMe"); //tell components to update -- there may be a more efficient way to do this so it doesn't call every cloud object
 
         }
         else { isShape = false; }
@@ -122,11 +128,14 @@ public class GameCloudLayerGroup : MonoBehaviour
             Texture2D cloudShape = cloudShapes[cloudNum];
             ShapeH.texture = cloudShape;
             ShapeL.texture = cloudShape;
+            EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
+
+
         }
     }
 
 
-    private void OnMouseDown()
+    void OnMouseDown()
     {
         Debug.Log("clicked on: " + this.gameObject.name);
 
@@ -138,6 +147,7 @@ public class GameCloudLayerGroup : MonoBehaviour
         EventManager.TriggerEvent("glowEye");
 
     }
+
     void OnMouseOver()
     {
         EventManager.TriggerEvent("openEye");

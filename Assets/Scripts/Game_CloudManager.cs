@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Game_CloudManager : MonoBehaviour
 {
@@ -63,9 +64,9 @@ public class Game_CloudManager : MonoBehaviour
     private void SetRanges()
     {
         Min = new Vector3(-30, 25, -30); //Random location value not behind trees.
-        Max = new Vector3(30, 40, 30); //Another random value, not behind trees.
+        Max = new Vector3(30, 25, 30); //Another random value, not behind trees. - Y used to be 40
         sMin = 1;
-        sMax = 2;
+        sMax = 1.2f; //changed from 2
     }
 
     private void shapeCloud()
@@ -125,7 +126,7 @@ public class Game_CloudManager : MonoBehaviour
                 CloudArray[i] = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); ; //clouds are always rotated to show their face to the person lying down (x = -90)
                 CloudArray[i].name = "Cloud" + i;
                 CloudArray[i].transform.localScale = scaleChange;
-                Debug.Log("cloud instantiated: " + CloudArray[i].name);
+                //Debug.Log("cloud instantiated: " + CloudArray[i].name);
             }
         }
 

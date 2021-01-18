@@ -69,12 +69,6 @@ MonoBehaviour:
     y: 0
     width: 0
     height: 0
-  loRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0
-    height: 0
   UnderlyingShape: {fileID: 1189561051749183489}
 --- !u!65 &6982716671875634180
 BoxCollider:
@@ -87,7 +81,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 15, y: 10, z: 15}
+  m_Size: {x: 7, y: 7, z: 7}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8782550564321971712
 MonoBehaviour:
@@ -96,7 +90,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3145382850756663975}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03293753a8ecb42f19d51eab65d0bb2b, type: 3}
   m_Name: 
@@ -232,6 +226,22 @@ PrefabInstance:
       propertyPath: InitialModule.startSize.minScalar
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: lengthInSec
+      value: 100000
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: prewarm
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2001774632, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
 --- !u!1 &760746276537280500 stripped
@@ -311,6 +321,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: lengthInSec
+      value: 100000
+      objectReference: {fileID: 0}
+    - target: {fileID: 19900000, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: m_MinParticleSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2001774632, guid: eb0670a2e08314b55b4156acb98eb530, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -14,10 +14,12 @@ public class Game_CloudManager : MonoBehaviour
     public Texture2D chosenShape;
     public GameObject[] CloudArray;
     private GameObject[] chosenCloudArray; //keep track of the clouds that have been chosen
+    public GameObject shapeCollider; //our testing box that we resuse, will be a GameObject with only a collider on it
+    public Bounds shapeBounds;
+    public int instantiationAttempts = 50; //how many instantiation attempts we should make before failing
 
     public int shapeCount;// how many shapes to show before ending game?
                           //timer
-    public float radius = 5f;
 
     // Ranges for positioning clouds when they spawn (left/right, far/near, up/down)
     private Vector3 Min;
@@ -33,7 +35,7 @@ public class Game_CloudManager : MonoBehaviour
     private float scaleNum;
     private Vector3 scaleChange;
 
-
+  
     //behaviors:
     //tell EventManager to "SpawnShape" (CloudArray[n], ShapeArray[n])
     //tell EventManager to remove "SpawnShape" (CloudArray[n])
@@ -55,7 +57,11 @@ public class Game_CloudManager : MonoBehaviour
         //start some kind of timer?
         //set the possible locations for clouds
         SetRanges();
-        InstantiateRandomObjects();
+        for (int i = 0; i < CloudArray.Length; i++)
+        {
+            CloudArray[i] = InstantiateRandomObjects(); // should return a gameObject
+            CloudArray[i].name = "cloud" + i;
+        }
         shapeCloud();
 
 
@@ -63,10 +69,10 @@ public class Game_CloudManager : MonoBehaviour
     //possible locations for clouds /scales
     private void SetRanges()
     {
-        Min = new Vector3(-30, 25, -30); //Random location value not behind trees.
-        Max = new Vector3(30, 25, 30); //Another random value, not behind trees. - Y used to be 40
+        Min = new Vector3(-30, 25, -40); //Random location value not behind trees.
+        Max = new Vector3(40, 35, 70); //Another random value, not behind trees. - Y used to be 40
         sMin = 1;
-        sMax = 1.2f; //changed from 2
+        sMax = 2.0f; //changed from 2
     }
 
     private void shapeCloud()
@@ -105,31 +111,71 @@ public class Game_CloudManager : MonoBehaviour
     }
     //for prefab instantiation, see: https://docs.unity3d.com/Manual/InstantiatingPrefabs.html
 
-    private void InstantiateRandomObjects() //need to check to make sure these clouds are not too close / intersecting
+    private GameObject InstantiateRandomObjects() //need to check to make sure these clouds are not too close / intersecting
     {
-        if (_canInstantiate)
-        {
+            //check for collisions first
+
 
             //set random locations
             //Debug.Log("_xAxis: " + _yAxis);
-            for (int i = 0; i < CloudArray.Length; i++)
-                {
-                //set up scales
-                scaleNum = Random.Range(sMin, sMax);
-                scaleChange = new Vector3(scaleNum, scaleNum, scaleNum);
-                //set up locations
-                _xAxis = Random.Range(Min.x, Max.x);
+            for (int n = 0; n < instantiationAttempts; n++)
+            {
+
+            Debug.Log("Instantiation Attempts: " + n);
+
+            //set up random location
+            _xAxis = Random.Range(Min.x, Max.x);
                 _yAxis = Random.Range(Min.y, Max.y);
                 _zAxis = Random.Range(Min.z, Max.z);
                 _randomPosition = new Vector3(_xAxis, _yAxis, _zAxis);
-    
-                CloudArray[i] = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); ; //clouds are always rotated to show their face to the person lying down (x = -90)
-                CloudArray[i].name = "Cloud" + i;
-                CloudArray[i].transform.localScale = scaleChange;
-                //Debug.Log("cloud instantiated: " + CloudArray[i].name);
-            }
+
+                scaleNum = Random.Range(sMin, sMax);
+                scaleChange = new Vector3(scaleNum, scaleNum, scaleNum);
+
+                //first check for possible collisions
+                //Step 1: random position
+                shapeCollider.transform.localScale = scaleChange;
+                shapeCollider.transform.position = _randomPosition; //move collider to position
+                shapeBounds = shapeCollider.GetComponent<Collider>().bounds;//get the collider
+
+                //Step 2: compare position against active positions
+                var valid = true; //how we will know if we have a valid shape
+                                  //compare our testing box to every other active cloud shape's
+                foreach (var cloud in CloudArray)
+                {
+                    //if intersection found, then not valid
+                    if (shapeBounds.Intersects(cloud.GetComponent<Collider>().bounds))
+                    {
+                    Debug.Log("INTERSECTION");
+                        valid = false;
+
+                    break;
+                    }
+                }
+                if (valid) break; //if it is valid, then we leave 
+
         }
 
-    }
+        //step 3: create cloud
+        var go = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.EulerRotation(-90, 0, 0));
+            //var go = Instantiate(prefab); //create prefab at position
+            go.transform.localScale = scaleChange;
 
+            return go;
+        /*
+
+                    for (int i = 0; i < CloudArray.Length; i++)
+                        {
+                            //set up scales
+
+
+                            CloudArray[i] = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.EulerRotation(-90, 0, 0)); ; //clouds are always rotated to show their face to the person lying down (x = -90)
+                            CloudArray[i].name = "Cloud" + i;
+                            CloudArray[i].transform.localScale = scaleChange;
+                            //Debug.Log("cloud instantiated: " + CloudArray[i].name);
+                        }
+        */
+
+    }
 }
+

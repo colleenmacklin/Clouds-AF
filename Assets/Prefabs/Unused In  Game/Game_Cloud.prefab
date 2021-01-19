@@ -4764,7 +4764,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ps: {fileID: 19800000}
+  Myshape_rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  ps_scale: {x: 0, y: 0, z: 0}
   m_Renderer: {fileID: 2001774632}
+  underlyingShape: {fileID: 0}
+  starting_size: {x: 5, y: 5, z: 5}
 --- !u!1 &1877048645834199381
 GameObject:
   m_ObjectHideFlags: 0
@@ -4862,3 +4871,10 @@ MonoBehaviour:
   myName: 
   cloud: {fileID: 100000}
   spriteRenderer: {fileID: 3892651682695683192}
+  shapeTexture: {fileID: 0}
+  myRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0

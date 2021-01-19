@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CloudManager
   - Cloud
+  - Cloud_Shape
   layers:
   - Default
   - TransparentFX

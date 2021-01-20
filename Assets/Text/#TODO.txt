@@ -1,0 +1,4 @@
+#TODO
+
+1: Add the scriptable object
+2: add the list of dialogues to a local "active dialogue" list or something similar

@@ -10,7 +10,8 @@ public class SOTester : MonoBehaviour
     void Start()
     {
         dialogueTest.ReadDialogueFromFile();
-        Debug.Log(dialogueTest.DialogueByKey("Horse")[0]);
+        Debug.Log(dialogueTest);
+        Debug.Log(dialogueTest.DialogueByKey("poodle")[0]);
     }
 
     [Button]
@@ -18,9 +19,4 @@ public class SOTester : MonoBehaviour
         Debug.Log(dialogueTest.DialogueByKey(testKey)[0]);  
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -13,7 +13,6 @@ public class CloudDialogue : ScriptableObject {
     //List of dialogue options within the object
     public Dictionary<string,List<string>> dialogues = new Dictionary<string, List<string>>();
 
-    
     //Reads through a text file that follows the #Target dialogue form
     public Dictionary<string,List<string>> ReadDialogueFromFile(TextAsset textFile = null){
         dialogues = NewDialogueDictionary(); //mutation
@@ -66,13 +65,15 @@ public class CloudDialogue : ScriptableObject {
 
     //This function takes any target and returns a list of dialogue
     //The manager can then take the rest of the dialogue to process
+    //Nulls will have to be handled by the manager, not the dialogue.
     public List<string> DialogueByKey (string key){
         
         if (dialogues.ContainsKey(key)){
             return dialogues[key];
         }
-
+        
         return null; // get nothing back if the key is not there 
+        
     }
     
     //replaces pesky control characters from the beginning of strings.

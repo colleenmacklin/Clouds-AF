@@ -24,7 +24,7 @@ public class DialogueManager : MonoBehaviour
 
     public Animator animator;
 
-    private List<string> activeLines = new List<string>();
+    public List<string> activeLines = new List<string>();
 
     //////////////////////////////////////
     //
@@ -81,6 +81,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue()
     {
+        Debug.Log("Start dialogue starting");
         //this is an interesting problem.
         //we start dialogue with shape selection..?
         var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;

@@ -17,13 +17,13 @@ public class DialogueManager : MonoBehaviour
     public GameObject cloudManager; //need to look in here and see what the current active cloud and shape spritename is
     public GameObject textBox;
     public GameObject space; //gonna remove this
+    public Animator textBoxAnimator;
     public Text dialogueText; //reference to text field in Friend
     public string conversationTarget;
     public string selectedTarget;
     public float conversational_pause = 12;
     public int currentLine;
 
-    public Animator animator;
 
     public List<string> activeLines = new List<string>();
     public string activeSentence;
@@ -53,30 +53,21 @@ public class DialogueManager : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            Debug.Log("-----space-----");// + space.activeSelf);
-            //if (space.activeSelf == true) //turn this into a graphic that shows up 
-            //EventManager.TriggerEvent("Continue");// we should keep this paradigm I think
-            //EventManager.TriggerEvent("Respond");
-            SendResponse(selectedTarget);
-            StartCoroutine(UpdateTextWithSentence(1));
+            Debug.Log("-----space-----");
+            EventManager.TriggerEvent("Respond");//in case something else is hooked to this event
         }
-            
-            
-        
     }
     
     void OnEnable()
     {
         EventManager.StartListening("Talk", StartDialogue);
         EventManager.StartListening("Respond", Respond);
-        //EventManager.StartListening("Continue", DisplayNextSentence);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("Talk", StartDialogue);
         EventManager.StopListening("Respond", Respond);
-        //EventManager.StopListening("Continue", DisplayNextSentence);
     }
 
 
@@ -86,6 +77,7 @@ public class DialogueManager : MonoBehaviour
     //
     ///////////////////
 
+    //Handle everything about actually getting the Dialogue set up with targets and selections
     public void StartDialogue()
     {
         Debug.Log("Start dialogue starting");
@@ -101,6 +93,10 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(UpdateTextWithSentence(conversational_pause));
     }
 
+    public void Respond () {
+        SendResponse (selectedTarget);
+        StartCoroutine(UpdateTextWithSentence(1));
+    }
 
     //Read whatever the selectedTarget is and compare against the conversationTarget
     //Advance if correct, ignore if not, or send wrong text 
@@ -145,13 +141,9 @@ public class DialogueManager : MonoBehaviour
 
         //execute if sentence is different
         yield return new WaitForSeconds(time);
-        animator.SetBool("isOpen", true);
+        textBoxAnimator.SetBool("isOpen", true);
         dialogueText.text = activeSentence;
         
-    }
-
-    IEnumerator Respond() {
-        yield return 1;
     }
  
     IEnumerator EndDialogue(float time)
@@ -164,7 +156,7 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitForSeconds(time);
         //Start the coroutine we define below named ExampleCoroutine.
 
-        animator.SetBool("isOpen", false);
+        textBoxAnimator.SetBool("isOpen", false);
         //disableButton(continueButton);
 
         

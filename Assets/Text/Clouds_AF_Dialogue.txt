@@ -20,4 +20,9 @@ Hi. I'm Kenny G.
 #Celine Dion
 I swear that cloud looks like Celine Dion.
 This is some dialogue about Celine Dion!
-#
+#No One
+No one is here.
+You should go look elsewhere
+I have a lot of lines
+This is so that you can make sure that I have more text
+We are testing out what I look like

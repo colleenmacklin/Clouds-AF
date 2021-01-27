@@ -13,21 +13,46 @@ the dialogueText reference.
 */
 public class DialogueManager : MonoBehaviour
 {
-    public CloudDialogue dialogueSO;
+    [SerializeField]
+    private CloudDialogue dialogueSO;
+    
+    [SerializeField]
     public GameObject cloudManager; //need to look in here and see what the current active cloud and shape spritename is
+    
+    [SerializeField]
     public GameObject textBox;
+    
+    [SerializeField]
     public GameObject space; //gonna remove this
-    public Animator textBoxAnimator;
-    public Text dialogueText; //reference to text field in Friend
+    
+    //[SerializeField]
+    //public Animator textBoxAnimator;
+    
+    [SerializeField]
+    private Text dialogueText; //reference to text field in Friend
+    
+    
+    [SerializeField]
     public string conversationTarget;
+    
+    [SerializeField]
     public string selectedTarget;
+    
+    [SerializeField]
+    [Range(3,25)]
     public float conversational_pause = 12;
-    public int currentLine;
+
+    [SerializeField]
+    private int currentLine;
 
 
-    public List<string> activeLines = new List<string>();
-    public string activeSentence;
-    public bool linesFinished;
+    [SerializeField]
+    private List<string> activeLines = new List<string>();
+    
+    [SerializeField]
+    private string activeSentence;
+    [SerializeField]
+    private bool linesFinished;
 
     //////////////////////////////////////
     //
@@ -37,16 +62,11 @@ public class DialogueManager : MonoBehaviour
 
     void Awake()
     {
-        StartCoroutine(EndDialogue(0)); //hide the dialogue
-        disableSpaceButton(space);
     }
 
     void Start()
     {
-        //Tell the SO to read the text and create its lists.
-        //This is literally just an activation.
         dialogueSO.ReadDialogueFromFile();
-       // StartDialogue();
     }
 
     private void Update()
@@ -61,7 +81,7 @@ public class DialogueManager : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("Talk", StartDialogue);
-        EventManager.StartListening("Respond", Respond);
+        EventManager.StartListening("Respond", Respond); //click events do this function??? where??
     }
 
     void OnDisable()
@@ -80,17 +100,23 @@ public class DialogueManager : MonoBehaviour
     //Handle everything about actually getting the Dialogue set up with targets and selections
     public void StartDialogue()
     {
-        Debug.Log("Start dialogue starting");
+        Debug.Log("Start dialogue beginning");
         var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
         var targetName = myTarget.name;
         targetName = "No One"; //for testing
         conversationTarget = targetName;
+        
         activeLines = dialogueSO.DialogueByKey(targetName);
         ResetCurrentLine();//set currentLine to zero
         activeSentence = activeLines[currentLine]; //set the active sentence to this. which we will send to the text
         linesFinished = false;
-        StopAllCoroutines();
+
+        StopAllCoroutines();// I don't think we actually want to stop all coroutines
         StartCoroutine(UpdateTextWithSentence(conversational_pause));
+    }
+
+    void ResetCurrentLine(){
+        currentLine = 0;
     }
 
     public void Respond () {
@@ -108,15 +134,20 @@ public class DialogueManager : MonoBehaviour
             ActivateNextSentence();
         }
         else{
-            //Handling incorrect responses
+            //Handling incorrect responses with "WrongAnswer" function
             activeSentence = "No... not that cloud";
         }
+    }
+
+    void WrongAnswer(){
+
     }
 
     //this is its own function because this is actually handling the mutation. which we encapsulate
     private void ActivateNextSentence(){
         if ( currentLine == activeLines.Count - 1 ) {
             //we are out of lines, do nothing
+            //This is where an "EndConversation" function can be inserted
             activeSentence = "We're out of ammo";
             linesFinished = true;
             Debug.Log("---ending dialogue---");
@@ -126,10 +157,13 @@ public class DialogueManager : MonoBehaviour
         activeSentence = activeLines[currentLine];
     }
 
+    void EndConversation(){
+
+    }
 
     /////////////////////
     //
-    // Coroutines For Dialogue
+    // Coroutine For Updating TextBox
     //
     //////////////////////////
 
@@ -141,53 +175,10 @@ public class DialogueManager : MonoBehaviour
 
         //execute if sentence is different
         yield return new WaitForSeconds(time);
-        textBoxAnimator.SetBool("isOpen", true);
         dialogueText.text = activeSentence;
         
     }
  
-    IEnumerator EndDialogue(float time)
-    {
-        //Print the time of when the function is first called.
-        //Debug.Log("Started Coroutine at timestamp : " + Time.time);
-        Debug.Log("---ending dialogue---");
-
-        //yield on a new YieldInstruction that waits for 5 seconds.
-        yield return new WaitForSeconds(time);
-        //Start the coroutine we define below named ExampleCoroutine.
-
-        textBoxAnimator.SetBool("isOpen", false);
-        //disableButton(continueButton);
-
-        
-        ResetCurrentLine();
-        //After we have waited 5 seconds print the time again.
-        //Debug.Log("Finished Coroutine at timestamp : " + Time.time);
-    }
-
-    void ResetCurrentLine(){
-        currentLine = 0;
-    }
-
-    ////////////////////////
-    //
-    // Space Button functions... not used?
-    //
-    /////////////////////////////////
-
-    // function to enable continueButton
-    public void enableSpaceButton(GameObject space)
-    {
-        EventManager.TriggerEvent("FadeIn");
-        space.SetActive(true);
-    }
-
-    // function to disable continueButton
-    public void disableSpaceButton(GameObject space)
-    {
-        EventManager.TriggerEvent("FadeOut");
-        space.SetActive(false);
-    }
 
 
 }

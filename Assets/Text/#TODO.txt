@@ -1,8 +1,0 @@
-#TODO
-
-1: Add the scriptable object
-2: add the list of dialogues to a local "active dialogue" list or something similar
-3: Hook it up to Display Question
-    NOte that the coroutines do not do any mutations, they simply copy values
-4: Display Next Sentence should be simplified now.
-5: Going to need some management of the final lines

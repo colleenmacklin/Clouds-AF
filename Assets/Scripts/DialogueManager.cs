@@ -60,10 +60,6 @@ public class DialogueManager : MonoBehaviour
     ///
     ////////////////////////////////
 
-    void Awake()
-    {
-    }
-
     void Start()
     {
         dialogueSO.ReadDialogueFromFile();
@@ -119,46 +115,40 @@ public class DialogueManager : MonoBehaviour
         currentLine = 0;
     }
 
-    public void Respond () {
-        SendResponse (selectedTarget);
+    //This now houses the primary logic for responses.
+    // first check if the selection is valid, then update active sentence accordingly
+    // then send the sentence to the text box.
+    private void Respond () {
+        if ( ValidateSelection(selectedTarget) ){
+            activeSentence = ActivateNextSentence();
+        }else{
+            activeSentence = WrongAnswer();
+        }
+
         StartCoroutine(UpdateTextWithSentence(1));
     }
 
-    //Read whatever the selectedTarget is and compare against the conversationTarget
-    //Advance if correct, ignore if not, or send wrong text 
-    public void SendResponse ( string selection ) {
-        //do not use this long term, instead we should take the selection as if it were sent from an input interface
-        selectedTarget = selection;
-
-        if ( conversationTarget == selectedTarget ){
-            ActivateNextSentence();
-        }
-        else{
-            //Handling incorrect responses with "WrongAnswer" function
-            activeSentence = "No... not that cloud";
-        }
+    bool ValidateSelection ( string selection ) {
+        return conversationTarget == selection;
     }
-
-    void WrongAnswer(){
-
+    string WrongAnswer(){
+        return "No... not that cloud";
     }
 
     //this is its own function because this is actually handling the mutation. which we encapsulate
-    private void ActivateNextSentence(){
+    string ActivateNextSentence(){
         if ( currentLine == activeLines.Count - 1 ) {
-            //we are out of lines, do nothing
-            //This is where an "EndConversation" function can be inserted
-            activeSentence = "We're out of ammo";
+            //we are out of lines
             linesFinished = true;
             Debug.Log("---ending dialogue---");
-            return;
+            return "We're out of ammo";
         }
         currentLine += 1;
-        activeSentence = activeLines[currentLine];
+        return activeLines[currentLine];
     }
 
     void EndConversation(){
-
+        EventManager.TriggerEvent("ConversationEnded");
     }
 
     /////////////////////

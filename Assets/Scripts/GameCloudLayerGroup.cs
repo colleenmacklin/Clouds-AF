@@ -9,7 +9,7 @@ public class GameCloudLayerGroup : MonoBehaviour
     //brought over from Game_Cloud
     private UnityAction someListener;
     private Transform camera;
-    private int cloudNum;
+    public int cloudNum;
     private GameObject target;
     //private ParticleSystem ps;
 
@@ -67,7 +67,8 @@ public class GameCloudLayerGroup : MonoBehaviour
         curr_Shape = h_ps.shape.texture;
         hiRect = UnderlyingShape.GetComponent<myShape>().myRect;
 
-        cloudNum = (Random.Range(0, cloudShapes.Length));
+        //cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
+        cloudNum = 0;
         InvokeRepeating("ChangeCloudShape", 0, 0);
 
     }
@@ -119,8 +120,8 @@ public class GameCloudLayerGroup : MonoBehaviour
         }
         else if (cloudShapes.Length>0)
         {
-
-            cloudNum = (Random.Range(0, cloudShapes.Length));
+            cloudNum = 0;
+            //cloudNum = (Random.Range(0, cloudShapes.Length));
             ShapeH = h_ps.shape;
             ShapeL = l_ps.shape;
 
@@ -134,8 +135,37 @@ public class GameCloudLayerGroup : MonoBehaviour
         }
     }
 
+    //for testing
+    void ChangeCloudShape_Sequence() //this should be on some kind of timer. Should Cloudmanager call this?
+    {
+        cloudNum++;
+        Debug.Log("cloudnnum: " + cloudNum);
 
-    void OnMouseDown()
+        if (cloudNum > cloudShapes.Length - 1) { 
+            cloudNum = 0;
+        }
+
+        ShapeH = h_ps.shape;
+        ShapeL = l_ps.shape;
+        Texture2D cloudShape = cloudShapes[cloudNum];
+        ShapeH.texture = cloudShape;
+        ShapeL.texture = cloudShape;
+        EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
+        Debug.Log("cloud changing to a: " + cloudShapes[cloudNum].name);
+    }
+
+
+    //added for testing
+    private void Update()
+    {
+        if (Input.GetKeyDown("a"))
+        {
+            ChangeCloudShape_Sequence();
+        }
+
+    }
+
+        void OnMouseDown()
     {
         Debug.Log("clicked on: " + this.gameObject.name);
 

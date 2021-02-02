@@ -1,0 +1,36 @@
+Asset is governed by the Asset Store EULA; however, the following components are governed by the licenses indicated below:
+
+NMWind.cginc
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+NMWindNoShiver.cginc
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+NMWind.hlsl
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+NMWindNoShiver.hlsl
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+NM_Wind.cs
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+ShaderWindSettings.cs
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+3DNoise.psd
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+GustNoise.psd
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+License link:
+https://unity3d.com/legal/licenses/Unity_Companion_License

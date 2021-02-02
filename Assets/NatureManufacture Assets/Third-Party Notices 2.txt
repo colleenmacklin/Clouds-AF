@@ -1,0 +1,20 @@
+Asset is governed by the Asset Store EULA; however, the following components are governed by the licenses indicated below:
+
+LightweightWavingGrass.SHADER
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+LightweightWavingGrassBillboard.SHADER
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+LightweightPassDepthOnlyGrassSnow.hlsl
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+LightweightPassLitGrassSnow.hlsl
+Unity Companion License
+[license and copyright/accreditation details—determined by relevant license]
+
+License link:
+https://unity3d.com/legal/licenses/Unity_Companion_License

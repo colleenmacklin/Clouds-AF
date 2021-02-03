@@ -7,37 +7,32 @@ public class Game_CloudManager : MonoBehaviour
 {
     [Header("Cloud Properties")]
     [SerializeField]
-    private GameObject cloudGroup;
-    [SerializeField]
-    private Texture2D[] ShapeArray; //textures stay as an array because we are not generating run time textures
-    public GameObject chosenCloud;
-    public Texture2D chosenShape;
-
-    [SerializeField]
     private int numberOfClouds;
     [SerializeField]
     private List<GameObject> ActiveClouds;
-    public GameObject shapeCollider; //our testing box that we resuse, will be a GameObject with only a collider on it
-    public Bounds shapeBounds;
-    public int instantiationAttempts = 50; //how many instantiation attempts we should make before failing
-
-    public int shapeCount;// how many shapes to show before ending game?
-                          //timer
+    [SerializeField]
+    private GameObject cloudGroup;
+    [SerializeField]
+    private Texture2D[] ShapeArray; //textures stay as an array because we are not generating run time textures
 
     [Header("Spawning Attributes")]
+
+    [SerializeField]
+    [Range(1, 1000)]
+    private int instantiationAttempts = 50; //how many instantiation attempts we should make before failing
     // Ranges for positioning clouds when they spawn (left/right, far/near, up/down)
     [SerializeField]
     private Vector2 xRange, yRange, zRange;
-
     [SerializeField]
     private Vector2 scaleRange;
-    private void SetRanges()
-    {
-        // Min = new Vector3(-30, 25, -40); //Random location value not behind trees.
-        // Max = new Vector3(40, 35, 70); //Another random value, not behind trees. - Y used to be 40
-        // sMin = 1;
-        // sMax = 2.0f; //changed from 2
-    }
+
+    [Header("Debug Cloud Selections")]
+    public GameObject chosenCloud;
+    public Texture2D chosenShape;
+    public GameObject shapeCollider; //our testing box that we resuse, will be a GameObject with only a collider on it
+    public Bounds shapeBounds;
+
+
 
     //behaviors:
     //tell EventManager to "SpawnShape" (CloudArray[n], ShapeArray[n])
@@ -75,6 +70,7 @@ public class Game_CloudManager : MonoBehaviour
     private void SetCloudToShape()
     {
         //choose a random cloud to turn into a shape
+        //This whole logic might need to be changed
         int shapeNum = (Random.Range(0, ShapeArray.Length));
         int cloudNum = (Random.Range(0, ActiveClouds.Count));
         chosenShape = ShapeArray[shapeNum];

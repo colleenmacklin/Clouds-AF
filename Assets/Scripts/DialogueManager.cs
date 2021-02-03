@@ -99,11 +99,11 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("Start dialogue beginning");
         var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
         var targetName = myTarget.name;
-        targetName = "No One"; //for testing
+        
         conversationTarget = targetName;
         
         activeLines = dialogueSO.DialogueByKey(targetName);
-        ResetCurrentLine();//set currentLine to zero
+        ResetCurrentLine(); //set currentLine to zero
         activeSentence = activeLines[currentLine]; //set the active sentence to this. which we will send to the text
         linesFinished = false;
 
@@ -141,6 +141,7 @@ public class DialogueManager : MonoBehaviour
             //we are out of lines
             linesFinished = true;
             Debug.Log("---ending dialogue---");
+            //EndConversation();
             return "We're out of ammo";
         }
         currentLine += 1;

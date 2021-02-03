@@ -33,6 +33,11 @@ public class Game_CloudManager : MonoBehaviour
     public Bounds shapeBounds;
 
 
+    ///////////////////////
+    //
+    // Monobehaviors
+    //
+    /////////////////////////
 
     //behaviors:
     //tell EventManager to "SpawnShape" (CloudArray[n], ShapeArray[n])
@@ -47,14 +52,32 @@ public class Game_CloudManager : MonoBehaviour
         EventManager.StopListening("FoundCloud", TurnOffCloud);
     }
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
         CreateActiveClouds();
         SetCloudToShape();
     }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        //call this on a timer, or set of co-routines
+        if (Input.GetKeyDown("o"))
+        {
+            SetCloudToShape();
+        }
+
+
+    }
+
+    ///////////////////////
+    //
+    // Cloud Functions
+    //
+    /////////////////////////
+
 
     void CreateActiveClouds()
     {
@@ -96,19 +119,6 @@ public class Game_CloudManager : MonoBehaviour
     private void TurnOffCloud()
     {
         EventManager.TriggerEvent("TurnOffCloud"); //message received on cloud object 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        //call this on a timer, or set of co-routines
-        if (Input.GetKeyDown("o"))
-        {
-            SetCloudToShape();
-        }
-
-
     }
     //for prefab instantiation, see: https://docs.unity3d.com/Manual/InstantiatingPrefabs.html
 

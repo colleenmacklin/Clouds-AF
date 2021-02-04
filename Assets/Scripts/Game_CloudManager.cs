@@ -45,11 +45,13 @@ public class Game_CloudManager : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("FoundCloud", TurnOffCloud);
+        EventManager.StartListening("ConversationEnded", SetCloudToShape);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("FoundCloud", TurnOffCloud);
+        EventManager.StopListening("ConversationEnded", SetCloudToShape);
     }
 
     void Start()

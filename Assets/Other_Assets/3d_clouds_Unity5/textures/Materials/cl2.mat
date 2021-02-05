@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: cl2
   m_Shader: {fileID: 4800000, guid: 7797e7d16d54a3844879bba03e0eed63, type: 3}
-  m_ShaderKeywords: GEOM_TYPE_MESH
+  m_ShaderKeywords: GEOM_TYPE_BRANCH GEOM_TYPE_MESH
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AddLightsPerPixel: 0
+    - _AddLightsPerPixel: 1
     - _AlphaInfluence: 1
     - _BlendOp: 0
     - _BumpScale: 1

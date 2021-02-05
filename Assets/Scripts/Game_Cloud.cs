@@ -13,7 +13,7 @@ public class Game_Cloud : MonoBehaviour
     //Get the GameObject’s mesh renderer to access the GameObject’s material and color
     public MeshRenderer m_Renderer;
     public GameObject underlyingShape;
-    public Vector3 starting_size;
+    private Vector3 starting_size;
     public Vector3 myScale;
 
     Renderer rend;
@@ -36,6 +36,7 @@ public class Game_Cloud : MonoBehaviour
         ps = this.GetComponent<ParticleSystem>();
         myShape = ps.shape;
         //set starting size
+        starting_size = new Vector3(5.0f, 5.0f, 5.0f);
         myShape.scale = starting_size;
 
     }

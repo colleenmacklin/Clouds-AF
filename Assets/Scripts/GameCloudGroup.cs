@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GameCloudLayerGroup : MonoBehaviour
+public class GameCloudGroup : MonoBehaviour
 {
     
     //brought over from Game_Cloud
@@ -13,11 +13,10 @@ public class GameCloudLayerGroup : MonoBehaviour
     private GameObject target;
     //private ParticleSystem ps;
 
-    //public Game_Cloud highClouds;
+    //public Game_Cloud cloud;
     //public Game_Cloud lowClouds;
 
-    public GameObject highClouds;
-    public GameObject lowClouds;
+    public GameObject cloud;
 
     //public ParticleSystem.ShapeModule myShape;
     //stuff to do:
@@ -35,14 +34,12 @@ public class GameCloudLayerGroup : MonoBehaviour
     public Texture2D new_Shape;
     public Texture2D curr_Shape;
 
-    public ParticleSystem h_ps;
-    public ParticleSystem l_ps;
-    private ParticleSystem.ShapeModule ShapeH;
-    private ParticleSystem.ShapeModule ShapeL;
+    public ParticleSystem ps;
+    private ParticleSystem.ShapeModule Shape;
 
     //for debugging
-    public Rect hiRect;
-    public GameObject UnderlyingShape;
+    public Rect rect;
+    //public GameObject UnderlyingShape;
 
     void OnEnable()
     {
@@ -64,8 +61,8 @@ public class GameCloudLayerGroup : MonoBehaviour
         transform.LookAt(camera, Vector3.back);
         //transform.LookAt(camera, Vector3.forward);
         //transform.LookAt(camera, Vector3.up);
-        curr_Shape = h_ps.shape.texture;
-        hiRect = UnderlyingShape.GetComponent<myShape>().myRect;
+        curr_Shape = ps.shape.texture;
+        //rect = UnderlyingShape.GetComponent<myShape>().myRect;
 
         cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
         InvokeRepeating("ChangeCloudShape", 0, 0);
@@ -86,12 +83,10 @@ public class GameCloudLayerGroup : MonoBehaviour
             var shape = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
             Debug.Log("spawnshape  called, target is: " + target.name + " shape is: " + shape.name);
 
-            ShapeH = h_ps.shape;
-            ShapeL = l_ps.shape;
+            Shape = ps.shape;
 
-            ShapeH.texture = shape;
-            ShapeL.texture = shape;
-
+            Shape.texture = shape;
+            curr_Shape = shape;
             //Debug.Log("hi, I am a shape: " + low_ns.sprite.name);
             CancelInvoke("ChangeCloudShape");
 
@@ -120,13 +115,13 @@ public class GameCloudLayerGroup : MonoBehaviour
         else if (cloudShapes.Length>0)
         {
             cloudNum = (Random.Range(0, cloudShapes.Length));
-            ShapeH = h_ps.shape;
-            ShapeL = l_ps.shape;
+            Shape = ps.shape;
 
 
             Texture2D cloudShape = cloudShapes[cloudNum];
-            ShapeH.texture = cloudShape;
-            ShapeL.texture = cloudShape;
+            Shape.texture = cloudShape;
+            curr_Shape = cloudShape;
+
             EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
 
 
@@ -143,11 +138,9 @@ public class GameCloudLayerGroup : MonoBehaviour
             cloudNum = 0;
         }
 
-        ShapeH = h_ps.shape;
-        ShapeL = l_ps.shape;
+        Shape = ps.shape;
         Texture2D cloudShape = cloudShapes[cloudNum];
-        ShapeH.texture = cloudShape;
-        ShapeL.texture = cloudShape;
+        Shape.texture = cloudShape;
         EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
         Debug.Log("cloud changing to a: " + cloudShapes[cloudNum].name);
     }

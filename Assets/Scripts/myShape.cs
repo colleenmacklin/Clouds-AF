@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,6 @@ public class myShape : MonoBehaviour
 {
 	public string myName;
     public GameObject cloud;
-    public SpriteRenderer spriteRenderer;
     public Texture2D shapeTexture;
     public Rect myRect;
     // Start is called before the first frame update
@@ -24,18 +23,6 @@ public class myShape : MonoBehaviour
         EventManager.StopListening("UpdateMe", UpdateMe);
     }
 
-    private void Awake()
-    {
-        //var myShapeIs = this.GetComponent<ParticleSystem>().shape.sprite;
-       // myName = myShapeIs.name;
-        //mySprite = myShapeIs;
-
-    }
-    void Start()
-    {
-        // var myShapeIs = this.GetComponent<ParticleSystem>().shape;
-        // myName = myShapeIs.sprite.name;
-    }
 
     public void UpdateMe() //called from cloudlayer any time a cloud shape changes
     {
@@ -45,10 +32,9 @@ public class myShape : MonoBehaviour
 
         myRect = new Rect(0, 0, shapeTexture.width, shapeTexture.height);
         var myPivot = new Vector2(0.5f, 0.5f);
-        spriteRenderer.sprite = Sprite.Create(shapeTexture, myRect, myPivot);
 
     }
-
+/*
     void Update()
     {
 
@@ -65,7 +51,7 @@ public class myShape : MonoBehaviour
 
         }
 
-
         //print(myShapeIs.sprite.name);
     }
+*/
 }

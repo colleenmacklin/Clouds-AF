@@ -11,6 +11,7 @@ and then choose that as the active dialogue. It will then move through that dial
 as one presses the space bar (or calls the function). This will change the text that is inside
 the dialogueText reference. 
 */
+[RequireComponent(typeof(Raycaster))]
 public class DialogueManager : MonoBehaviour
 {
     [SerializeField]
@@ -107,7 +108,6 @@ public class DialogueManager : MonoBehaviour
         activeSentence = activeLines[currentLine]; //set the active sentence to this. which we will send to the text
         linesFinished = false;
 
-        // StopAllCoroutines();// I don't think we actually want to stop all coroutines
         StartCoroutine(UpdateTextWithSentence(conversational_pause));
     }
 
@@ -121,6 +121,7 @@ public class DialogueManager : MonoBehaviour
     // then send the sentence to the text box.
     private void Respond()
     {
+        ReadSelection();
         if (ValidateSelection(selectedTarget))
         {
             activeSentence = ActivateNextSentence();
@@ -131,6 +132,11 @@ public class DialogueManager : MonoBehaviour
         }
 
         StartCoroutine(UpdateTextWithSentence(1));
+    }
+
+    void ReadSelection()
+    {
+        selectedTarget = GetComponent<Raycaster>()?.Selected.GetComponent<GameCloudLayerGroup>().curr_Shape.name;
     }
 
     bool ValidateSelection(string selection)

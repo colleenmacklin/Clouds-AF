@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 8782550564321971712}
   - component: {fileID: 129483871907596719}
   - component: {fileID: 931764321}
-  - component: {fileID: 1233706169}
   m_Layer: 9
   m_Name: Game Cloud Dual Layer_T
   m_TagString: Cloud

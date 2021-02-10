@@ -158,10 +158,10 @@ public class CursorManager : MonoBehaviour
     {
         while (SpriteLoc > 0)
         {
-       // if (SpriteLoc - 1 >= 0) //used to work - doesn't now! the mystery!
-        //{
+            // if (SpriteLoc - 1 >= 0) //used to work - doesn't now! the mystery!
+            //{
             SpriteLoc--;
-        //}
+            //}
         }
 
         cursorImage.overrideSprite = CursorSprites[SpriteLoc];

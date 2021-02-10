@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class GameCloudLayerGroup : MonoBehaviour
 {
-    
+
     //brought over from Game_Cloud
     private UnityAction someListener;
     private Transform camera;
@@ -67,8 +67,9 @@ public class GameCloudLayerGroup : MonoBehaviour
         curr_Shape = h_ps.shape.texture;
         hiRect = UnderlyingShape.GetComponent<myShape>().myRect;
 
-        cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
-        InvokeRepeating("ChangeCloudShape", 0, 0);
+        //cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
+        cloudNum = 0;
+        // InvokeRepeating("ChangeCloudShape", 0, 0);
 
     }
 
@@ -92,10 +93,12 @@ public class GameCloudLayerGroup : MonoBehaviour
             ShapeH.texture = shape;
             ShapeL.texture = shape;
 
+
+            curr_Shape = h_ps.shape.texture;
             //Debug.Log("hi, I am a shape: " + low_ns.sprite.name);
             CancelInvoke("ChangeCloudShape");
 
-            EventManager.TriggerEvent("UpdateMe"); //tell components to update -- there may be a more efficient way to do this so it doesn't call every cloud object
+            //    EventManager.TriggerEvent("UpdateMe"); //tell components to update -- there may be a more efficient way to do this so it doesn't call every cloud object
 
         }
         else { isShape = false; }
@@ -117,7 +120,7 @@ public class GameCloudLayerGroup : MonoBehaviour
             CancelInvoke("ChangeCloudShape");
             return;
         }
-        else if (cloudShapes.Length>0)
+        else if (cloudShapes.Length > 0)
         {
             cloudNum = (Random.Range(0, cloudShapes.Length));
             ShapeH = h_ps.shape;
@@ -127,7 +130,7 @@ public class GameCloudLayerGroup : MonoBehaviour
             Texture2D cloudShape = cloudShapes[cloudNum];
             ShapeH.texture = cloudShape;
             ShapeL.texture = cloudShape;
-            EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
+            //    EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
 
 
         }
@@ -139,7 +142,8 @@ public class GameCloudLayerGroup : MonoBehaviour
         cloudNum++;
         Debug.Log("cloudnnum: " + cloudNum);
 
-        if (cloudNum > cloudShapes.Length - 1) { 
+        if (cloudNum > cloudShapes.Length - 1)
+        {
             cloudNum = 0;
         }
 
@@ -148,7 +152,7 @@ public class GameCloudLayerGroup : MonoBehaviour
         Texture2D cloudShape = cloudShapes[cloudNum];
         ShapeH.texture = cloudShape;
         ShapeL.texture = cloudShape;
-        EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
+        // EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
         Debug.Log("cloud changing to a: " + cloudShapes[cloudNum].name);
     }
 
@@ -163,27 +167,27 @@ public class GameCloudLayerGroup : MonoBehaviour
 
     }
 
-        void OnMouseDown()
-    {
-        Debug.Log("clicked on: " + this.gameObject.name);
+    // void OnMouseDown()
+    // {
+    //     Debug.Log("clicked on: " + this.gameObject.name);
 
-        if (isShape)
-        {
-            EventManager.TriggerEvent("Respond");
-            EventManager.TriggerEvent("shapeEye");
-        }
-        EventManager.TriggerEvent("glowEye");
+    //     if (isShape)
+    //     {
+    //         EventManager.TriggerEvent("Respond");
+    //         EventManager.TriggerEvent("shapeEye");
+    //     }
+    //     EventManager.TriggerEvent("glowEye");
 
-    }
+    // }
 
-    void OnMouseOver()
-    {
-        EventManager.TriggerEvent("openEye");
-    }
+    // void OnMouseOver()
+    // {
+    //     EventManager.TriggerEvent("openEye");
+    // }
 
-    void OnMouseExit()
-    {
-        EventManager.TriggerEvent("closeEye");
-    }
+    // void OnMouseExit()
+    // {
+    //     EventManager.TriggerEvent("closeEye");
+    // }
 
 }

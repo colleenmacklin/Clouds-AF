@@ -1,262 +1,225 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 
+/*
+The Dialogue Manager should take the chosen object from the Game_CloudManager
+and then choose that as the active dialogue. It will then move through that dialogue list
+as one presses the space bar (or calls the function). This will change the text that is inside
+the dialogueText reference. 
+*/
+[RequireComponent(typeof(Raycaster))]
 public class DialogueManager : MonoBehaviour
 {
-    public GameObject cloudManager; //need to look in here and see what the current active cloud and shape spritename is
-    public GameObject textBox;
-    public GameObject space; //gonna remove this
-    public Text dialogueText; //reference to text field in Friend
-    public string myName;
-    public string currentShape;
-    public Text theText;
-    public int myIndex; //line number of the cloudshape in the text file (indicated by "#")
-    public float conversational_pause = 12;
-    public TextAsset textFile; // this file has a hashtag for the name of the sprite, and text after... maybe need to create a multidimensional array?
-    public string[] textLines; //all the text seperated by lines marked by a return (\n)
-    public int currentLine;
-    public int endAtLine;
+    [SerializeField]
+    private CloudDialogue dialogueSO;
 
-    public Animator animator;
+    [SerializeField]
+    public GameObject cloudManager; //need to look in here and see what the current active cloud and shape spritename is
+
+    [SerializeField]
+    public GameObject textBox;
+
+    [SerializeField]
+    public GameObject space; //gonna remove this
+
+    //[SerializeField]
+    //public Animator textBoxAnimator;
+
+    [SerializeField]
+    private Text dialogueText; //reference to text field in Friend
+
+
+    [SerializeField]
+    public string conversationTarget;
+
+    [SerializeField]
+    public string selectedTarget;
+
+    [SerializeField]
+    [Range(3, 25)]
+    public float conversational_pause = 12;
+
+    [SerializeField]
+    private int currentLine;
+
+
+    [SerializeField]
+    private List<string> activeLines = new List<string>();
+
+    [SerializeField]
+    private string activeSentence;
+    [SerializeField]
+    private bool linesFinished;
+
+    //////////////////////////////////////
+    //
+    //    Monobehaviors
+    ///
+    ////////////////////////////////
 
     void Awake()
     {
-        //maybe put textfile in here?
-        StartCoroutine(EndDialogue(0)); //hide the dialogue
-        disableSpaceButton(space);
+        dialogueSO.ReadDialogueFromFile();//look into a way to make this happen absolutely first
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            Debug.Log("-----space-----");
+            EventManager.TriggerEvent("Respond");//in case something else is hooked to this event
+        }
     }
 
     void OnEnable()
     {
         EventManager.StartListening("Talk", StartDialogue);
-        EventManager.StartListening("Respond", Respond);
-        EventManager.StartListening("Continue", DisplayNextSentence);
+        EventManager.StartListening("Respond", Respond); //click events do this function??? where??
     }
 
     void OnDisable()
     {
         EventManager.StopListening("Talk", StartDialogue);
         EventManager.StopListening("Respond", Respond);
-        EventManager.StopListening("Continue", DisplayNextSentence);
-    }
-
-    void Start()
-    {
-        if (textFile != null)
-        {
-            textLines = (textFile.text.Split('\n'));
-        }
-            endAtLine = textLines.Length - 1;
-    }
-
-    public int searchForName(string n) //find the dialogue associated with the cloud shape called from event manager "talk"
-    {
-
-    int index = 0;
-    for (; index<textLines.Length; index++) {
-      if (textLines[index].Contains("#" + n))
-      {
-         var tempString = textLines[index].Remove(0, 1);
-          currentShape = tempString;
-          break;
-      }
-  }
-    Debug.Log("here is the droid you were looking for: "+index.ToString ());
-        return index;
     }
 
 
+    //////////////////////
+    //
+    ///   Dialogue Handling
+    //
+    ///////////////////
+
+    //Handle everything about actually getting the Dialogue set up with targets and selections
     public void StartDialogue()
     {
+        Debug.Log("Start dialogue beginning");
         var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
         var targetName = myTarget.name;
-        myName = targetName;
-        myIndex = searchForName(targetName);
-        currentLine = myIndex;
-        StartCoroutine(DisplayQuestion(conversational_pause)); //hide the dialogue
+
+        conversationTarget = targetName;
+
+        activeLines = dialogueSO.DialogueByKey(targetName);
+        ResetCurrentLine(); //set currentLine to zero
+        activeSentence = activeLines[currentLine]; //set the active sentence to this. which we will send to the text
+        linesFinished = false;
+
+        StartCoroutine(UpdateTextWithSentence(conversational_pause));
     }
 
-    IEnumerator DisplayQuestion(float time)
+    void ResetCurrentLine()
     {
-        yield return new WaitForSeconds(time);
-        animator.SetBool("isOpen", true);
-        currentLine += 1;
-        disableSpaceButton(space);
-        StopAllCoroutines();
-        //StartCoroutine(ShowSentence(textLines[currentLine]));
-        StartCoroutine(ShowQuestion(textLines[currentLine]));
-
-        //StartCoroutine(TypeSentence(textLines[currentLine]));
+        currentLine = 0;
     }
 
-    public void DisplayNextSentence()
+    //This now houses the primary logic for responses.
+    // first check if the selection is valid, then update active sentence accordingly
+    // then send the sentence to the text box.
+    private void Respond()
     {
-
-        if (currentLine <= textLines.Length) { 
-        currentLine += 1;
-        }
-
-        if (textLines[currentLine + 1].Contains("#") || currentLine + 1 == endAtLine) //if there's no more lines of dialogue left
+        ReadSelection();
+        if (ValidateSelection(selectedTarget))
         {
-            StopAllCoroutines();
-            //type it out
-            //StartCoroutine(TypeSentence(textLines[currentLine]));
-            StartCoroutine(ShowFinalSentence(textLines[currentLine]));
-            currentLine += 1;
+            activeSentence = ActivateNextSentence();
         }
         else
         {
-            //enableSpaceButton(space);
+            activeSentence = WrongAnswer();
         }
 
+        StartCoroutine(UpdateTextWithSentence(1));
 
-        if (currentLine == endAtLine || textLines[currentLine].Contains("#"))
+        //if we are at the last option, we should move on without a click
+        if (currentLine == activeLines.Count - 1)
         {
-            //Debug.Log("there are NO more lines of text left, lastLine: "+currentLine);
-            disableSpaceButton(space);
-            StartCoroutine(EndDialogue(7));
-
-            //EndDialogue();
-            return;
+            linesFinished = true;
+            StartCoroutine(TransitionToNextCloud()); //transition the lines
         }
-
-
-        //animation to type out sentences
-        //StopAllCoroutines();
-        StartCoroutine(ShowSentence(textLines[currentLine]));
-
-        //StartCoroutine(TypeSentence(textLines[currentLine]));
-
-        //currentLine += 1;
-        //enableSpaceButton(space);
-
     }
 
-    public void Respond()
-    {
-        //Debug.Log("currentShape: " + currentShape + "  " + "myName: " + myName);
-        animator.SetBool("isOpen", true);
-
-        if (myName == currentShape)
-        {
-            DisplayNextSentence();
-            EventManager.TriggerEvent("FoundCloud");
-            return;
-        }
-
-    }
-
-    //-------------------------------------------------maybe get rid of this
-    IEnumerator TypeSentence(string sentence)
-    {
-        dialogueText.text = "";
-        //foreach (char letter in sentence.ToCharArray())
-        foreach (char letter in textLines[currentLine].ToCharArray())
-
-        {
-            dialogueText.text += letter;
-            yield return null;
-        }
-        //currentLine += 1;
-    }
-
-    IEnumerator ShowSentence(string sentence)
-    {
-        yield return new WaitForSeconds(1);
-        dialogueText.text = sentence;
-        animator.SetBool("isOpen", true);
-        enableSpaceButton(space);
-    }
-
-    IEnumerator ShowFinalSentence(string sentence)
-    {
-        yield return new WaitForSeconds(1);
-        dialogueText.text = sentence;
-        animator.SetBool("isOpen", true);
-        disableSpaceButton(space);
-    }
-
-
-    IEnumerator ShowQuestion(string sentence)
-    {
-        yield return new WaitForSeconds(1);
-        dialogueText.text = sentence;
-        animator.SetBool("isOpen", true);
-    }
 
     /*
-    void EndDialogue()
-    {
+        Woof, ok. This is a lot of external logic being implemented
+        So we checked for the ending in the response (because we check if we're at the 
+        last line).
+        If we are, then we say the linesFinished is true;
+        then we start this transition. 
 
-        Debug.Log("---ending dialogue---");
-        //Start the coroutine we define below named ExampleCoroutine.
+        It waits for 3 seconds before saying I wonder what other clouds we find.
+        Then it updates with that,
+        then waits another 3 before triggering the EndConversation.
+        ->which immediately sets the StartDialogue.
 
-        animator.SetBool("isOpen", false);
-        disableButton(continueButton);
+        The issue is that the EndConversation event in the cloud is *immediately* tied
+        to the StartDialogue event. This is not something we should trivially move around
+        So it is something we should have a bigger conversation about.
 
-    }
+        That is - we need to talk about what our event structure and our game sequence is
+
     */
-
-    // function to enable continueButton
-    public void enableSpaceButton(GameObject space)
+    IEnumerator TransitionToNextCloud()
     {
-        EventManager.TriggerEvent("FadeIn");
-        space.SetActive(true);
-    }
 
-    // function to disable continueButton
-    public void disableSpaceButton(GameObject space)
-    {
-        EventManager.TriggerEvent("FadeOut");
-        space.SetActive(false);
-    }
-    
-
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            //Debug.Log("-----space-----" + space.activeSelf);
-            if (space.activeSelf == true) //turn this into a graphic that shows up 
-            {
-                EventManager.TriggerEvent("Continue");
-            }
-        }
-        
-        /*
-        if (currentLine < endAtLine+1)
-        {
-            theText.text = textLines[currentLine];
-
-        }
-        else
-        {
-            textBox.SetActive(false);
-
-        }
-        */
-    }
-
-    IEnumerator EndDialogue(float time)
-    {
-        //Print the time of when the function is first called.
-        //Debug.Log("Started Coroutine at timestamp : " + Time.time);
         Debug.Log("---ending dialogue---");
+        yield return new WaitForSeconds(3f);
+        activeSentence = "I wonder what other clouds we might see.";
+        StartCoroutine(UpdateTextWithSentence(1));
+        yield return new WaitForSeconds(3f);
+        activeSentence = "";
+        StartCoroutine(UpdateTextWithSentence(1));
+        yield return new WaitForSeconds(1f);
 
-        //yield on a new YieldInstruction that waits for 5 seconds.
-        yield return new WaitForSeconds(time);
-        //Start the coroutine we define below named ExampleCoroutine.
-
-        animator.SetBool("isOpen", false);
-        //disableButton(continueButton);
-
-        //After we have waited 5 seconds print the time again.
-        //Debug.Log("Finished Coroutine at timestamp : " + Time.time);
+        EndConversation(); //activate the event for ending the convo
     }
 
+    void ReadSelection()
+    {
+        selectedTarget = GetComponent<Raycaster>()?.Selected.GetComponent<GameCloudLayerGroup>().curr_Shape.name;
+    }
+
+    bool ValidateSelection(string selection)
+    {
+        return conversationTarget == selection;
+    }
+    string WrongAnswer()
+    {
+        return "No... not that cloud";
+    }
+
+    //this is its own function because this is actually handling the mutation. which we encapsulate
+    string ActivateNextSentence()
+    {
+
+        currentLine += 1;
+        return activeLines[currentLine];
+    }
+
+    void EndConversation()
+    {
+        EventManager.TriggerEvent("ConversationEnded");
+    }
+
+    /////////////////////
+    //
+    // Coroutine For Updating TextBox
+    //
+    //////////////////////////
+
+    IEnumerator UpdateTextWithSentence(float time)
+    {
+        //nothing has changed so we break out
+        if (activeSentence == dialogueText.text) yield break;
+
+        Debug.Log("Sentence Changed!");
+
+        //execute if sentence is different
+        yield return new WaitForSeconds(time);
+        dialogueText.text = activeSentence;
+
+    }
 
 }

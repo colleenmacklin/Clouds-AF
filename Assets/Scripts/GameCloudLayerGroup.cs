@@ -1,62 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using EasyButtons;
 using UnityEngine.Events;
-
 
 public class GameCloudLayerGroup : MonoBehaviour
 {
 
-    [Header("Cloud Objects")]
-    [SerializeField]
-    private Game_Cloud highClouds,lowClouds;
-
-
-    [Header("Cloud Distributions")]
-    [SerializeField]
-    [Range(3,5000)]
-    private int maxCloudsPerLayer = 1000;
-    [SerializeField]
-    [Range(0f,1f)]
-    private float cloudDistribution = .5f;
-    
-    const float MAX_CLOUD_DISTANCE = 40f;
-    [SerializeField]
-    [Range(0f,1f)]
-    private float cloudsDistance = .5f;
-
-    [Header("High Cloud Properties")]
-    [SerializeField]
-    private Sprite highShape;
-    [SerializeField]
-    private Material highCloudMaterial; // the renderer is not found?
-    [SerializeField]
-    [Range(0f,20f)]
-    private float highCloudDuration = 10f;
-    [SerializeField]
-    [Range(0,5000)]
-    private int highCloudEmissionRate = 35;
-    
-    [Header("Low Cloud Properties")]
-    [SerializeField]
-    private Sprite lowShape;
-    [SerializeField]
-    private Material lowCloudMaterial; // the renderer is not found?
-    [SerializeField]
-    [Range(0f,20f)]
-    private float lowCloudDuration = 10f;
-    [SerializeField]
-    [Range(0,5000)]
-    private int lowCloudEmissionRate = 35;
-
     //brought over from Game_Cloud
     private UnityAction someListener;
     private Transform camera;
-    private int cloudNum;
+    public int cloudNum;
     private GameObject target;
+    //private ParticleSystem ps;
 
-    public ParticleSystem.ShapeModule myShape;
+    //public Game_Cloud highClouds;
+    //public Game_Cloud lowClouds;
+
+    public GameObject highClouds;
+    public GameObject lowClouds;
+
+    //public ParticleSystem.ShapeModule myShape;
     //stuff to do:
     // --add slightly different timers to shape changing
     // --destroy myself when I blow offscreen
@@ -66,42 +29,20 @@ public class GameCloudLayerGroup : MonoBehaviour
     public float spawnDelay;
 
     public GameObject cloudName;
-    public Sprite[] cloudShapes; //generic cloudshapes
+    public Texture2D[] cloudShapes; //generic cloudshapes
     public bool isShape; //is this cloud turned into a shape?
     public string myName; //store the name of the underlying shape here
+    public Texture2D new_Shape;
+    public Texture2D curr_Shape;
 
+    public ParticleSystem h_ps;
+    public ParticleSystem l_ps;
+    private ParticleSystem.ShapeModule ShapeH;
+    private ParticleSystem.ShapeModule ShapeL;
 
-    [Button]
-    void UpdateClouds(){
-        //we have to get these at run time which is ridiculous
-        var hcM = highClouds.ps.main;
-        var hcE = highClouds.ps.emission;
-        var hcS = highClouds.ps.shape;
-        
-        var lcM = lowClouds.ps.main;
-        var lcE = lowClouds.ps.emission;
-        var lcS = lowClouds.ps.shape;
-
-        //set high cloud options
-        hcM.maxParticles = (int)((float)maxCloudsPerLayer * (cloudDistribution));
-        hcM.startLifetime = highCloudDuration;
-        hcE.rateOverTime = highCloudEmissionRate;
-        hcS.sprite = highShape ? highShape : hcS.sprite;
-
-        //set low cloud options
-        lcM.maxParticles = (int)((float)maxCloudsPerLayer * (1f - cloudDistribution));
-        lcM.startLifetime = lowCloudDuration;
-        lcE.rateOverTime = lowCloudEmissionRate;
-        lcS.sprite = lowShape ? lowShape : lcS.sprite;
-
-        //reposition clouds
-        //calculate distance
-        float distance = MAX_CLOUD_DISTANCE * cloudsDistance;
-        //position calculated as an absolute of lower cloud position
-        Vector3 upperPosition = new Vector3 (lowClouds.transform.position.x, lowClouds.transform.position.y + distance, lowClouds.transform.position.z);
-        highClouds.transform.position = upperPosition;
-
-    }
+    //for debugging
+    public Rect hiRect;
+    public GameObject UnderlyingShape;
 
     void OnEnable()
     {
@@ -122,16 +63,20 @@ public class GameCloudLayerGroup : MonoBehaviour
         camera = Camera.main.transform;
         transform.LookAt(camera, Vector3.back);
         //transform.LookAt(camera, Vector3.forward);
+        //transform.LookAt(camera, Vector3.up);
+        curr_Shape = h_ps.shape.texture;
+        hiRect = UnderlyingShape.GetComponent<myShape>().myRect;
 
-        cloudNum = (Random.Range(0, cloudShapes.Length));
-        InvokeRepeating("ChangeCloudShape", 0, 0);
+        //cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
+        cloudNum = 0;
+        // InvokeRepeating("ChangeCloudShape", 0, 0);
+
     }
 
     void SpawnShape() //called from CloudManager
     {
 
         target = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenCloud;
-
 
         if (target == cloudName) //if that's me
         {
@@ -142,19 +87,18 @@ public class GameCloudLayerGroup : MonoBehaviour
             var shape = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
             Debug.Log("spawnshape  called, target is: " + target.name + " shape is: " + shape.name);
 
-            var hi_ns = highClouds.ps.shape;
-            var low_ns = lowClouds.ps.shape;
+            ShapeH = h_ps.shape;
+            ShapeL = l_ps.shape;
 
-            hi_ns.shapeType = ParticleSystemShapeType.Sprite;
-            low_ns.shapeType = ParticleSystemShapeType.Sprite;
-
-            Sprite newShape = shape;
-            hi_ns.sprite = newShape;
-            low_ns.sprite = newShape;
+            ShapeH.texture = shape;
+            ShapeL.texture = shape;
 
 
+            curr_Shape = h_ps.shape.texture;
             //Debug.Log("hi, I am a shape: " + low_ns.sprite.name);
             CancelInvoke("ChangeCloudShape");
+
+            //    EventManager.TriggerEvent("UpdateMe"); //tell components to update -- there may be a more efficient way to do this so it doesn't call every cloud object
 
         }
         else { isShape = false; }
@@ -176,44 +120,74 @@ public class GameCloudLayerGroup : MonoBehaviour
             CancelInvoke("ChangeCloudShape");
             return;
         }
-
-        cloudNum = (Random.Range(0, cloudShapes.Length));
-        var hi_s = highClouds.ps.shape;
-        var low_s = lowClouds.ps.shape;
-
-        low_s.shapeType = ParticleSystemShapeType.Sprite;
-        hi_s.shapeType = ParticleSystemShapeType.Sprite;
-
-        Sprite newSprite = cloudShapes[cloudNum];
-        hi_s.sprite = newSprite;
-        low_s.sprite = newSprite;
-
-        //print("hiCloud is a : " + hi_s.sprite.name);
-        //print("lowCloud is a : " + low_s.sprite.name);
-
-    }
-
-
-    private void OnMouseDown()
-    {
-        Debug.Log("clicked on: " + this.gameObject.name);
-
-        if (isShape)
+        else if (cloudShapes.Length > 0)
         {
-            EventManager.TriggerEvent("Respond");
-            EventManager.TriggerEvent("shapeEye");
+            cloudNum = (Random.Range(0, cloudShapes.Length));
+            ShapeH = h_ps.shape;
+            ShapeL = l_ps.shape;
+
+
+            Texture2D cloudShape = cloudShapes[cloudNum];
+            ShapeH.texture = cloudShape;
+            ShapeL.texture = cloudShape;
+            //    EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
+
+
         }
-        EventManager.TriggerEvent("glowEye");
-
-    }
-    void OnMouseOver()
-    {
-        EventManager.TriggerEvent("openEye");
     }
 
-    void OnMouseExit()
+    //for testing
+    void ChangeCloudShape_Sequence() //this should be on some kind of timer. Should Cloudmanager call this?
     {
-        EventManager.TriggerEvent("closeEye");
+        cloudNum++;
+        Debug.Log("cloudnnum: " + cloudNum);
+
+        if (cloudNum > cloudShapes.Length - 1)
+        {
+            cloudNum = 0;
+        }
+
+        ShapeH = h_ps.shape;
+        ShapeL = l_ps.shape;
+        Texture2D cloudShape = cloudShapes[cloudNum];
+        ShapeH.texture = cloudShape;
+        ShapeL.texture = cloudShape;
+        // EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
+        Debug.Log("cloud changing to a: " + cloudShapes[cloudNum].name);
     }
+
+
+    //added for testing
+    private void Update()
+    {
+        if (Input.GetKeyDown("a"))
+        {
+            ChangeCloudShape_Sequence();
+        }
+
+    }
+
+    // void OnMouseDown()
+    // {
+    //     Debug.Log("clicked on: " + this.gameObject.name);
+
+    //     if (isShape)
+    //     {
+    //         EventManager.TriggerEvent("Respond");
+    //         EventManager.TriggerEvent("shapeEye");
+    //     }
+    //     EventManager.TriggerEvent("glowEye");
+
+    // }
+
+    // void OnMouseOver()
+    // {
+    //     EventManager.TriggerEvent("openEye");
+    // }
+
+    // void OnMouseExit()
+    // {
+    //     EventManager.TriggerEvent("closeEye");
+    // }
 
 }

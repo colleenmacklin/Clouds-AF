@@ -17,7 +17,7 @@ public class Cloud : MonoBehaviour
     public ParticleSystem ps;
     public ParticleSystem.ShapeModule myShape;
     public GameObject cloudName;
-    public Sprite[] cloudShapes; //generic cloudshapes
+    public Texture2D[] cloudShapes; //generic cloudshapes
     public bool isShape; //is this cloud turned into a shape?
 
     public string myName; //store the name of the underlying shape here
@@ -98,8 +98,8 @@ public class Cloud : MonoBehaviour
             var ns = ps.shape;
             ns.shapeType = ParticleSystemShapeType.Sprite;
 
-            Sprite newShape = shape;
-            ns.sprite = newShape;
+            Texture2D newShape = shape;
+            ns.texture = newShape;
 
             Debug.Log("hi, I am a shape: " + ns.sprite.name + "and my name is: " + this.name);
             CancelInvoke("ChangeCloudShape");
@@ -121,8 +121,8 @@ public class Cloud : MonoBehaviour
         cloudNum = (Random.Range(0, cloudShapes.Length));
         var s = ps.shape;
         s.shapeType = ParticleSystemShapeType.Sprite;
-        Sprite newSprite = cloudShapes[cloudNum];
-        s.sprite = newSprite;
+        Texture2D newTexture = cloudShapes[cloudNum];
+        s.texture = newTexture;
         //print("hi, " + this.gameObject.name + " is a :" + s.sprite.name);
 
 

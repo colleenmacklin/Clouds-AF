@@ -41,7 +41,6 @@ public class Raycaster : MonoBehaviour
                 if (hit.transform)
                 {
                     state = MouseState.HOVERING;
-                    Debug.Log("hitting");
                     EventManager.TriggerEvent("openEye");
                 }
                 break;

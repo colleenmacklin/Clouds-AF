@@ -61,9 +61,9 @@ public class DialogueManager : MonoBehaviour
     ///
     ////////////////////////////////
 
-    void Start()
+    void Awake()
     {
-        dialogueSO.ReadDialogueFromFile();
+        dialogueSO.ReadDialogueFromFile();//look into a way to make this happen absolutely first
     }
 
     private void Update()

@@ -27,7 +27,7 @@ public class CursorManager : MonoBehaviour
     private readonly string ASSET_NAME = "Easy Animated Cursors";
     private Image cursorImage;
     private int SpriteLoc = 0;
-    private int SpriteLenght = 0;
+    private int spriteLength = 0;
     private bool HaveError = false;
     private bool getSize = true;
 
@@ -41,8 +41,8 @@ public class CursorManager : MonoBehaviour
 
     void OnDisable()
     {
-        EventManager.StopListening("openeye", openEyes);
-        EventManager.StopListening("closeeye", closeEyes);
+        EventManager.StopListening("openEye", openEyes);
+        EventManager.StopListening("closeEye", closeEyes);
         EventManager.StopListening("glowEye", glowEyes);
         EventManager.StopListening("shapeEye", shapeEyes);
 
@@ -115,7 +115,7 @@ public class CursorManager : MonoBehaviour
 
         if (IsAnimated)
         {
-            SpriteLenght = CursorSprites.Length;
+            spriteLength = CursorSprites.Length;
             //InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed*10);
             //InvokeRepeating("ImageSwapper", 0f, 1);
 
@@ -138,18 +138,6 @@ public class CursorManager : MonoBehaviour
 
     }
 
-    // Swap images.
-    private void ImageSwapper()
-    {
-        if (SpriteLenght - 1 >= SpriteLoc + 1)
-        {
-            SpriteLoc++;
-            //} else
-            //{
-            //  SpriteLoc = 0;
-        }
-        cursorImage.overrideSprite = CursorSprites[SpriteLoc];
-    }
 
 
     // Swap images in reverse.
@@ -183,7 +171,7 @@ public class CursorManager : MonoBehaviour
         CursorSprites = newSpriteArr;
         SpriteLoc = 0;
         cursorImage.preserveAspect = true;
-        SpriteLenght = newSpriteArr.Length;
+        spriteLength = newSpriteArr.Length;
         return true;
     }
 
@@ -196,7 +184,7 @@ public class CursorManager : MonoBehaviour
         }
         CursorSprites = new Sprite[] { newSpriteArr };
         IsAnimated = false;
-        SpriteLenght = 1;
+        spriteLength = 1;
         StopAnimation();
         cursorImage.overrideSprite = newSpriteArr;
         cursorImage.preserveAspect = true;
@@ -246,22 +234,45 @@ public class CursorManager : MonoBehaviour
     {
         IsAnimated = true;
         StopAnimation();
-        SpriteLenght = CursorSprites.Length;
-        InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
-        // InvokeRepeating("ImageSwapper", 0f, 1);
-
+        spriteLength = CursorSprites.Length;
+        //InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
+        //InvokeRepeating("ImageSwapper", 0f, 1);
+        StartCoroutine(animateSprite(1));
     }
 
     void closeEyes()
     {
         IsAnimated = true;
         StopAnimation();
-        SpriteLenght = CursorSprites.Length;
+        spriteLength = CursorSprites.Length;
         // InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
-        InvokeRepeating("ImageSwapperbwds", 0f, 1 / AnimationSpeed * 10);
+        //InvokeRepeating("ImageSwapperbwds", 0f, 1 / AnimationSpeed * 10);
+        StartCoroutine(animateSprite(-1));
+    }
+
+    IEnumerator animateSprite(int direction)
+    {
+        for (int increment = 0; increment < CursorSprites.Length - 1; increment++)
+        {
+            SpriteLoc += direction;
+            cursorImage.overrideSprite = CursorSprites[SpriteLoc];
+            yield return null;
+        }
 
     }
 
+    // Swap images.
+    private void ImageSwapper()
+    {
+        if (spriteLength - 1 >= SpriteLoc + 1)
+        {
+            SpriteLoc++;
+            //} else
+            //{
+            //  SpriteLoc = 0;
+        }
+        cursorImage.overrideSprite = CursorSprites[SpriteLoc];
+    }
     void glowEyes()
     {
         //do something cool here when you mousedown - change it depending? show emanating shape?
@@ -276,7 +287,7 @@ public class CursorManager : MonoBehaviour
     {
         IsAnimated = true;
         StopAnimation();
-        SpriteLenght = CursorSprites.Length;
+        spriteLength = CursorSprites.Length;
         InvokeRepeating("ImageSwapper", 0f, 1 / AnimationSpeed * 10);
     }
     */

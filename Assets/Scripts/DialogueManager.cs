@@ -132,6 +132,48 @@ public class DialogueManager : MonoBehaviour
         }
 
         StartCoroutine(UpdateTextWithSentence(1));
+
+        //if we are at the last option, we should move on without a click
+        if (currentLine == activeLines.Count - 1)
+        {
+            linesFinished = true;
+            StartCoroutine(TransitionToNextCloud()); //transition the lines
+        }
+    }
+
+
+    /*
+        Woof, ok. This is a lot of external logic being implemented
+        So we checked for the ending in the response (because we check if we're at the 
+        last line).
+        If we are, then we say the linesFinished is true;
+        then we start this transition. 
+
+        It waits for 3 seconds before saying I wonder what other clouds we find.
+        Then it updates with that,
+        then waits another 3 before triggering the EndConversation.
+        ->which immediately sets the StartDialogue.
+
+        The issue is that the EndConversation event in the cloud is *immediately* tied
+        to the StartDialogue event. This is not something we should trivially move around
+        So it is something we should have a bigger conversation about.
+
+        That is - we need to talk about what our event structure and our game sequence is
+
+    */
+    IEnumerator TransitionToNextCloud()
+    {
+
+        Debug.Log("---ending dialogue---");
+        yield return new WaitForSeconds(3f);
+        activeSentence = "I wonder what other clouds we might see.";
+        StartCoroutine(UpdateTextWithSentence(1));
+        yield return new WaitForSeconds(3f);
+        activeSentence = "";
+        StartCoroutine(UpdateTextWithSentence(1));
+        yield return new WaitForSeconds(1f);
+
+        EndConversation(); //activate the event for ending the convo
     }
 
     void ReadSelection()
@@ -151,14 +193,7 @@ public class DialogueManager : MonoBehaviour
     //this is its own function because this is actually handling the mutation. which we encapsulate
     string ActivateNextSentence()
     {
-        if (currentLine == activeLines.Count - 1)
-        {
-            //we are out of lines
-            linesFinished = true;
-            Debug.Log("---ending dialogue---");
-            EndConversation();
-            return "That was interesting.";
-        }
+
         currentLine += 1;
         return activeLines[currentLine];
     }

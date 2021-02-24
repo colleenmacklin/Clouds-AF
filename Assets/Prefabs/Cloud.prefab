@@ -38,13 +38,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178556143}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 588b3c12b88f046cd9092644796db202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   myName: 
   cloud: {fileID: 4001077985832164262}
+  spriteRenderer: {fileID: 0}
   shapeTexture: {fileID: 0}
   myRect:
     serializedVersion: 2

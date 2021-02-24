@@ -125,6 +125,8 @@ public class DialogueManager : MonoBehaviour
         if (ValidateSelection(selectedTarget))
         {
             activeSentence = ActivateNextSentence();
+            EventManager.TriggerEvent("FadeInSpace"); //fades in the space indicator
+
         }
         else
         {
@@ -138,6 +140,7 @@ public class DialogueManager : MonoBehaviour
         {
             linesFinished = true;
             StartCoroutine(TransitionToNextCloud()); //transition the lines
+            EventManager.TriggerEvent("FadeOutSpace"); //fades out the space indicator
         }
     }
 

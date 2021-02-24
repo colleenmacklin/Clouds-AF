@@ -63,9 +63,10 @@ public class GameCloudGroup : MonoBehaviour
         //transform.LookAt(camera, Vector3.up);
         curr_Shape = ps.shape.texture;
         //rect = UnderlyingShape.GetComponent<myShape>().myRect;
+        cloudNum = 0;
 
-        cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
-        InvokeRepeating("ChangeCloudShape", 0, 0);
+        //cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
+        //InvokeRepeating("ChangeCloudShape", 0, 0);
 
     }
 
@@ -100,7 +101,7 @@ public class GameCloudGroup : MonoBehaviour
     public void turnOff()
     {
         //stop the cloud from constantly shifting cloud shapes
-        //Debug.Log("turning off cloud");
+        Debug.Log("turning off cloud: "+this.name);
         isShape = false;
         InvokeRepeating("ChangeCloudShape", spawnTime, spawnDelay);
     }
@@ -112,7 +113,7 @@ public class GameCloudGroup : MonoBehaviour
             CancelInvoke("ChangeCloudShape");
             return;
         }
-        else if (cloudShapes.Length>0)
+        else if (cloudShapes.Length > 0)
         {
             cloudNum = (Random.Range(0, cloudShapes.Length));
             Shape = ps.shape;
@@ -155,7 +156,7 @@ public class GameCloudGroup : MonoBehaviour
         }
 
     }
-
+    /*
         void OnMouseDown()
     {
         Debug.Log("clicked on: " + this.gameObject.name);
@@ -178,5 +179,5 @@ public class GameCloudGroup : MonoBehaviour
     {
         EventManager.TriggerEvent("closeEye");
     }
-
+    */
 }

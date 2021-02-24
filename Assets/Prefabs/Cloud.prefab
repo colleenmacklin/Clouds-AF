@@ -122,7 +122,11 @@ MonoBehaviour:
   spawnDelay: 0
   cloudName: {fileID: 4001077985832164262}
   cloudShapes:
-  - {fileID: 2800000, guid: 5aa6248b18a044c5f9d7dda50dfa83c2, type: 3}
+  - {fileID: 2800000, guid: d0a97bec7e8be44cda435f991fe42fd6, type: 3}
+  - {fileID: 2800000, guid: db989459f96c34b03bec57a4ab1dc67a, type: 3}
+  - {fileID: 2800000, guid: b3818abe7acc34310abbb065cbefbb84, type: 3}
+  - {fileID: 2800000, guid: 6c7e34122f1ab4c54932123dd42be44b, type: 3}
+  - {fileID: 2800000, guid: 137d745cd15324f8a8d5e7b5e36e7712, type: 3}
   isShape: 0
   myName: 
   new_Shape: {fileID: 0}
@@ -234,7 +238,7 @@ MonoBehaviour:
     width: 0
     height: 0
   m_Renderer: {fileID: 6677913822787891109}
-  underlyingShape: {fileID: 0}
+  underlyingShape: {fileID: 1178556143}
   myScale: {x: 0, y: 0, z: 0}
 --- !u!1001 &4001077985832131846
 PrefabInstance:

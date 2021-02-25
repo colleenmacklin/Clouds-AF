@@ -59,13 +59,11 @@ public class GameCloudGroup : MonoBehaviour
         //rotate to look at the camera
         camera = Camera.main.transform;
         transform.LookAt(camera, Vector3.back);
-        //transform.LookAt(camera, Vector3.forward);
-        //transform.LookAt(camera, Vector3.up);
-        curr_Shape = ps.shape.texture;
-        //rect = UnderlyingShape.GetComponent<myShape>().myRect;
 
-        cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
-        InvokeRepeating("ChangeCloudShape", 0, 0);
+        curr_Shape = ps.shape.texture;
+
+        //cloudNum = (Random.Range(0, cloudShapes.Length)); //set random cloudshape on instantiate
+        cloudNum = 0;
 
     }
 
@@ -74,7 +72,7 @@ public class GameCloudGroup : MonoBehaviour
 
         target = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenCloud;
 
-        if (target == cloudName) //if that's me
+        if (target == gameObject) //if that's me
         {
 
             isShape = true;
@@ -90,7 +88,6 @@ public class GameCloudGroup : MonoBehaviour
             //Debug.Log("hi, I am a shape: " + low_ns.sprite.name);
             CancelInvoke("ChangeCloudShape");
 
-            EventManager.TriggerEvent("UpdateMe"); //tell components to update -- there may be a more efficient way to do this so it doesn't call every cloud object
 
         }
         else { isShape = false; }
@@ -121,10 +118,6 @@ public class GameCloudGroup : MonoBehaviour
             Texture2D cloudShape = cloudShapes[cloudNum];
             Shape.texture = cloudShape;
             curr_Shape = cloudShape;
-
-            EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
-
-
         }
     }
 

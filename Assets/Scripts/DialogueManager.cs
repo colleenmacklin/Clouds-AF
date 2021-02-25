@@ -125,6 +125,8 @@ public class DialogueManager : MonoBehaviour
     // then send the sentence to the text box.
     private void Respond()
     {
+        if (linesFinished) return;
+
         ReadSelection();
         if (ValidateSelection(selectedTarget))
         {

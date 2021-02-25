@@ -6,6 +6,27 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using EasyButtons;
 
+
+// Potential data structure for every object's dialogues
+public struct DialogueSubject
+{
+    public string Name { get; private set; }
+    public string Prompt { get; private set; }
+    public Dictionary<int, string[]> LevelDialogues { get; private set; }
+
+    public DialogueSubject(string name, string prompt, Dictionary<int, string[]> levelDialogues)
+    {
+        this.Name = name;
+        this.Prompt = prompt;
+        this.LevelDialogues = levelDialogues;
+    }
+
+    public string[] DialogueOptionsAtLevel(int level)
+    {
+        return this.LevelDialogues[level];
+    }
+}
+
 [CreateAssetMenu(fileName = "CloudDialogue", menuName = "Clouds-AF/CloudDialogue", order = 0)]
 public class CloudDialogue : ScriptableObject
 {
@@ -16,40 +37,59 @@ public class CloudDialogue : ScriptableObject
     //List of dialogue options within the object
     public Dictionary<string, List<string>> dialogues = new Dictionary<string, List<string>>();
 
-    public Dictionary<string, List<string>> ReadDialogueFromCSV(TextAsset textFile = null)
+    public Dictionary<string, DialogueSubject> objectDialogues = new Dictionary<string, DialogueSubject>();
+
+    public Dictionary<string, DialogueSubject> ReadDialogueFromCSV(TextAsset textFile = null)
     {
-        var result = NewDialogueDictionary();
+        //Declare new result dictionary
+        var result = new Dictionary<string, DialogueSubject>();
 
         if (textFile == null)
         {
             textFile = dialogueFile;
         }
 
+        // split across new lines
         string[] records = textFile.text.Split('\n');
+
         //skip the first line
         records = records.Skip(1).ToArray();
+
+
+        //For every line
         foreach (string record in records)
         {
             List<string> spokenLines = new List<string>();
 
-            string[] fields = record.Split(',');
+            //currently assuming this pattern
+            // name|prompt|text1==text1.2==text1.3|text2|text3
+            string[] fields = record.Split('|');
 
-            //the second field is the prompt line -- need to adjust this
-            spokenLines.Add(fields[1]);
+            string name = fields[0];
+            string prompt = fields[1];
+            Dictionary<int, string[]> dialogueDictionary = new Dictionary<int, string[]>();
 
-            //the third field, index 2, is the possible lines
-            string[] lines = fields[2].Split('|');
-
-            foreach (string line in lines)
+            string[] splitOperator = { "==" };
+            int level = 1; //we use level 1 as a starting point
+            //then for the remaining fields add all lines broken up by == markers
+            for (int i = 2; i < fields.Length; i++)
             {
-                spokenLines.Add(line);
+                string[] linesInLevel = fields[i].Split(splitOperator, StringSplitOptions.None);//splitting by string needs the full function
+                foreach (string line in linesInLevel)
+                {
+                    spokenLines.Add(line);
+                }
+                string[] spokenLinesArray = spokenLines.ToArray(); //convert lines to array
+                dialogueDictionary.Add(level, spokenLinesArray); //add lines and level to dictionary
+
+                level++; //increase level
             }
 
-            var key = fields[0];
-            var dialogue = spokenLines;
-            result.Add(key, dialogue);
+            var subject = new DialogueSubject(name, prompt, dialogueDictionary);
+
+            result.Add(name, subject);
         }
-        dialogues = result;
+        objectDialogues = result;
         return result;
     }
 
@@ -114,14 +154,20 @@ public class CloudDialogue : ScriptableObject
     //Nulls will have to be handled by the manager, not the dialogue.
     public List<string> DialogueByKey(string key)
     {
+        //we should never ask for anything that isn't in our dictionary
+        //if we are, then there is a major error
+        Debug.Assert(dialogues.ContainsKey(key));
 
-        if (dialogues.ContainsKey(key))
-        {
-            return dialogues[key];
-        }
+        return dialogues[key];
+    }
 
-        return null; // get nothing back if the key is not there 
+    public DialogueSubject DialogueSubjectByKey(string key)
+    {
+        //we should never ask for anything that isn't in our dictionary
+        //if we are, then there is a major error
+        Debug.Assert(objectDialogues.ContainsKey(key));
 
+        return objectDialogues[key];
     }
 
     //replaces pesky control characters from the beginning of strings.

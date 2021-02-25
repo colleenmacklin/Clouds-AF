@@ -46,9 +46,11 @@ public class DialogueManager : MonoBehaviour
     [SerializeField]
     private int currentLine;
 
+    [SerializeField]
+    private DialogueSubject subjectMatter;
 
     [SerializeField]
-    private List<string> activeLines = new List<string>();
+    private string[] activeLines;
 
     [SerializeField]
     private string activeSentence;
@@ -63,7 +65,7 @@ public class DialogueManager : MonoBehaviour
 
     void Awake()
     {
-        dialogueSO.ReadDialogueFromFile();//look into a way to make this happen absolutely first
+        dialogueSO.ReadDialogueFromCSV();//look into a way to make this happen absolutely first
     }
 
     private void Update()
@@ -103,9 +105,11 @@ public class DialogueManager : MonoBehaviour
 
         conversationTarget = targetName;
 
-        activeLines = dialogueSO.DialogueByKey(targetName);
-        ResetCurrentLine(); //set currentLine to zero
-        activeSentence = activeLines[currentLine]; //set the active sentence to this. which we will send to the text
+        subjectMatter = dialogueSO.DialogueSubjectByKey(targetName);
+        activeLines = subjectMatter.DialogueOptionsAtLevel(1);
+        ResetCurrentLine(); //set currentLine to -1 to account for prompt
+        //set the active line to the prompt
+        activeSentence = subjectMatter.Prompt;
         linesFinished = false;
 
         StartCoroutine(UpdateTextWithSentence(conversational_pause));
@@ -113,7 +117,7 @@ public class DialogueManager : MonoBehaviour
 
     void ResetCurrentLine()
     {
-        currentLine = 0;
+        currentLine = -1;
     }
 
     //This now houses the primary logic for responses.
@@ -134,7 +138,7 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(UpdateTextWithSentence(1));
 
         //if we are at the last option, we should move on without a click
-        if (currentLine == activeLines.Count - 1)
+        if (currentLine == activeLines.Length - 1)
         {
             linesFinished = true;
             StartCoroutine(TransitionToNextCloud()); //transition the lines

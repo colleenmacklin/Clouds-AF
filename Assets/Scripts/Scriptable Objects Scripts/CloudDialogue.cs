@@ -154,14 +154,20 @@ public class CloudDialogue : ScriptableObject
     //Nulls will have to be handled by the manager, not the dialogue.
     public List<string> DialogueByKey(string key)
     {
+        //we should never ask for anything that isn't in our dictionary
+        //if we are, then there is a major error
+        Debug.Assert(dialogues.ContainsKey(key));
 
-        if (dialogues.ContainsKey(key))
-        {
-            return dialogues[key];
-        }
+        return dialogues[key];
+    }
 
-        return null; // get nothing back if the key is not there 
+    public DialogueSubject DialogueSubjectByKey(string key)
+    {
+        //we should never ask for anything that isn't in our dictionary
+        //if we are, then there is a major error
+        Debug.Assert(objectDialogues.ContainsKey(key));
 
+        return objectDialogues[key];
     }
 
     //replaces pesky control characters from the beginning of strings.

@@ -98,7 +98,6 @@ public class GameCloudLayerGroup : MonoBehaviour
             //Debug.Log("hi, I am a shape: " + low_ns.sprite.name);
             CancelInvoke("ChangeCloudShape");
 
-            //    EventManager.TriggerEvent("UpdateMe"); //tell components to update -- there may be a more efficient way to do this so it doesn't call every cloud object
 
         }
         else { isShape = false; }
@@ -126,12 +125,9 @@ public class GameCloudLayerGroup : MonoBehaviour
             ShapeH = h_ps.shape;
             ShapeL = l_ps.shape;
 
-
             Texture2D cloudShape = cloudShapes[cloudNum];
             ShapeH.texture = cloudShape;
             ShapeL.texture = cloudShape;
-            //    EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
-
 
         }
     }
@@ -166,28 +162,5 @@ public class GameCloudLayerGroup : MonoBehaviour
         }
 
     }
-
-    // void OnMouseDown()
-    // {
-    //     Debug.Log("clicked on: " + this.gameObject.name);
-
-    //     if (isShape)
-    //     {
-    //         EventManager.TriggerEvent("Respond");
-    //         EventManager.TriggerEvent("shapeEye");
-    //     }
-    //     EventManager.TriggerEvent("glowEye");
-
-    // }
-
-    // void OnMouseOver()
-    // {
-    //     EventManager.TriggerEvent("openEye");
-    // }
-
-    // void OnMouseExit()
-    // {
-    //     EventManager.TriggerEvent("closeEye");
-    // }
 
 }

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class GameCloudGroup : MonoBehaviour
 {
-    
+
     //brought over from Game_Cloud
     private UnityAction someListener;
     private Transform camera;
@@ -112,7 +112,7 @@ public class GameCloudGroup : MonoBehaviour
             CancelInvoke("ChangeCloudShape");
             return;
         }
-        else if (cloudShapes.Length>0)
+        else if (cloudShapes.Length > 0)
         {
             cloudNum = (Random.Range(0, cloudShapes.Length));
             Shape = ps.shape;
@@ -134,7 +134,8 @@ public class GameCloudGroup : MonoBehaviour
         cloudNum++;
         Debug.Log("cloudnnum: " + cloudNum);
 
-        if (cloudNum > cloudShapes.Length - 1) { 
+        if (cloudNum > cloudShapes.Length - 1)
+        {
             cloudNum = 0;
         }
 
@@ -156,27 +157,5 @@ public class GameCloudGroup : MonoBehaviour
 
     }
 
-        void OnMouseDown()
-    {
-        Debug.Log("clicked on: " + this.gameObject.name);
-
-        if (isShape)
-        {
-            EventManager.TriggerEvent("Respond");
-            EventManager.TriggerEvent("shapeEye");
-        }
-        EventManager.TriggerEvent("glowEye");
-
-    }
-
-    void OnMouseOver()
-    {
-        EventManager.TriggerEvent("openEye");
-    }
-
-    void OnMouseExit()
-    {
-        EventManager.TriggerEvent("closeEye");
-    }
 
 }

@@ -6,6 +6,27 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using EasyButtons;
 
+
+// Potential data structure for every object's dialogues
+public struct DialogueSubject
+{
+    public string Name { get; private set; }
+    public string Prompt { get; private set; }
+    public Dictionary<int, string[]> LevelDialogues { get; private set; }
+
+    public DialogueSubject(string name, string prompt, Dictionary<int, string[]> levelDialogues)
+    {
+        this.Name = name;
+        this.Prompt = prompt;
+        this.LevelDialogues = levelDialogues;
+    }
+
+    public string[] DialogueOptionsAtLevel(int level)
+    {
+        return this.LevelDialogues[level];
+    }
+}
+
 [CreateAssetMenu(fileName = "CloudDialogue", menuName = "Clouds-AF/CloudDialogue", order = 0)]
 public class CloudDialogue : ScriptableObject
 {
@@ -16,6 +37,7 @@ public class CloudDialogue : ScriptableObject
     //List of dialogue options within the object
     public Dictionary<string, List<string>> dialogues = new Dictionary<string, List<string>>();
 
+    public Dictionary<string, DialogueSubject> objectDialogues = new Dictionary<string, DialogueSubject>();
     public Dictionary<string, List<string>> ReadDialogueFromCSV(TextAsset textFile = null)
     {
         var result = NewDialogueDictionary();

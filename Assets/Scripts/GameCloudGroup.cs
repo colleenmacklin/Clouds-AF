@@ -97,7 +97,7 @@ public class GameCloudGroup : MonoBehaviour
     public void turnOff()
     {
         //stop the cloud from constantly shifting cloud shapes
-        //Debug.Log("turning off cloud");
+        Debug.Log("turning off cloud: "+this.name);
         isShape = false;
         InvokeRepeating("ChangeCloudShape", spawnTime, spawnDelay);
     }

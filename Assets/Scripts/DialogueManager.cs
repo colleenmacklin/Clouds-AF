@@ -175,7 +175,7 @@ public class DialogueManager : MonoBehaviour
 
         Debug.Log("---ending dialogue---");
         yield return new WaitForSeconds(3f);
-        activeSentence = "I wonder what other clouds we might see.";
+        activeSentence = ""; //I wonder what other clouds we might see.
         StartCoroutine(UpdateTextWithSentence(1));
         yield return new WaitForSeconds(3f);
         activeSentence = "";
@@ -197,7 +197,7 @@ public class DialogueManager : MonoBehaviour
     }
     string WrongAnswer()
     {
-        return "No... not that cloud";
+        return ""; //used to be: "No... not that cloud"
     }
 
     //this is its own function because this is actually handling the mutation. which we encapsulate

@@ -36,7 +36,9 @@ public class Game_Cloud : MonoBehaviour
         ps = this.GetComponent<ParticleSystem>();
         myShape = ps.shape;
         //set starting size
-        starting_size = new Vector3(5.0f, 5.0f, 5.0f);
+        starting_size = new Vector3(10.0f, 10.0f, 10.0f);
+        //starting_size = new Vector3(myShape.scale.x, myShape.scale.y, myShape.scale.z);
+        Debug.Log("starting size: " + starting_size);
         myShape.scale = starting_size;
 
     }
@@ -52,9 +54,17 @@ public class Game_Cloud : MonoBehaviour
     public void UpdateMe() //called from cloudlayer
     {
         //this function primarily makes sure that the underlying texture remains true to aspect ratio. Otherwise it squares everything off!
+        //needs work - height numbers are not correct
+
         myShape = ps.shape;
         myScale = new Vector3(myShape.scale.x, myShape.scale.y, myShape.scale.z);
+        Debug.Log(myShape.texture.name + " myScale: " + myScale);
 
+
+        /* Debuggingn
+            widthT = heightT * aspectRatio
+            heightT = widthT / aspectRatio
+        */
 
         if (myScale != starting_size)
         {
@@ -63,27 +73,34 @@ public class Game_Cloud : MonoBehaviour
 
         Myshape_rect = new Rect(0, 0, myShape.texture.width, myShape.texture.height); //size of underlying texture
         float aspect = Myshape_rect.width / Myshape_rect.height; //get aspect ratio
+        float widthT = Myshape_rect.height * aspect; //added to try to resolve scaling
+        float heightT = Myshape_rect.width / aspect; //added to try to resolve scaling (see https://stackoverflow.com/questions/1186414/whats-the-algorithm-to-calculate-aspect-ratio)
 
+        //Debug.Log("widthT: " + widthT);
+        //Debug.Log("heightT: " + heightT);
 
         if (aspect < 1)
         {
-           myScale = new Vector3(myShape.scale.x * 1, myShape.scale.y * (1 + aspect), myShape.scale.z * 1);
-           myShape.scale = myScale;
-
+            //myScale = new Vector3(widthT + (starting_size.x - widthT), heightT, myShape.scale.z * 1); //this is pretty frustrating. Scales for X fine, but can't get Y correct
+            myScale = new Vector3(myShape.scale.x * 1, myShape.scale.y * (1 + (1 - aspect)), myShape.scale.z * 1); //does not correctly scale
+            myShape.scale = myScale;
         }
+
 
         if (aspect > 1)
         {
-           myScale = new Vector3(myShape.scale.x * aspect, myShape.scale.y * 1, myShape.scale.z * 1);
-           myShape.scale = myScale;
-
+            //myScale = new Vector3(widthT, heighT, myShape.scale.z * 1);
+            myScale = new Vector3(myShape.scale.x * aspect, myShape.scale.y * 1, myShape.scale.z * 1);
+            myShape.scale = myScale;
         }
 
-      /* Debugging
-                Debug.Log(myShape.texture.name + "Texture Size: " + Myshape_rect);
+
+
+        /* Debugging 
+        Debug.Log(myShape.texture.name + "Texture Size: " + Myshape_rect);
                 Debug.Log(myShape.texture.name + "Aspect: " + aspect);
                 Debug.Log(myShape.texture.name + " Scaled: " + myShape.scale);
-         */
+        */
 
         //var myPivot = new Vector2(0.5f, 0.5f);
         //spriteRenderer.sprite = Sprite.Create(shapeTexture, myRect, myPivot);

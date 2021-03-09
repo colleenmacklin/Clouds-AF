@@ -16,6 +16,12 @@ public class Game_Cloud : MonoBehaviour
     private Vector3 starting_size;
     public Vector3 myScale;
 
+    private float srcWidth;
+    private float srcHeight;
+    private float minWidth = 10f; //hardcoded
+    private float minHeight = 10f; //hardcoded
+
+
     Renderer rend;
 
     void OnEnable()
@@ -54,17 +60,10 @@ public class Game_Cloud : MonoBehaviour
     public void UpdateMe() //called from cloudlayer
     {
         //this function primarily makes sure that the underlying texture remains true to aspect ratio. Otherwise it squares everything off!
-        //needs work - height numbers are not correct
 
         myShape = ps.shape;
         myScale = new Vector3(myShape.scale.x, myShape.scale.y, myShape.scale.z);
-        Debug.Log(myShape.texture.name + " myScale: " + myScale);
 
-
-        /* Debuggingn
-            widthT = heightT * aspectRatio
-            heightT = widthT / aspectRatio
-        */
 
         if (myScale != starting_size)
         {
@@ -72,29 +71,26 @@ public class Game_Cloud : MonoBehaviour
         }
 
         Myshape_rect = new Rect(0, 0, myShape.texture.width, myShape.texture.height); //size of underlying texture
-        float aspect = Myshape_rect.width / Myshape_rect.height; //get aspect ratio
-        float widthT = Myshape_rect.height * aspect; //added to try to resolve scaling
-        float heightT = Myshape_rect.width / aspect; //added to try to resolve scaling (see https://stackoverflow.com/questions/1186414/whats-the-algorithm-to-calculate-aspect-ratio)
 
-        //Debug.Log("widthT: " + widthT);
-        //Debug.Log("heightT: " + heightT);
+        srcWidth = Myshape_rect.width;
+        srcHeight = Myshape_rect.height;
 
-        if (aspect < 1)
+        myScale = calculateAspectRatioFit(srcWidth, srcHeight, 10f, 10f);
+        Debug.Log("myScale -- new function: " + myScale);
+
+        //I am very proud of this new formula to calculate aspect ratios and resize our cloud accordingly!! - CM
+        Vector3 calculateAspectRatioFit(float srcWidth, float srcHeight, float minWidth, float minHeight)
         {
-            //myScale = new Vector3(widthT + (starting_size.x - widthT), heightT, myShape.scale.z * 1); //this is pretty frustrating. Scales for X fine, but can't get Y correct
-            myScale = new Vector3(myShape.scale.x * 1, myShape.scale.y * (1 + (1 - aspect)), myShape.scale.z * 1); //does not correctly scale
-            myShape.scale = myScale;
+
+            var ratio = Mathf.Max(minWidth / srcWidth, minHeight / srcHeight);
+
+            var newsize = new Vector3(srcWidth * ratio, srcHeight * ratio, 10f);
+            
+            return newsize;
         }
 
 
-        if (aspect > 1)
-        {
-            //myScale = new Vector3(widthT, heighT, myShape.scale.z * 1);
-            myScale = new Vector3(myShape.scale.x * aspect, myShape.scale.y * 1, myShape.scale.z * 1);
-            myShape.scale = myScale;
-        }
-
-
+        myShape.scale = myScale;
 
         /* Debugging 
         Debug.Log(myShape.texture.name + "Texture Size: " + Myshape_rect);

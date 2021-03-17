@@ -16,6 +16,12 @@ public class Game_Cloud : MonoBehaviour
     private Vector3 starting_size;
     public Vector3 myScale;
 
+    private float srcWidth;
+    private float srcHeight;
+    private float minWidth = 10f; //hardcoded
+    private float minHeight = 10f; //hardcoded
+
+
     Renderer rend;
 
     void OnEnable()
@@ -36,7 +42,9 @@ public class Game_Cloud : MonoBehaviour
         ps = this.GetComponent<ParticleSystem>();
         myShape = ps.shape;
         //set starting size
-        starting_size = new Vector3(5.0f, 5.0f, 5.0f);
+        starting_size = new Vector3(10.0f, 10.0f, 10.0f);
+        //starting_size = new Vector3(myShape.scale.x, myShape.scale.y, myShape.scale.z);
+        Debug.Log("starting size: " + starting_size);
         myShape.scale = starting_size;
 
     }
@@ -52,6 +60,7 @@ public class Game_Cloud : MonoBehaviour
     public void UpdateMe() //called from cloudlayer
     {
         //this function primarily makes sure that the underlying texture remains true to aspect ratio. Otherwise it squares everything off!
+
         myShape = ps.shape;
         myScale = new Vector3(myShape.scale.x, myShape.scale.y, myShape.scale.z);
 
@@ -62,28 +71,32 @@ public class Game_Cloud : MonoBehaviour
         }
 
         Myshape_rect = new Rect(0, 0, myShape.texture.width, myShape.texture.height); //size of underlying texture
-        float aspect = Myshape_rect.width / Myshape_rect.height; //get aspect ratio
 
+        srcWidth = Myshape_rect.width;
+        srcHeight = Myshape_rect.height;
 
-        if (aspect < 1)
+        myScale = calculateAspectRatioFit(srcWidth, srcHeight, 10f, 10f);
+        Debug.Log("myScale -- new function: " + myScale);
+
+        //I am very proud of this new formula to calculate aspect ratios and resize our cloud accordingly!! - CM
+        Vector3 calculateAspectRatioFit(float srcWidth, float srcHeight, float minWidth, float minHeight)
         {
-           myScale = new Vector3(myShape.scale.x * 1, myShape.scale.y * (1 + aspect), myShape.scale.z * 1);
-           myShape.scale = myScale;
 
+            var ratio = Mathf.Max(minWidth / srcWidth, minHeight / srcHeight);
+
+            var newsize = new Vector3(srcWidth * ratio, srcHeight * ratio, 10f);
+            
+            return newsize;
         }
 
-        if (aspect > 1)
-        {
-           myScale = new Vector3(myShape.scale.x * aspect, myShape.scale.y * 1, myShape.scale.z * 1);
-           myShape.scale = myScale;
 
-        }
+        myShape.scale = myScale;
 
-      /* Debugging
-                Debug.Log(myShape.texture.name + "Texture Size: " + Myshape_rect);
+        /* Debugging 
+        Debug.Log(myShape.texture.name + "Texture Size: " + Myshape_rect);
                 Debug.Log(myShape.texture.name + "Aspect: " + aspect);
                 Debug.Log(myShape.texture.name + " Scaled: " + myShape.scale);
-         */
+        */
 
         //var myPivot = new Vector2(0.5f, 0.5f);
         //spriteRenderer.sprite = Sprite.Create(shapeTexture, myRect, myPivot);

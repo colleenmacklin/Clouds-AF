@@ -1,0 +1,259 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel ResetKernel
+#pragma kernel ResetAgentsKernel
+#pragma kernel StepAgentsKernel
+#pragma kernel WriteAgentsKernel
+#pragma kernel DiffuseKernel
+#pragma kernel CopyTextureKernel
+#pragma kernel RenderKernel
+#pragma kernel ParticleGradientKernel
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+
+Texture2D<float4> inTex;
+Texture2D<float4> refTex; //likely to be distance field but can be anything
+SamplerState sampler_inTex;
+SamplerState sampler_refTex;
+
+RWTexture2D<float4> outTex; //result
+
+//Velocity is also heading for us.
+struct Agent
+{
+    float2 pos; //actual position
+    float2 vel; //be affected by gradient descent
+    float2 acc; //steering? necessary?
+    float2 oPos; //original positions;
+};
+
+RWStructuredBuffer<Agent> agentsBuffer;
+
+
+uint resolution;
+uint agentCount;
+uint time;
+uint sensorRange;
+
+int blurRange;
+int rez;
+
+
+float maxVel;
+float maxAcc;
+float velocityLimit;
+float decayFactor;
+float steerForce;
+float gradientForce;
+float velocityDecay;
+float allowedSpeed;
+
+float2 lightDirection;
+
+//The Following two random functions are adapted from
+//https://www.shadertoy.com/view/XlGcRh
+//by way of Cornus Ammonis
+uint2 RandomPCG(uint2 v)
+{
+    v = v * 1664525u + 1013904223u;
+    
+    v.x += v.y * 1664525u;
+    v.y += v.x * 1664525u;
+    
+    v = v ^(v >> 16u);
+    
+    v.x += v.y * 1664525u;
+    v.y += v.x * 1664525u;
+    
+    v = v ^(v >> 16u);
+    
+    return v;
+}
+
+float2 Random(uint2 v)
+{
+    v.y = v.x ^ v.y;
+    uint2 r = RandomPCG(v);
+    return float2(r) * (1.0 / float(0xffffffffu));
+}
+
+/////////
+//
+//   RESET
+//
+///////////////////////
+
+[numthreads(32, 32, 1)]
+void ResetKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    outTex[id.xy] = float4(0, 0, 0, 0);
+}
+
+[numthreads(1024, 1, 1)]
+void ResetAgentsKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    Agent a;
+    uint2 i = uint2(id.x % resolution, floor(id.x / resolution));
+    a.pos = float2(i);
+    a.oPos = a.pos;
+    a.vel = Random(i) * .5 - .5;
+    a.acc = float2(0, 0);
+    
+    agentsBuffer[id.x] = a;
+}
+
+[numthreads(32, 32, 1)]
+void CopyTextureKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    outTex[id.xy] = inTex[id.xy];
+}
+
+/*
+
+
+
+STEP
+
+
+
+*/
+
+
+
+[numthreads(1024, 1, 1)]
+void StepAgentsKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    Agent a = agentsBuffer[id.x];
+    
+    //avoid densest positions
+    float2 highestDir = float2(0., 0.);
+    float highest = 0.;
+    for (int x = -1; x <= 1; x++)
+    {
+        for (int y = -1; y <= 1; y++)
+        {
+            if (x == 0 && y == 0) continue;
+            
+            float sample = inTex.SampleLevel(sampler_inTex, (a.pos + int2(x, y)) / resolution, 0).x;
+            
+            if (sample > highest)
+            {
+                highest = sample;
+                highestDir = float2(x, y);
+            }
+        }
+    }
+    
+    //calculate the away direction based on the position of the highest sample
+    float2 awayVec = highestDir;
+    
+    // acceleration minus the velocity
+    float2 steerVec = a.vel - awayVec;
+    
+    //normalize and limit
+    if (length(steerVec) > steerForce)
+    {
+        steerVec = normalize(steerVec);
+    }
+    
+    
+    //now also read the gradient
+    
+    //use ref texture to control direction of acceleration
+    float2 texPos = a.pos / resolution;
+    float4 gradientSample = refTex.SampleLevel(sampler_refTex, texPos, 0.);
+    float2 gradient = -gradientSample.yz;
+    
+    if (gradientSample.x < 0.)
+    {
+        gradient = float2(0., 0.);
+    }
+    
+    //apply forces and update positions
+    a.acc = steerVec * steerForce + gradient * gradientForce;
+    
+    if (dot(a.acc, a.acc) != 0.)
+    {
+        if (length(a.acc) > maxAcc)
+        {
+            a.acc = normalize(a.acc) * maxAcc;
+        }
+    }
+    
+    //    a.acc = normalize(a.acc);
+    a.vel *= velocityDecay;
+    
+    a.vel += a.acc;
+    
+    
+    
+    a.vel = normalize(a.vel) * velocityLimit;
+    a.pos = (a.pos + a.vel * allowedSpeed);//update
+    a.pos = (a.pos + (resolution)) % resolution;//wrap
+    
+    agentsBuffer[id.x] = a;
+}
+
+[numthreads(1024, 1, 1)]
+void WriteAgentsKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    Agent a = agentsBuffer[id.x];
+    
+    outTex[round(a.pos)] += float4(1., 1., 1., 1.); //fill white
+    // Position based color fill
+    //outTex[round(a.pos)] = float4(a.oPos / (resolution), .5, 1);
+}
+
+[numthreads(32, 32, 1)]
+void DiffuseKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    float4 sample = inTex[id.xy];
+    
+    float3 avg = float3(0., 0., 0.);
+    int count = 0;
+    uint2 samplePos = id.xy;
+    for (int x = -blurRange; x <= blurRange; x++)
+    {
+        for (int y = -blurRange; y <= blurRange; y++)
+        {
+            samplePos = (id.xy + int2(x, y) + int2(resolution, resolution)) % int2(resolution, resolution);
+            float3 samp = inTex[samplePos];
+            
+            avg += samp;
+        }
+    }
+    avg = avg / ((blurRange * 2. + 1.) * (blurRange * 2. + 1.));
+    
+    float3 texValue = avg * decayFactor;
+    
+    outTex[id.xy] = float4(texValue, 1.);
+}
+
+//Compute the Gradient of the Texture based on the distance values
+[numthreads(32, 32, 1)]
+void ParticleGradientKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    float4 center = inTex[id.xy];
+    uint2 up = (id.xy + uint2(0, 1) + resolution) % resolution;
+    uint2 right = (id.xy + uint2(1, 0) + resolution) % resolution;
+    //rez is defined in c#
+    //Use E-C and N-C as local differences
+    
+    float4 east = inTex[right];
+    float4 north = inTex[up];
+    
+    float dx = east.x;
+    float dy = north.x;
+    float2 dxy = center.x - float2(dx, dy);
+    float3 normal = float3(dxy, center.x);
+    outTex[id.xy] = float4(normalize(normal) * .5 + .5, 1.);
+}
+
+[numthreads(32, 32, 1)]
+void RenderKernel(uint3 id: SV_DISPATCHTHREADID)
+{
+    lightDirection = float2(.5, .5);
+    //refTex is normal map
+    
+    outTex[id.xy] = inTex[id.xy];
+}

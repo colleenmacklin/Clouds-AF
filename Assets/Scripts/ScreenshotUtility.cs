@@ -8,7 +8,7 @@ public class ScreenshotUtility : MonoBehaviour
     public string _filepath;
     [Tooltip("Scales the image by the amount specified (0 for no scaling)")]
     public int _screenshotResolutionScaleFactor = 0;
-
+    public string current_shape;
     [Space]
 
     public KeyCode _toggleAutoScreenshots = KeyCode.K;
@@ -20,12 +20,23 @@ public class ScreenshotUtility : MonoBehaviour
 
     private int _screenshotNumber;
     private bool _autoScreenshotOn;
+    void OnEnable()
+    {
+        EventManager.StartListening("SpawnShape", SpawnShape);
+    }
+
+    void OnDisable()
+    {
+        EventManager.StopListening("SpawnShape", SpawnShape);
+    }
 
     void Start()
     {
         _screenshotNumber = 0;
         _autoScreenshotOn = false;
         StartCoroutine(AutomaticScreenshot());
+        //access current texture name
+        current_shape = GameObject.Find("Game_Cloud").GetComponent<Opening_Cloud_Layer>().curr_Shape.name;
     }
 
     void Update()
@@ -53,9 +64,15 @@ public class ScreenshotUtility : MonoBehaviour
         }
     }
 
+    private void SpawnShape()
+    {
+        //just makes sure to find the new name for the texture
+        current_shape = GameObject.Find("Game_Cloud").GetComponent<Opening_Cloud_Layer>().curr_Shape.name;
+    }
+
     //For reference http://docs.unity3d.com/ScriptReference/Application.CaptureScreenshot.html
     private void TakeScreenshot()
     {
-        ScreenCapture.CaptureScreenshot(_filepath + _screenshotNumber++.ToString() + ".png", _screenshotResolutionScaleFactor);
+        ScreenCapture.CaptureScreenshot(_filepath + current_shape + _screenshotNumber++.ToString() + ".png", _screenshotResolutionScaleFactor);
     }
 }

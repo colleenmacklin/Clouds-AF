@@ -212,6 +212,9 @@ void DiffuseKernel(uint3 id: SV_DISPATCHTHREADID)
     float3 avg = float3(0., 0., 0.);
     int count = 0;
     uint2 samplePos = id.xy;
+    
+    //this is doing the blur and the diffuse in the same step, separate them in the future
+    
     for (int x = -blurRange; x <= blurRange; x++)
     {
         for (int y = -blurRange; y <= blurRange; y++)
@@ -226,7 +229,13 @@ void DiffuseKernel(uint3 id: SV_DISPATCHTHREADID)
     
     float3 texValue = avg * decayFactor;
     
-    outTex[id.xy] = float4(texValue, 1.);
+    outTex[id.xy] = float4(texValue, texValue.x);
+    
+    //this should change
+    if (blurRange == 0)
+    {
+        outTex[id.xy] = sample * decayFactor;
+    }
 }
 
 //Compute the Gradient of the Texture based on the distance values

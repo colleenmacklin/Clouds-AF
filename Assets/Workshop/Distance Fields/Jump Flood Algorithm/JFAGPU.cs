@@ -40,7 +40,7 @@ public class JFAGPU : MonoBehaviour
         // tex.requestedWidth = 512;
         // tex.requestedFPS = 30;
         // tex.Play();
-        displayMaterial.SetTexture("_DistanceTexture", JFARenderTex);
+        //displayMaterial.SetTexture("_DistanceTexture", JFARenderTex);
     }
 
     void Update()
@@ -78,7 +78,7 @@ public class JFAGPU : MonoBehaviour
         inputImageTex = CreateTexture(rez, FilterMode.Point);
         stepPosition = 0;
         GPUResetKernel();
-        outputMaterial.SetTexture("_UnlitColorMap", laplaceTexture);
+        outputMaterial.SetTexture("_MainTex", laplaceTexture);
     }
 
     //Clears all current textures.
@@ -149,7 +149,7 @@ public class JFAGPU : MonoBehaviour
         compute.SetTexture(kernel, "inTex", laplaceTexture);
         compute.SetInt("rez", rez);
         compute.Dispatch(kernel, rez / 16, rez / 16, 1);
-        outputMaterial.SetTexture("_UnlitColorMap", JFATexA);
+        outputMaterial.SetTexture("_MainTex", JFATexA);
     }
 
     [Button]
@@ -167,7 +167,7 @@ public class JFAGPU : MonoBehaviour
         Swap();
         stepPosition++;
 
-        outputMaterial.SetTexture("_UnlitColorMap", JFATexB);
+        outputMaterial.SetTexture("_MainTex", JFATexB);
     }
 
     [Button]
@@ -178,7 +178,7 @@ public class JFAGPU : MonoBehaviour
         compute.SetTexture(kernel, "inTex", JFATexB);
         compute.SetInt("rez", rez);
         compute.Dispatch(kernel, rez / 16, rez / 16, 1);
-        outputMaterial.SetTexture("_UnlitColorMap", JFARenderTex);
+        outputMaterial.SetTexture("_MainTex", JFARenderTex);
     }
 
     [Button]
@@ -189,7 +189,7 @@ public class JFAGPU : MonoBehaviour
         compute.SetTexture(kernel, "outTex", JFARenderTex);
         compute.SetInt("rez", rez);
         compute.Dispatch(kernel, rez / 16, rez / 16, 1);
-        outputMaterial.SetTexture("_UnlitColorMap", JFARenderTex);
+        outputMaterial.SetTexture("_MainTex", JFARenderTex);
     }
     private void GPUResetKernel()
     {

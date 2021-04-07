@@ -47,7 +47,7 @@ public class ParticleGPU : MonoBehaviour
 
     [Header("Particle Setups")]
     [SerializeField]
-    [Range(1, 4)]
+    [Range(0, 4)]
     private int blurRange = 2;
     [SerializeField]
     [Range(0f, 1f)]
@@ -134,8 +134,6 @@ public class ParticleGPU : MonoBehaviour
         GPUReset();
         GPUResetAgents();
 
-        writeMaterial.SetTexture("_UnlitColorMap", gradientTex);
-        diffuseMaterial.SetTexture("_UnlitColorMap", diffuseTex);
     }
 
     private void GPUReset()
@@ -265,8 +263,10 @@ public class ParticleGPU : MonoBehaviour
     {//needs to be swapped and changed before render
         Swap(ref writeTex, ref diffuseTex);
 
-        targetMaterial.SetTexture("_BaseColorMap", diffuseTex);
-        targetMaterial.SetTexture("_NormalMap", gradientTex);
+        targetMaterial.SetTexture("_MainTex", diffuseTex);
+        targetMaterial.SetTexture("_BumpMap", gradientTex);
+        writeMaterial.SetTexture("_MainTex", gradientTex);
+        diffuseMaterial.SetTexture("_MainTex", diffuseTex);
     }
 
     //////////////////////////////////////

@@ -100,16 +100,8 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
 
     void CreateActiveClouds()
     {
-        ActiveClouds = new List<GameObject>();
-        for (int i = 0; i < numberOfClouds; i++)
-        {
-            //var go = SpawnRandomNonIntersectingCloud(ActiveClouds);
-            //var go = SpawnGrid(ActiveClouds);
-            var go = SpawnClouds(ActiveClouds);
-            go.name = $"cloud {i}";
-            ActiveClouds.Add(go);
-        }
-    }
+        SpawnClouds();
+     }
 
     private void SetCloudToShape()
     {
@@ -192,7 +184,7 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
         return Vector3.Scale(v, scale) + shift;
     }
 
-    private GameObject SpawnClouds(List<GameObject> currentClouds)
+    private void SpawnClouds()
     {
         var _y = 60; //based on how high clouds should spawn
         Vector3 gv3 = new Vector3(regionSize.x, 0, regionSize.y); //scale
@@ -203,7 +195,9 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
 
         Vector3 v3point_shift = new Vector3();
         Vector3 scaleChange = new Vector3();
+        ActiveClouds = new List<GameObject>();
         GameObject go;
+        int i = 0;
 
         if (points != null)
         {
@@ -213,29 +207,31 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
                 Vector3 v3point = new Vector3(point.x, _y, point.y); //turn vector2 point into vector3
                 Vector3 _shift = new Vector3(v3point.x - gv3half.x, v3point.y, v3point.z - gv3half.z); //would want to use a region_shift relative to the player
                 Vector3 _scale = new Vector3(0, 0, 0);
-                //Vector3 v3point_shift = ScaleAndShiftVector(v3point, _shift, _scale);
+                v3point_shift = ScaleAndShiftVector(v3point, _shift, _scale);
 
                 float scaleNum = Random.Range(scaleRange.x, scaleRange.y);
                 scaleChange = new Vector3(scaleNum, scaleNum, scaleNum);
+                Debug.Log("points: " + v3point_shift);
+                //var go = SpawnClouds(ActiveClouds);
+                i++;
+                go = (GameObject)Instantiate(cloudGroup, v3point_shift, Quaternion.Euler(0, 0, 0), transform);
+                go.transform.localScale = scaleChange;
 
-                v3point_shift = ScaleAndShiftVector(v3point, _shift, scaleChange);
+                go.name = $"cloud {i}";
+                ActiveClouds.Add(go);
 
-
-                //Gizmos.DrawSphere(v3point_shift, displayRadius);
-
-                //Gizmos.DrawSphere(point, displayRadius);
             }
+
         }
 
-        Debug.Log("cloud location: " + v3point_shift);
 
-        // go = (GameObject)Instantiate(cloudGroup, RandomizedPosition(v3point_shift), Quaternion.Euler(-90, 0, 0), transform);
-        //go = (GameObject)Instantiate(cloudGroup, v3point_shift, Quaternion.Euler(-90, 0, 0), transform);
+        //return go;
+        //Debug.Log("cloud location: " + v3point_shift);
 
-        go = (GameObject)Instantiate(cloudGroup, v3point_shift, Quaternion.Euler(-90, 0, 0), transform);
 
-        go.transform.localScale = scaleChange;
-        return go;
+        //go = (GameObject)Instantiate(cloudGroup, v3point_shift, Quaternion.Euler(-90, 0, 0), transform); 
+
+
 
 
     }

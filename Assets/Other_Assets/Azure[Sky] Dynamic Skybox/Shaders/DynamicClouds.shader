@@ -1,19 +1,11 @@
 ﻿Shader "Azure[Sky]/DynamicClouds"
 {
-    Properties
-    {
-        _Azure_DynamicCloudTexture ("Cloud Texture (RGB) ", 2D) = "" {}
-        _Azure_SunTexture ("Sun Texture (RGB) ", 2D) = "" {}
-        _Azure_MoonTexture ("Moon Texture (RGB) ", 2D) = "" {}
-        _Azure_StarFieldTexture ("Starfield Texture (RGB) ", Cube) = "" {}
-    }
-    
     SubShader
     {
         Tags { "Queue"="Background" "RenderType"="Background" "PreviewType"="Skybox" "IgnoreProjector"="True" }
 	    Cull Back     // Render side
 		Fog{Mode Off} // Don't use fog
-        	ZWrite Off    // Don't draw to depth buffer
+        ZWrite Off    // Don't draw to depth buffer
 
         Pass
         {
@@ -24,19 +16,17 @@
             #pragma target 3.0
             #include "UnityCG.cginc"
 
-            uniform float _Azure_CloudDir;
-
             // Constants
             #define PI 3.1415926535
             #define Pi316 0.0596831
             #define Pi14 0.07957747
             #define MieG float3(0.4375f, 1.5625f, 1.5f)
-
+            
             // Textures
-            uniform sampler2D   _Azure_DynamicCloudTexture;
             uniform sampler2D   _Azure_SunTexture;
             uniform sampler2D   _Azure_MoonTexture;
             uniform samplerCUBE _Azure_StarFieldTexture;
+            uniform sampler2D   _Azure_DynamicCloudTexture;
 
             // Directions
             uniform float3   _Azure_SunDirection;
@@ -45,10 +35,13 @@
             uniform float4x4 _Azure_MoonMatrix;
             uniform float4x4 _Azure_UpDirectionMatrix;
             uniform float4x4 _Azure_StarFieldMatrix;
+            uniform float4x4 _Azure_StarFieldRotationMatrix;
 
             // Scattering
             uniform float  _Azure_FogScatteringScale;
             uniform int    _Azure_ScatteringMode;
+            uniform float  _Azure_Kr;
+            uniform float  _Azure_Km;
             uniform float3 _Azure_Rayleigh;
             uniform float3 _Azure_Mie;
             uniform float  _Azure_Scattering;
@@ -115,20 +108,20 @@
                 Varyings Output = (Varyings)0;
 
                 Output.Position = UnityObjectToClipPos(v.vertex);
-                float3 worldPos = (mul((float3x3)unity_WorldToObject, v.vertex.xyz));
-                worldPos = (mul((float3x3)_Azure_UpDirectionMatrix, worldPos));
+                Output.WorldPos = normalize(mul((float3x3)unity_WorldToObject, v.vertex.xyz));
+                Output.WorldPos = normalize(mul((float3x3)_Azure_UpDirectionMatrix, Output.WorldPos));
 
                 // Dynamic cloud position - New
-                float3 cloudPos = normalize(float3(worldPos.x, worldPos.y * _Azure_DynamicCloudAltitude, worldPos.z));
+                float3 cloudPos = normalize(float3(Output.WorldPos.x, Output.WorldPos.y * _Azure_DynamicCloudAltitude, Output.WorldPos.z));
                 Output.CloudUV.xy = cloudPos.xz * 0.25 - 0.005 + _Azure_DynamicCloudDirection;
 				Output.CloudUV.zw = cloudPos.xz * 0.35 -0.0065 + _Azure_DynamicCloudDirection;
 
                 // Outputs
                 Output.SunPos = mul((float3x3)_Azure_SunMatrix, v.vertex.xyz) * _Azure_SunTextureSize;
-                Output.StarPos = mul((float3x3)_Azure_StarFieldMatrix, worldPos);
+                Output.StarPos = mul((float3x3)_Azure_StarFieldRotationMatrix, Output.WorldPos);
+                Output.StarPos = mul((float3x3)_Azure_StarFieldMatrix, Output.StarPos);
                 Output.MoonPos = mul((float3x3)_Azure_MoonMatrix, v.vertex.xyz) * 0.75 * _Azure_MoonTextureSize;
                 Output.MoonPos.x *= -1.0;
-                Output.WorldPos = worldPos;
 
                 return Output;
             }

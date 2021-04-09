@@ -4,6 +4,7 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 	}
+
 	SubShader
 	{
 		// No culling or depth
@@ -180,8 +181,10 @@
                 #endif
 
                 // Calcule fog distance
-                float globalFog = smoothstep(-_Azure_GlobalFogSmooth, 1.25, depth * _ProjectionParams.z / _Azure_GlobalFogDistance) * _Azure_GlobalFogDensity;
-                float heightFogDistance = smoothstep(-_Azure_HeightFogSmooth, 1.25, depth * _ProjectionParams.z / _Azure_HeightFogDistance);
+                //float globalFog = smoothstep(-_Azure_GlobalFogSmooth, 1.25, depth * _ProjectionParams.z / _Azure_GlobalFogDistance) * _Azure_GlobalFogDensity;
+                //float heightFogDistance = smoothstep(-_Azure_HeightFogSmooth, 1.25, depth * _ProjectionParams.z / _Azure_HeightFogDistance);
+                float globalFog = smoothstep(-_Azure_GlobalFogSmooth, 1.25, length(depth * Input.interpolatedRay.xyz) / _Azure_GlobalFogDistance) * _Azure_GlobalFogDensity;
+                float heightFogDistance = smoothstep(-_Azure_HeightFogSmooth, 1.25, length(depth * Input.interpolatedRay.xyz) / _Azure_HeightFogDistance);
 
                 // Calcule height fog
                 float3 worldSpaceDirection = mul((float3x3)_Azure_UpDirectionMatrix, _WorldSpaceCameraPos) + depth * Input.interpolatedRay.xyz;

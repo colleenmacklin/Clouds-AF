@@ -18,16 +18,8 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
     [Header("Spawning Attributes")]
 
     [SerializeField]
-    [Range(1, 1000)]
-    private int instantiationAttempts = 50; //how many instantiation attempts we should make before failing
-    // Ranges for positioning clouds when they spawn (left/right, far/near, up/down)
-    [SerializeField]
-    private Vector2 xRange, yRange, zRange;
-    [SerializeField]
     private Vector2 scaleRange;
 
-
-    [Header("Poisson Distribution Attributes")]
     [SerializeField]
     public float radius = 1;
 
@@ -100,8 +92,9 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
 
     void CreateActiveClouds()
     {
+        //this doesn't really need to be it's own function, but leaving it for now in case we want to call anything else here.
         SpawnClouds();
-     }
+    }
 
     private void SetCloudToShape()
     {
@@ -137,13 +130,13 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
 
 
     //using poisson disc method for cloud distribution
-   
+
 
     void OnValidate()
     {
         points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples);
     }
-    //this can we re-written to include the actual spawning of the clouds! For now, though, it's great for debugging.
+    //Handy Gizmo draw calls for debugging cloud placement.
     /*
     void OnDrawGizmos()
     {
@@ -225,69 +218,6 @@ public class Game_CloudManager_Scrolling : MonoBehaviour
         }
 
 
-        //return go;
-        //Debug.Log("cloud location: " + v3point_shift);
-
-
-        //go = (GameObject)Instantiate(cloudGroup, v3point_shift, Quaternion.Euler(-90, 0, 0), transform); 
-
-
-
-
     }
 
-
-    private GameObject SpawnRandomNonIntersectingCloud(List<GameObject> currentClouds) //need to check to make sure these clouds are not too close / intersecting
-    {
-        //check for collisions first
-
-        Vector3 _randomPosition = new Vector3();
-        Vector3 scaleChange = new Vector3();
-        //set random locations
-        for (int n = 0; n < instantiationAttempts; n++)
-        {
-
-            Debug.Log("Instantiation Attempts: " + n);
-
-            //set up random location
-            float _xAxis = Random.Range(xRange.x, xRange.y);
-            float _yAxis = Random.Range(yRange.x, yRange.y);
-            float _zAxis = Random.Range(zRange.x, zRange.y);
-            _randomPosition = new Vector3(_xAxis, _yAxis, _zAxis);
-
-            float scaleNum = Random.Range(scaleRange.x, scaleRange.y);
-            scaleChange = new Vector3(scaleNum, scaleNum, scaleNum);
-
-            //first check for possible collisions
-            //Step 1: random position
-            shapeCollider.transform.localScale = scaleChange;
-            shapeCollider.transform.position = _randomPosition; //move collider to position
-            shapeBounds = shapeCollider.GetComponent<Collider>().bounds;//get the collider
-
-            //Step 2: compare position against active positions
-            var valid = true; //how we will know if we have a valid shape
-                              //compare our testing box to every other active cloud shape's
-            foreach (var cloud in currentClouds)
-            {
-                //if intersection found, then not valid
-                if (shapeBounds.Intersects(cloud.GetComponent<Collider>().bounds))
-                {
-                    Debug.Log("INTERSECTION");
-                    valid = false;
-                    break;
-                }
-            }
-            if (valid) break; //if it is valid, then we leave 
-
-        }
-
-        //step 3: create cloud
-        GameObject go = (GameObject)Instantiate(cloudGroup, _randomPosition, Quaternion.Euler(-90, 0, 0), transform);
-        go.transform.localScale = scaleChange;
-
-        return go;
-
-
-    }
 }
-

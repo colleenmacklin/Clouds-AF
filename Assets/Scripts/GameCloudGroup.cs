@@ -135,8 +135,11 @@ public class GameCloudGroup : MonoBehaviour
         Shape = ps.shape;
         Texture2D cloudShape = cloudShapes[cloudNum];
         Shape.texture = cloudShape;
+        curr_Shape = cloudShape;
+
         EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
         Debug.Log("cloud changing to a: " + cloudShapes[cloudNum].name);
+
     }
 
 

@@ -12,7 +12,6 @@ public class Game_Cloud : MonoBehaviour
     public Rect Myshape_rect;
     //Get the GameObject’s mesh renderer to access the GameObject’s material and color
     public MeshRenderer m_Renderer;
-    public GameObject underlyingShape;
     private Vector3 starting_size;
     public Vector3 myScale;
 

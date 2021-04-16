@@ -1,0 +1,235 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38e2cd8e2aae0904ba90aceefd0e6fc6, type: 3}
+  m_Name: _OverrideObject
+  m_EditorClassIdentifier: 
+  customPropertyList:
+  - name: Molecular Density
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Rayleigh
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 1
+    colorPropertyType: 1
+  - name: Mie
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 1
+    colorPropertyType: 0
+  - name: Rayleigh Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Mie Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Stars Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 1
+    colorPropertyType: 0
+  - name: Milky Way Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 1
+    colorPropertyType: 0
+  - name: Global Fog Distance
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Global Fog Smooth Step
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Global Fog Density
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Height Fog Distance
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Height Fog Smooth Step
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Height Fog Density
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Dynamic Clouds Altitude
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Dynamic Clouds Direction
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Dynamic Clouds Speed
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Dynamic Clouds Density
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Dynamic Clouds Color1
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Dynamic Clouds Color2
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Directional Light Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 1
+    colorPropertyType: 0
+  - name: Directional Light Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Environment Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 1
+    colorPropertyType: 0
+  - name: Environment Ambient Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Environment Equator Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Environment Ground  Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Light Rain Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Medium Rain Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Heavy Rain Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Snow Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Rain Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Snow Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1
+  - name: Light Rain Sound Fx
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Medium Rain Sound Fx
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Heavy Rain Sound Fx
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Light Wind Sound Fx
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Medium Wind Sound Fx
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Heavy Wind Sound Fx
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: WindSpeed
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Wind Direction
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Sun Texture Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Moon Texture Intensity
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Directional Light Strength
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 0
+    colorPropertyType: 0
+  - name: Static Cloud Scattering
+    description: 'Description:'
+    outputType: 0
+    floatPropertyType: 1
+    colorPropertyType: 0
+  - name: Static Cloud Color
+    description: 'Description:'
+    outputType: 1
+    floatPropertyType: 0
+    colorPropertyType: 1

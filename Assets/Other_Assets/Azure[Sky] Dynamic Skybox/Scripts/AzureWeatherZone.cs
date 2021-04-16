@@ -1,12 +1,13 @@
 ﻿namespace UnityEngine.AzureSky
 {
     [ExecuteInEditMode]
-    [AddComponentMenu("Azure[Sky]/Weather Zone")]
+    [AddComponentMenu("Azure[Sky]/Azure Weather Zone")]
     public sealed class AzureWeatherZone : MonoBehaviour
     {
         public float blendDistance = 0f;
-        public AzureSkyProfile profile;
+        public AzureWeatherProfile profile;
         private Collider m_tempCollider;
+        private Color m_gizmosColor1 = new Color(0, 1, 0, 0.25f);
         
         private void OnEnable()
         {
@@ -23,7 +24,6 @@
             
             if (m_tempCollider.enabled)
             {
-                Gizmos.color = Color.green;
                 var scale = transform.lossyScale;
                 var invScale = new Vector3(1f / scale.x, 1f / scale.y, 1f / scale.z);
                 Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, scale);
@@ -39,7 +39,9 @@
                 if (type == typeof(BoxCollider))
                 {
                     var c = (BoxCollider) m_tempCollider;
+                    Gizmos.color = m_gizmosColor1;
                     Gizmos.DrawCube(c.center, c.size);
+                    Gizmos.color = Color.green;
                     Gizmos.DrawWireCube(c.center, c.size + invScale * blendDistance * 4f);
                 }
                 else if (type == typeof(SphereCollider))

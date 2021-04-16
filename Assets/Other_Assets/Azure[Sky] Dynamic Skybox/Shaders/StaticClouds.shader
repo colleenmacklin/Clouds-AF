@@ -1,12 +1,5 @@
 ﻿Shader "Azure[Sky]/StaticClouds"
 {
-    Properties
-    {
-        _Azure_SunTexture ("Sun Texture (RGB) ", 2D) = "" {}
-        _Azure_MoonTexture ("Moon Texture (RGB) ", 2D) = "" {}
-        _Azure_StarFieldTexture ("Starfield Texture (RGB) ", Cube) = "" {}
-    }
-    
     SubShader
     {
         Tags { "Queue"="Background" "RenderType"="Background" "PreviewType"="Skybox" "IgnoreProjector"="True" }
@@ -32,8 +25,7 @@
             // Textures
             uniform sampler2D   _Azure_SunTexture;
             uniform sampler2D   _Azure_MoonTexture;
-            uniform sampler2D   _Azure_StaticCloudSourceTexture;
-            uniform sampler2D   _Azure_StaticCloudTargetTexture;
+            uniform sampler2D   _Azure_StaticCloudTexture;
             uniform samplerCUBE _Azure_StarFieldTexture;
 
             // Directions
@@ -43,10 +35,13 @@
             uniform float4x4 _Azure_MoonMatrix;
             uniform float4x4 _Azure_UpDirectionMatrix;
             uniform float4x4 _Azure_StarFieldMatrix;
+            uniform float4x4 _Azure_StarFieldRotationMatrix;
 
             // Scattering
             uniform float  _Azure_FogScatteringScale;
             uniform int    _Azure_ScatteringMode;
+            uniform float  _Azure_Kr;
+            uniform float  _Azure_Km;
             uniform float3 _Azure_Rayleigh;
             uniform float3 _Azure_Mie;
             uniform float  _Azure_Scattering;
@@ -68,7 +63,6 @@
             uniform float4 _Azure_StarFieldColor;
 
             // Clouds
-            uniform float  _Azure_StaticCloudInterpolator;
             uniform float  _Azure_StaticCloudLayer1Speed;
             uniform float  _Azure_StaticCloudLayer2Speed;
             uniform float4 _Azure_StaticCloudColor;
@@ -139,8 +133,8 @@
                 // Optical depth
                 float zenith = acos(saturate(dot(float3(0.0, 1.0, 0.0), viewDir))) * _Azure_FogScatteringScale;
                 float z = (cos(zenith) + 0.15 * pow(93.885 - ((zenith * 180.0f) / PI), -1.253));
-                float SR = 8400.0 / z;
-                float SM = 1200.0 / z;
+                float SR = _Azure_Kr / z;
+                float SM = _Azure_Km / z;
 
                 // Extinction
                 float3 fex = exp(-(_Azure_Rayleigh * SR  + _Azure_Mie * SM));
@@ -203,13 +197,8 @@
                 float2 lowCloudUv = float2(-atan2(viewDir.z, viewDir.x), -acos(viewDir.y)) / float2(2.0 * PI, 0.5 * PI) + float2(-_Azure_StaticCloudLayer1Speed, 0.0);
                 float2 higCloudUv = float2(-atan2(viewDir.z, viewDir.x), -acos(viewDir.y)) / float2(2.0 * PI, 0.5 * PI) + float2(-_Azure_StaticCloudLayer2Speed, 0.0);
 
-                float2 lowCloudTex1 = tex2D(_Azure_StaticCloudSourceTexture, lowCloudUv).rg;
-                float2 lowCloudTex2 = tex2D(_Azure_StaticCloudTargetTexture, lowCloudUv).rg;
-                float2 higCloudTex1 = tex2D(_Azure_StaticCloudSourceTexture, higCloudUv).ba;
-                float2 higCloudTex2 = tex2D(_Azure_StaticCloudTargetTexture, higCloudUv).ba;
-
-                float2 lowCloudTex = lerp(lowCloudTex1, lowCloudTex2, _Azure_StaticCloudInterpolator);
-                float2 higCloudTex = lerp(higCloudTex1, higCloudTex2, _Azure_StaticCloudInterpolator);
+                float2 lowCloudTex = tex2D(_Azure_StaticCloudTexture, lowCloudUv).rg;
+                float2 higCloudTex = tex2D(_Azure_StaticCloudTexture, higCloudUv).ba;
 
                 float lowCloudAlpha = 1.0 - lowCloudTex.g;
                 float higCloudAlpha = higCloudTex.g * lowCloudAlpha;

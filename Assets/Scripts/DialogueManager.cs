@@ -30,7 +30,7 @@ public class DialogueManager : MonoBehaviour
     //public Animator textBoxAnimator;
 
     [SerializeField]
-    private Text dialogueText; //reference to text field in Friend
+    private TextMeshProUGUI dialogueText; //reference to text field in Friend
 
 
     [SerializeField]

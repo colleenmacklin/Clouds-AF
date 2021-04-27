@@ -32,7 +32,6 @@ public class DialogueManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI dialogueText; //reference to text field in Friend
 
-
     [SerializeField]
     public string conversationTarget;
 

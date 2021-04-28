@@ -49,6 +49,9 @@ public class DialogueManager : MonoBehaviour
     private DialogueSubject subjectMatter;
 
     [SerializeField]
+    private TextBoxController textBoxController;
+
+    [SerializeField]
     private string[] activeLines;
 
     [SerializeField]

@@ -22,8 +22,8 @@ public class TextBoxController : MonoBehaviour
 
 
     [SerializeField]
-    [Range(0.001f, 1f)]
-    float waitTime;
+    [Range(1f, 240f)]
+    float charactersPerSecond;
     bool complete;
 
     [SerializeField]
@@ -36,23 +36,13 @@ public class TextBoxController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        activeLine = "hello this is a line";
         dialogueAudio = GetComponent<AudioSource>();
         dialogueAudio.clip = typeSound;
-        complete = false;
-        textField.text = "";
-        index = 0;
+        Reset();
         typingCoroutine = StartCoroutine(TypeString());
     }
 
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    //Print out the string over time and play audio
     IEnumerator TypeString()
     {
         foreach (char character in activeLine.ToCharArray())
@@ -61,14 +51,16 @@ public class TextBoxController : MonoBehaviour
 
             dialogueAudio.Play(); //play audio event
 
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(1f / charactersPerSecond);
         }
+
     }
+
+
     //This function first checks if the line is done.
     //If not done, sets it to be done and ends the coroutine.
     //If it is, then it moves on.
-    //This is the public facing function.
-    [Button]
+    //This is the public function.
     public void Check()
     {
         if (complete) return;
@@ -113,10 +105,21 @@ public class TextBoxController : MonoBehaviour
         }
     }
 
+    void Reset()
+    {
+        complete = false;
+        index = 0;
+        textField.text = "";
+        activeLine = "";
+    }
+
     //Take list from any source and create array of lines
     public void ReadNewLines(List<string> newLines)
     {
-        linesList = newLines.ToArray();
+        Reset(); //reset first and then ingest lines
+        linesList = newLines.ToArray(); //create new array of lines
+        activeLine = linesList[0]; //set active to first line
+        typingCoroutine = StartCoroutine(TypeString()); //begin typing
     }
 
 

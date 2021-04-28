@@ -1,15 +1,4 @@
-﻿/*
-	FadeObjectInOut.cs
- 	Hayden Scott-Baron (Dock) - http://starfruitgames.com
- 	6 Dec 2012 
- 
-	This allows you to easily fade an object and its children. 
-	If an object is already partially faded it will continue from there. 
-	If you choose a different speed, it will use the new speed. 
- 
-	NOTE: Requires materials with a shader that allows transparency through color.  
-*/
-
+﻿
 using UnityEngine;
 using System.Collections;
 
@@ -28,6 +17,8 @@ public class FadeObjectInOut : MonoBehaviour
 
     // store colours
     private Color[] colors;
+    private Renderer[] rendererObjects;
+
 
     void OnEnable()
     {
@@ -39,17 +30,45 @@ public class FadeObjectInOut : MonoBehaviour
     { 
         EventManager.StopListening("FadeIn", FadeIn);
         EventManager.StopListening("FadeOut", FadeOut);
-}
+    }
 
+   
     // allow automatic fading on the start of the scene
-    IEnumerator Start()
+    private void Start()
     {
-        //yield return null; 
-        yield return new WaitForSeconds(fadeDelay);
+        //yield return null;
+        // grab all child objects
+        rendererObjects = GetComponentsInChildren<Renderer>();
+        if (colors == null)
+        {
+            //create a cache of colors if necessary
+            colors = new Color[rendererObjects.Length];
+            Debug.Log("colors" + colors);
+
+            // store the original colours for all child objects
+            for (int i = 0; i < rendererObjects.Length; i++)
+            {
+                colors[i] = rendererObjects[i].material.color;
+            }
+        }
 
         if (fadeInOnStart)
         {
             logInitialFadeSequence = true;
+            //rendererObjects = GetComponentsInChildren<Renderer>();
+            for (int i = 0; i < rendererObjects.Length; i++)
+            {
+                Color tmp = rendererObjects[i].material.color;
+
+                if (tmp.a > 0.0f)
+                {
+                    tmp.a = 0f;
+                    rendererObjects[i].material.color = tmp;
+                }
+
+                Debug.Log("renderer " + rendererObjects[i].material.color.a);
+            }
+
             FadeIn();
         }
 
@@ -70,6 +89,8 @@ public class FadeObjectInOut : MonoBehaviour
         foreach (Renderer item in rendererObjects)
         {
             maxAlpha = Mathf.Max(maxAlpha, item.material.color.a);
+            //maxAlpha = Mathf.Max(maxAlpha, 1.0f);
+
         }
         return maxAlpha;
     }
@@ -77,16 +98,20 @@ public class FadeObjectInOut : MonoBehaviour
     // fade sequence
     IEnumerator FadeSequence(float fadingOutTime)
     {
+        yield return new WaitForSeconds(fadeDelay);
+
         // log fading direction, then precalculate fading speed as a multiplier
         bool fadingOut = (fadingOutTime < 0.0f);
         float fadingOutSpeed = 1.0f / fadingOutTime;
 
         // grab all child objects
+        /*
         Renderer[] rendererObjects = GetComponentsInChildren<Renderer>();
         if (colors == null)
         {
             //create a cache of colors if necessary
             colors = new Color[rendererObjects.Length];
+            Debug.Log("colors" + colors);
 
             // store the original colours for all child objects
             for (int i = 0; i < rendererObjects.Length; i++)
@@ -94,7 +119,7 @@ public class FadeObjectInOut : MonoBehaviour
                 colors[i] = rendererObjects[i].material.color;
             }
         }
-
+        */
         // make all objects visible
         for (int i = 0; i < rendererObjects.Length; i++)
         {
@@ -111,6 +136,7 @@ public class FadeObjectInOut : MonoBehaviour
         if (logInitialFadeSequence && !fadingOut)
         {
             alphaValue = 0.0f;
+
             logInitialFadeSequence = false;
         }
 

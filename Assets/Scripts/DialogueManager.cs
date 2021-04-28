@@ -137,6 +137,7 @@ public class DialogueManager : MonoBehaviour
         {
             //activeSentence = ActivateNextSentence();
             textBoxController.ReadNewLines(activeLines);
+            EventManager.TriggerEvent("Correct");
             //EventManager.TriggerEvent("FadeInSpace"); //fades in the space indicator
 
         }

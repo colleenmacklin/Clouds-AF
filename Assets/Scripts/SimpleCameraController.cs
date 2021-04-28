@@ -28,7 +28,6 @@ namespace UnityTemplateProjects
 
             // print(yaw);
             // print(pitch);
-            //transform.localEulerAngles = Vector3.Lerp(transform.localEulerAngles, new Vector3(-pitch, yaw, 0), .8f);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(new Vector3(-pitch, yaw, 0)), .2f);
 
         }

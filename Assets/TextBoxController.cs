@@ -101,7 +101,8 @@ public class TextBoxController : MonoBehaviour
         {
             complete = true;
             textField.text = ""; //clear text because it's the end
-            //potentially trigger an event for ending the dialogue 
+                                 //potentially trigger an event for ending the dialogue 
+            EventManager.TriggerEvent("ConversationEnded");
         }
     }
 
@@ -114,13 +115,20 @@ public class TextBoxController : MonoBehaviour
     }
 
     //Take list from any source and create array of lines
-    public void ReadNewLines(List<string> newLines)
+    //And read it out.
+    public void ReadNewLines(string[] newLines)
     {
         Reset(); //reset first and then ingest lines
-        linesList = newLines.ToArray(); //create new array of lines
+        CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
         typingCoroutine = StartCoroutine(TypeString()); //begin typing
     }
 
+    //Set the lines array to the lines list
+    //This is a separate function in case we want to change this behavior or use it elsewhere.
+    void CopyLines(string[] newLines)
+    {
+        linesList = newLines;
+    }
 
 }

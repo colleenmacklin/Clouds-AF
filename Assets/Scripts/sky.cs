@@ -8,8 +8,9 @@ namespace UnityEngine.AzureSky
     {
 
         public AzureTimeController azureTimeController;
+        public AzureWeatherController weatherController;
         public int start_time = 5;
-        public int end_time = 15;
+        public int end_time = 13;
 
 
         // Start is called before the first frame update
@@ -31,13 +32,31 @@ namespace UnityEngine.AzureSky
         // Update is called once per frame
         void Update()
         {
-
+            /*
+            if (azureTimeController.GetTimeOfDay().x > 13)
+            {
+                weatherController.SetNewWeatherProfile(1);
+                Debug.Log("weather changed to: " + weatherController.GetCurrentWeatherProfile().name);
+                return;
+            }
+            */
         }
 
         private void sunrise()
         {
             azureTimeController.SetTimeline(start_time);
-            azureTimeController.StartTimelineTransition(end_time, 0, 3, AzureTimeDirection.Forward);
+            azureTimeController.StartTimelineTransition(end_time, 0, 2, AzureTimeDirection.Forward);
+
+            /*
+            Vector2 time_of_day = azureTimeController.GetTimeOfDay();
+
+            if (time_of_day.x > 11)
+            {
+                weatherController.SetNewWeatherProfile(1);
+
+            }
+            */
+
         }
 
     }

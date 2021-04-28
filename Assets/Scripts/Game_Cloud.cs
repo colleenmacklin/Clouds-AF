@@ -20,8 +20,12 @@ public class Game_Cloud : MonoBehaviour
     private float minWidth = 10f; //hardcoded
     private float minHeight = 10f; //hardcoded
 
+    private Color[] colors;
+
+
 
     Renderer rend;
+    public bool visible_at_start = true;
 
     void OnEnable()
     {
@@ -43,7 +47,7 @@ public class Game_Cloud : MonoBehaviour
         //set starting size
         starting_size = new Vector3(10.0f, 10.0f, 10.0f);
         //starting_size = new Vector3(myShape.scale.x, myShape.scale.y, myShape.scale.z);
-        Debug.Log("starting size: " + starting_size);
+        //Debug.Log("starting size: " + starting_size);
         myShape.scale = starting_size;
 
     }
@@ -53,7 +57,6 @@ public class Game_Cloud : MonoBehaviour
     {
         //Fetch the mesh renderer component from the GameObject
         m_Renderer = GetComponent<MeshRenderer>();
-
     }
 
     public void UpdateMe() //called from cloudlayer

@@ -3083,22 +3083,22 @@ MonoBehaviour:
     colorField: {r: 1, g: 1, b: 1, a: 1}
     timelineBasedGradient:
       serializedVersion: 2
-      key0: {r: 0.18115878, g: 0.33775374, b: 0.6509434, a: 1}
-      key1: {r: 1, g: 0.51724136, b: 0, a: 1}
-      key2: {r: 1, g: 1, b: 1, a: 0}
-      key3: {r: 1, g: 1, b: 1, a: 0}
-      key4: {r: 1, g: 0.51724136, b: 0, a: 0}
-      key5: {r: 0.18115878, g: 0.33775374, b: 0.6509434, a: 0}
-      key6: {r: 0, g: 0, b: 0, a: 0}
-      key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 15728
-      ctime1: 17039
-      ctime2: 20971
-      ctime3: 44564
-      ctime4: 48496
-      ctime5: 49807
-      ctime6: 0
-      ctime7: 0
+      key0: {r: 0.6224059, g: 0.52156866, b: 1, a: 1}
+      key1: {r: 1, g: 0.25943398, b: 0.93202543, a: 1}
+      key2: {r: 1, g: 0.51724136, b: 0, a: 0}
+      key3: {r: 1, g: 0.9732159, b: 0.08018869, a: 0}
+      key4: {r: 0.9885179, g: 1, b: 0.5801887, a: 0}
+      key5: {r: 0.9876716, g: 1, b: 0.9481132, a: 0}
+      key6: {r: 1, g: 0.51724136, b: 0, a: 0}
+      key7: {r: 0.52205884, g: 0.68357, b: 1, a: 0}
+      ctime0: 10023
+      ctime1: 19853
+      ctime2: 23901
+      ctime3: 28913
+      ctime4: 34502
+      ctime5: 43369
+      ctime6: 47841
+      ctime7: 50790
       atime0: 0
       atime1: 65535
       atime2: 0
@@ -3108,7 +3108,7 @@ MonoBehaviour:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_NumColorKeys: 6
+      m_NumColorKeys: 8
       m_NumAlphaKeys: 2
     sunElevationBasedGradient:
       serializedVersion: 2
@@ -3415,22 +3415,22 @@ MonoBehaviour:
     colorField: {r: 1, g: 1, b: 1, a: 1}
     timelineBasedGradient:
       serializedVersion: 2
-      key0: {r: 0.055268776, g: 0.09171412, b: 0.16981131, a: 1}
-      key1: {r: 1, g: 0.51724136, b: 0, a: 1}
-      key2: {r: 1, g: 1, b: 1, a: 0}
-      key3: {r: 1, g: 1, b: 1, a: 0}
-      key4: {r: 1, g: 0.51724136, b: 0, a: 0}
-      key5: {r: 0.055268776, g: 0.09171412, b: 0.16981131, a: 0}
-      key6: {r: 0, g: 0, b: 0, a: 0}
-      key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 14745
-      ctime1: 17694
-      ctime2: 21299
-      ctime3: 44236
-      ctime4: 47841
-      ctime5: 50790
-      ctime6: 0
-      ctime7: 0
+      key0: {r: 0.6224059, g: 0.52156866, b: 1, a: 1}
+      key1: {r: 1, g: 0.25943398, b: 0.93202543, a: 1}
+      key2: {r: 1, g: 0.51724136, b: 0, a: 0}
+      key3: {r: 1, g: 0.9732159, b: 0.08018869, a: 0}
+      key4: {r: 0.9885179, g: 1, b: 0.5801887, a: 0}
+      key5: {r: 0.9876716, g: 1, b: 0.9481132, a: 0}
+      key6: {r: 1, g: 0.51724136, b: 0, a: 0}
+      key7: {r: 0.52205884, g: 0.68357, b: 1, a: 0}
+      ctime0: 10023
+      ctime1: 19853
+      ctime2: 23901
+      ctime3: 28913
+      ctime4: 34502
+      ctime5: 43369
+      ctime6: 47841
+      ctime7: 50790
       atime0: 0
       atime1: 65535
       atime2: 0
@@ -3440,7 +3440,7 @@ MonoBehaviour:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_NumColorKeys: 6
+      m_NumColorKeys: 8
       m_NumAlphaKeys: 2
     sunElevationBasedGradient:
       serializedVersion: 2

@@ -20,15 +20,16 @@ namespace UnityTemplateProjects
             mousePos.x = Mathf.Clamp01(mousePos.x);
             mousePos.y = Mathf.Clamp01(mousePos.y);
             mousePos = mousePos * 2 - Vector2.one;
-//            print(mousePos);
+            //            print(mousePos);
             mousePos.y /= Camera.main.aspect; // less sensitive on y
 
             float yaw = mouseSensitivityCurve.Evaluate(Mathf.Abs(mousePos.x)) * mousePos.x * maxAngleX;
             float pitch = mouseSensitivityCurve.Evaluate(Mathf.Abs(mousePos.y)) * mousePos.y * maxAngleY;
 
-           // print(yaw);
-           // print(pitch);
-            transform.localEulerAngles = new Vector3(-pitch, yaw, 0);
+            // print(yaw);
+            // print(pitch);
+            //transform.localEulerAngles = Vector3.Lerp(transform.localEulerAngles, new Vector3(-pitch, yaw, 0), .8f);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(new Vector3(-pitch, yaw, 0)), .2f);
 
         }
     }

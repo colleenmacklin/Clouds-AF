@@ -30,15 +30,15 @@ public class Game_Cloud : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("UpdateMe", UpdateMe);
-        EventManager.StartListening("ClarifyCloud", ClarifyCloud);
-        EventManager.StartListening("Dissipate", Dissipate);
+        //EventManager.StartListening("ClarifyCloud", ClarifyCloud);
+        //EventManager.StartListening("Dissipate", Dissipate);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("UpdateMe", UpdateMe);
-        EventManager.StopListening("ClarifyCloud", ClarifyCloud);
-        EventManager.StartListening("Dissipate", Dissipate);
+        //EventManager.StopListening("ClarifyCloud", ClarifyCloud);
+        //EventManager.StartListening("Dissipate", Dissipate);
     }
 
 
@@ -109,7 +109,7 @@ public class Game_Cloud : MonoBehaviour
 
 
     }
-
+    /*
     public void ClarifyCloud() //this sets the cloud to a more "clear" cloud
     {
         var _main = ps.main;
@@ -122,6 +122,6 @@ public class Game_Cloud : MonoBehaviour
     {
         ps.Stop();
     }
-
-
+    */
+    
 }

@@ -13,7 +13,6 @@ namespace UnityEngine.AzureSky
         public int end_time = 13;
 
 
-        // Start is called before the first frame update
         void OnEnable()
         {
             EventManager.StartListening("sunrise", sunrise);

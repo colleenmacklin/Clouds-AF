@@ -124,7 +124,8 @@ public class Game_CloudManager : MonoBehaviour
 
     private void TurnOffCloud()
     {
-        EventManager.TriggerEvent("TurnOffCloud"); //message received on cloud object 
+        EventManager.TriggerEvent("TurnOffCloud"); //message received on cloud object
+        EventManager.TriggerEvent("timePasses"); //messages sky_manager to increment time
     }
     //for prefab instantiation, see: https://docs.unity3d.com/Manual/InstantiatingPrefabs.html
 

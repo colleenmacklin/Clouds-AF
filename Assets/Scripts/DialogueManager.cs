@@ -114,10 +114,12 @@ public class DialogueManager : MonoBehaviour
         activeLines = subjectMatter.DialogueOptionsAtLevel(1);
         ResetCurrentLine(); //set currentLine to -1 to account for prompt
         //set the active line to the prompt
-        activeSentence = subjectMatter.Prompt;
+        //activeSentence = subjectMatter.Prompt;
         linesFinished = false;
 
-        textBoxController.ReadNewLines(new[] { activeSentence });
+        //textBoxController.ReadNewLines(new[] { activeSentence });
+        textBoxController.ReadNewLines(subjectMatter.Prompt);
+
     }
 
     void ResetCurrentLine()

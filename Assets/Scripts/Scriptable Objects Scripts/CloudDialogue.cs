@@ -34,6 +34,9 @@ public class CloudDialogue : ScriptableObject
     [SerializeField]
     public TextAsset dialogueFile; //ingest all dialogue
 
+    public string[] introductionText;
+    public string[] endingText;
+
     //List of dialogue options within the object
     public Dictionary<string, List<string>> dialogues = new Dictionary<string, List<string>>();
 

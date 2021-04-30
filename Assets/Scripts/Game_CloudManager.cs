@@ -122,7 +122,7 @@ public class Game_CloudManager : MonoBehaviour
     {
         cloudSelectionIndex++;
 
-        if (cloudSelectionIndex == ShapeArray.Length - 1)
+        if (cloudSelectionIndex == ShapeArray.Length)
         {
             EventManager.TriggerEvent("AllShapesSeen");
             //  Debug.Log("This is over");// the problem with this is that it controls dialogue logic in the cloud. This is confusing to maintain

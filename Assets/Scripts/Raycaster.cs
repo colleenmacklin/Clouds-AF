@@ -51,6 +51,7 @@ public class Raycaster : MonoBehaviour
     void Start()
     {
         mask = LayerMask.GetMask("Clouds");
+        gazeMover.enabled = false;
         initialCameraRot = Camera.main.transform.localRotation;
     }
 

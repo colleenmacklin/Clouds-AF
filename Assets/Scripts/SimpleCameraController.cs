@@ -14,6 +14,9 @@ namespace UnityTemplateProjects
 
         public Vector3 initialEulerAngle;
 
+        [Range(0.01f, 1f)]
+        public float followSpeed = .2f;
+
         void Start()
         {
             initialEulerAngle = new Vector3(-66, 0, 0);
@@ -36,7 +39,7 @@ namespace UnityTemplateProjects
             // print(pitch);
             transform.localRotation = Quaternion.Slerp(
                 transform.localRotation,
-                Quaternion.Euler(new Vector3(-pitch, yaw, 0)), .2f);
+                Quaternion.Euler(new Vector3(-pitch, yaw, 0)), followSpeed);
 
         }
     }

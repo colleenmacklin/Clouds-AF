@@ -31,6 +31,16 @@ public class Raycaster : MonoBehaviour
     //Get the camera mover so we can turn it on and off during dialogue
     public SimpleCameraController gazeMover; //attached to the camera *it probably shouldn't be
     public TextBoxController textBoxControl;
+
+
+    //View FOcus settings
+    [SerializeField]
+    [Range(.01f, 1f)]
+    private float focusInSpeed = .2f;
+    [SerializeField]
+    [Range(.01f, 1f)]
+    private float focusOutSpeed = .01f;
+
     // Raycasting variables 
     Ray ray;
     RaycastHit hit;
@@ -76,7 +86,7 @@ public class Raycaster : MonoBehaviour
     {
         while (Quaternion.Angle(Camera.main.transform.localRotation, Quaternion.identity) > 10f)
         {
-            Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.identity, .2f);
+            Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.identity, focusOutSpeed);
 
             //returning to center
             yield return null;
@@ -104,7 +114,7 @@ public class Raycaster : MonoBehaviour
 
         while (Quaternion.Angle(rot, Camera.main.transform.localRotation) > 1f)// these values are just wrong
         {
-            Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, rot, .2f);
+            Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, rot, focusInSpeed);
 
             Debug.Log($"looking at target, {rot},{Camera.main.transform.localRotation}");
             yield return null;

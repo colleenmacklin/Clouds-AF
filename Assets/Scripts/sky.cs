@@ -5,7 +5,7 @@ namespace UnityEngine.AzureSky {
 
 public class sky : MonoBehaviour
 {
-    public AzureSkyController azureSky;
+    //public AzureSkyController azureSky;
     // Start is called before the first frame update
     void OnEnable()
     {

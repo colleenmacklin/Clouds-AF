@@ -31,14 +31,14 @@ public class FadeObjectInOut_Space: MonoBehaviour
 
     void OnEnable()
     {
-        EventManager.StartListening("FadeIn", FadeIn);
-        EventManager.StartListening("FadeOut", FadeOut);
+        EventManager.StartListening("FadeInSpace", FadeIn);
+        EventManager.StartListening("FadeOutSpace", FadeOut);
     }
 
     void OnDisable()
     { 
-        EventManager.StopListening("FadeIn", FadeIn);
-        EventManager.StopListening("FadeOut", FadeOut);
+        EventManager.StopListening("FadeInSpace", FadeIn);
+        EventManager.StopListening("FadeOutSpace", FadeOut);
 }
 
     // allow automatic fading on the start of the scene

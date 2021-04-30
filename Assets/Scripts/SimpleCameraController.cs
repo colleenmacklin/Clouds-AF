@@ -12,6 +12,15 @@ namespace UnityTemplateProjects
         public float maxAngleX;
         public float maxAngleY;
 
+        public Vector3 initialEulerAngle;
+
+        [Range(0.01f, 1f)]
+        public float followSpeed = .2f;
+
+        void Start()
+        {
+            initialEulerAngle = new Vector3(-66, 0, 0);
+        }
 
         void Update()
         {
@@ -20,15 +29,17 @@ namespace UnityTemplateProjects
             mousePos.x = Mathf.Clamp01(mousePos.x);
             mousePos.y = Mathf.Clamp01(mousePos.y);
             mousePos = mousePos * 2 - Vector2.one;
-//            print(mousePos);
+            //            print(mousePos);
             mousePos.y /= Camera.main.aspect; // less sensitive on y
 
             float yaw = mouseSensitivityCurve.Evaluate(Mathf.Abs(mousePos.x)) * mousePos.x * maxAngleX;
             float pitch = mouseSensitivityCurve.Evaluate(Mathf.Abs(mousePos.y)) * mousePos.y * maxAngleY;
 
-           // print(yaw);
-           // print(pitch);
-            transform.localEulerAngles = new Vector3(-pitch, yaw, 0);
+            // print(yaw);
+            // print(pitch);
+            transform.localRotation = Quaternion.Slerp(
+                transform.localRotation,
+                Quaternion.Euler(new Vector3(-pitch, yaw, 0)), followSpeed);
 
         }
     }

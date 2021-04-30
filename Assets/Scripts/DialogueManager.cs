@@ -10,6 +10,9 @@ The Dialogue Manager should take the chosen object from the Game_CloudManager
 and then choose that as the active dialogue. It will then move through that dialogue list
 as one presses the space bar (or calls the function). This will change the text that is inside
 the dialogueText reference. 
+
+4/27/21 This is now responsible for three things: handling choices, sending dialogue, and advancing choices
+Perhaps this should be reconsidered.
 */
 [RequireComponent(typeof(Raycaster))]
 public class DialogueManager : MonoBehaviour
@@ -30,8 +33,7 @@ public class DialogueManager : MonoBehaviour
     //public Animator textBoxAnimator;
 
     [SerializeField]
-    private Text dialogueText; //reference to text field in Friend
-
+    private TextMeshProUGUI dialogueText; //reference to text field in Friend
 
     [SerializeField]
     public string conversationTarget;
@@ -48,6 +50,9 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField]
     private DialogueSubject subjectMatter;
+
+    [SerializeField]
+    private TextBoxController textBoxController;
 
     [SerializeField]
     private string[] activeLines;
@@ -112,7 +117,7 @@ public class DialogueManager : MonoBehaviour
         activeSentence = subjectMatter.Prompt;
         linesFinished = false;
 
-        StartCoroutine(UpdateTextWithSentence(conversational_pause));
+        textBoxController.ReadNewLines(new[] { activeSentence });
     }
 
     void ResetCurrentLine()
@@ -130,20 +135,25 @@ public class DialogueManager : MonoBehaviour
         ReadSelection();
         if (ValidateSelection(selectedTarget))
         {
-            activeSentence = ActivateNextSentence();
+            //activeSentence = ActivateNextSentence();
+            textBoxController.ReadNewLines(activeLines);
+            EventManager.TriggerEvent("Correct");
+            //EventManager.TriggerEvent("FadeInSpace"); //fades in the space indicator
+
         }
         else
         {
             activeSentence = WrongAnswer();
         }
 
-        StartCoroutine(UpdateTextWithSentence(1));
+        //StartCoroutine(UpdateTextWithSentence(1));
 
         //if we are at the last option, we should move on without a click
         if (currentLine == activeLines.Length - 1)
         {
             linesFinished = true;
             StartCoroutine(TransitionToNextCloud()); //transition the lines
+            // EventManager.TriggerEvent("FadeOutSpace"); //fades out the space indicator
         }
     }
 
@@ -172,11 +182,11 @@ public class DialogueManager : MonoBehaviour
 
         Debug.Log("---ending dialogue---");
         yield return new WaitForSeconds(3f);
-        activeSentence = "I wonder what other clouds we might see.";
-        StartCoroutine(UpdateTextWithSentence(1));
+        activeSentence = ""; //I wonder what other clouds we might see.
+                             // StartCoroutine(UpdateTextWithSentence(1));
         yield return new WaitForSeconds(3f);
         activeSentence = "";
-        StartCoroutine(UpdateTextWithSentence(1));
+        // StartCoroutine(UpdateTextWithSentence(1));
         yield return new WaitForSeconds(1f);
 
         EndConversation(); //activate the event for ending the convo
@@ -194,7 +204,7 @@ public class DialogueManager : MonoBehaviour
     }
     string WrongAnswer()
     {
-        return "No... not that cloud";
+        return ""; //used to be: "No... not that cloud"
     }
 
     //this is its own function because this is actually handling the mutation. which we encapsulate
@@ -207,7 +217,7 @@ public class DialogueManager : MonoBehaviour
 
     void EndConversation()
     {
-        EventManager.TriggerEvent("ConversationEnded");
+        EventManager.TriggerEvent("ConversationEnded"); //this is moved to the text box controller
     }
 
     /////////////////////
@@ -225,6 +235,7 @@ public class DialogueManager : MonoBehaviour
 
         //execute if sentence is different
         yield return new WaitForSeconds(time);
+
         dialogueText.text = activeSentence;
 
     }

@@ -1,0 +1,4 @@
+Please import SRP packs only if your project is using HD or URP.
+If you import this to standard project you will get errors.
+Import proper RP compatibility pack to proper engine version like for 2019.9 URP 7.18 please use our 7.18 URP 2019.3 Meadow environment compatibility pack.
+If you use higher RP versions please use 7.2 support packs. 

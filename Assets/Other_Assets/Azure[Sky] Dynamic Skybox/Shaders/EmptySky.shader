@@ -1,12 +1,5 @@
 ﻿Shader "Azure[Sky]/EmptySky"
 {
-    Properties
-    {
-        _Azure_SunTexture ("Sun Texture (RGB) ", 2D) = "" {}
-        _Azure_MoonTexture ("Moon Texture (RGB) ", 2D) = "" {}
-        _Azure_StarFieldTexture ("Starfield Texture (RGB) ", Cube) = "" {}
-    }
-    
     SubShader
     {
         Tags { "Queue"="Background" "RenderType"="Background" "PreviewType"="Skybox" "IgnoreProjector"="True" }
@@ -41,10 +34,13 @@
             uniform float4x4 _Azure_MoonMatrix;
             uniform float4x4 _Azure_UpDirectionMatrix;
             uniform float4x4 _Azure_StarFieldMatrix;
+            uniform float4x4 _Azure_StarFieldRotationMatrix;
 
             // Scattering
             uniform float  _Azure_FogScatteringScale;
             uniform int    _Azure_ScatteringMode;
+            uniform float  _Azure_Kr;
+            uniform float  _Azure_Km;
             uniform float3 _Azure_Rayleigh;
             uniform float3 _Azure_Mie;
             uniform float  _Azure_Scattering;
@@ -106,7 +102,8 @@
                 Output.WorldPos = normalize(mul((float3x3)_Azure_UpDirectionMatrix, Output.WorldPos));
 
                 Output.SunPos = mul((float3x3)_Azure_SunMatrix, v.vertex.xyz) * _Azure_SunTextureSize;
-                Output.StarPos  = mul((float3x3)_Azure_StarFieldMatrix, Output.WorldPos);
+                Output.StarPos = mul((float3x3)_Azure_StarFieldRotationMatrix, Output.WorldPos);
+                Output.StarPos = mul((float3x3)_Azure_StarFieldMatrix, Output.StarPos);
                 Output.MoonPos = mul((float3x3)_Azure_MoonMatrix, v.vertex.xyz) * 0.75 * _Azure_MoonTextureSize;
                 Output.MoonPos.x *= -1.0;
 
@@ -127,8 +124,8 @@
                 // Optical depth
                 float zenith = acos(saturate(dot(float3(0.0, 1.0, 0.0), viewDir))) * _Azure_FogScatteringScale;
                 float z = (cos(zenith) + 0.15 * pow(93.885 - ((zenith * 180.0f) / PI), -1.253));
-                float SR = 8400.0 / z;
-                float SM = 1200.0 / z;
+                float SR = _Azure_Kr / z;
+                float SM = _Azure_Km / z;
 
                 // Extinction
                 float3 fex = exp(-(_Azure_Rayleigh * SR  + _Azure_Mie * SM));
@@ -154,7 +151,6 @@
                 BrmTheta = (BrTheta + BmTheta) / (_Azure_Rayleigh + _Azure_Mie);
                 Esun = _Azure_ScatteringMode == 0 ? (1.0 - fex) : _Azure_ScatteringColor;
                 float3 moonInScatter = BrmTheta * Esun * _Azure_Scattering * 0.1 * (1.0 - fex);
-                //moonInScatter *= moonRise;
                 moonInScatter *= 1.0 - sunRise;
 
                 // Default night sky - When there is no moon in the sky

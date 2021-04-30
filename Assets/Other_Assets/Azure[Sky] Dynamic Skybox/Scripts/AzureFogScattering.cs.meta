@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e88e196f6520e2142a8aa95eef757f4b
+guid: 31ec6f586a5135144bd41fb597bc6c37
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - fogScatteringMaterial: {fileID: 2100000, guid: c66d936aee18fad46b8910702bad4f27,
+  - fogScatteringMaterial: {fileID: 2100000, guid: cf6ab374e3080fa49b6f1077567c7ceb,
       type: 2}
   executionOrder: 0
   icon: {instanceID: 0}

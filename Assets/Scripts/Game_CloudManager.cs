@@ -39,6 +39,8 @@ public class Game_CloudManager : MonoBehaviour
 
     List<Vector2> points;
 
+    [Range(0f, 40f)]
+    public float pauseBetweenText = 5f;
 
 
     [Header("Debug Cloud Selections")]
@@ -161,9 +163,17 @@ public class Game_CloudManager : MonoBehaviour
 
         EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
 
+        StartCoroutine(PauseBeforeTalking());
         //This is where the dialogue manager is activated.
         //maybe trigger this once the cloud has become a shape?
-        EventManager.TriggerEvent("Talk"); //Friend starts talking about the shape (on a timer)
+        //EventManager.TriggerEvent("Talk"); //Friend starts talking about the shape (on a timer)
+    }
+
+    private IEnumerator PauseBeforeTalking()
+    {
+        yield return new WaitForSeconds(pauseBetweenText);
+
+        EventManager.TriggerEvent("Talk");
     }
 
     private void TurnOffCloud()

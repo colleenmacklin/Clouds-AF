@@ -42,7 +42,7 @@ public class DialogueManager : MonoBehaviour
     public string selectedTarget;
 
     [SerializeField]
-    [Range(3, 25)]
+    [Range(0, 25)]
     public float conversational_pause = 12;
 
     [SerializeField]
@@ -211,7 +211,6 @@ public class DialogueManager : MonoBehaviour
     }
     IEnumerator TransitionToNextCloud()
     {
-
         activeSentence = "";
         yield return new WaitForSeconds(conversational_pause);
 

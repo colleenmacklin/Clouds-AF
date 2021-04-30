@@ -78,7 +78,7 @@ public class Game_CloudManager : MonoBehaviour
 
         //Start Act Intro, not the cloud shape
         EventManager.TriggerEvent("Introduction");
-
+        EventManager.TriggerEvent("SpawnShape");
         //SetCloudToShape();
     }
 
@@ -113,8 +113,6 @@ public class Game_CloudManager : MonoBehaviour
     // Cloud Functions
     //
     /////////////////////////
-
-
     void CreateActiveClouds()
     {
         //this doesn't really need to be it's own function, but leaving it for now in case we want to call anything else here.

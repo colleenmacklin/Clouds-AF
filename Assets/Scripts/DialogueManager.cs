@@ -88,6 +88,7 @@ public class DialogueManager : MonoBehaviour
         EventManager.StartListening("Introduction", ShowOpening);
         EventManager.StartListening("Conclusion", ShowConclusion);
         EventManager.StartListening("Respond", Respond); //click events do this function??? where??
+        EventManager.StartListening("DoneReading", ConversationalPauseTransition);
     }
 
     void OnDisable()
@@ -96,6 +97,7 @@ public class DialogueManager : MonoBehaviour
         EventManager.StopListening("Introduction", ShowOpening);
         EventManager.StopListening("Conclusion", ShowConclusion);
         EventManager.StopListening("Respond", Respond);
+        EventManager.StopListening("DoneReading", ConversationalPauseTransition);
     }
 
 
@@ -172,12 +174,12 @@ public class DialogueManager : MonoBehaviour
         //StartCoroutine(UpdateTextWithSentence(1));
 
         //if we are at the last option, we should move on without a click
-        if (currentLine == activeLines.Length - 1)
-        {
-            linesFinished = true;
-            StartCoroutine(TransitionToNextCloud()); //transition the lines
-            // EventManager.TriggerEvent("FadeOutSpace"); //fades out the space indicator
-        }
+        // if (currentLine == activeLines.Length - 1)
+        // {
+        //     linesFinished = true;
+        //     StartCoroutine(TransitionToNextCloud()); //transition the lines
+        //     // EventManager.TriggerEvent("FadeOutSpace"); //fades out the space indicator
+        // }
     }
 
 
@@ -200,17 +202,18 @@ public class DialogueManager : MonoBehaviour
         That is - we need to talk about what our event structure and our game sequence is
 
     */
+
+    void ConversationalPauseTransition()
+    {
+        Debug.Log("---ending dialogue, conversational pause---");
+
+        StartCoroutine(TransitionToNextCloud());
+    }
     IEnumerator TransitionToNextCloud()
     {
 
-        Debug.Log("---ending dialogue---");
-        yield return new WaitForSeconds(3f);
-        activeSentence = ""; //I wonder what other clouds we might see.
-                             // StartCoroutine(UpdateTextWithSentence(1));
-        yield return new WaitForSeconds(3f);
         activeSentence = "";
-        // StartCoroutine(UpdateTextWithSentence(1));
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(conversational_pause);
 
         EndConversation(); //activate the event for ending the convo
     }

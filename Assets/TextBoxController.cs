@@ -102,7 +102,7 @@ public class TextBoxController : MonoBehaviour
             complete = true;
             textField.text = ""; //clear text because it's the end
                                  //potentially trigger an event for ending the dialogue 
-            EventManager.TriggerEvent("ConversationEnded");
+            EventManager.TriggerEvent("DoneReading");
         }
     }
 

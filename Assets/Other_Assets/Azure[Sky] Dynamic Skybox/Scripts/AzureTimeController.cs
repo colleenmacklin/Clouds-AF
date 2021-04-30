@@ -461,13 +461,30 @@ namespace UnityEngine.AzureSky
                     continue;
                 if (m_customEventList[i].day != m_day && m_customEventList[i].day != -1)
                     continue;
+
+                if (m_hour != m_customEventList[i].executedHour) m_customEventList[i].isAlreadyExecutedOnThisHour = false;
                 if (m_customEventList[i].hour != m_hour && m_customEventList[i].hour != -1)
                     continue;
-                if (m_customEventList[i].minute != m_minute && m_customEventList[i].minute != -1)
-                    continue;
-                m_customEventList[i].unityEvent.Invoke();
+
+                if (m_customEventList[i].minute == -1)
+                {
+                    m_customEventList[i].unityEvent.Invoke();
+                }
+                else
+                {
+                    if (!m_customEventList[i].isAlreadyExecutedOnThisHour)
+                    {
+                        if (m_minute > m_customEventList[i].minute)
+                        {
+                            m_customEventList[i].executedHour = m_hour;
+                            m_customEventList[i].isAlreadyExecutedOnThisHour = true;
+                            m_customEventList[i].unityEvent.Invoke();
+                        }
+                    }
+                }
             }
         }
+
 
         /// <summary>
         /// Cumputes the celestial coordinates for all celestial bodies currently in use by the system.

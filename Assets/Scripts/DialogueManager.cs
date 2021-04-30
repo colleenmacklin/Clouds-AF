@@ -85,12 +85,16 @@ public class DialogueManager : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("Talk", StartDialogue);
+        EventManager.StartListening("Introduction", ShowOpening);
+        EventManager.StartListening("Conclusion", ShowConclusion);
         EventManager.StartListening("Respond", Respond); //click events do this function??? where??
     }
 
     void OnDisable()
     {
         EventManager.StopListening("Talk", StartDialogue);
+        EventManager.StopListening("Introduction", ShowOpening);
+        EventManager.StopListening("Conclusion", ShowConclusion);
         EventManager.StopListening("Respond", Respond);
     }
 
@@ -100,6 +104,23 @@ public class DialogueManager : MonoBehaviour
     ///   Dialogue Handling
     //
     ///////////////////
+    private void CutscenePlay(string cutsceneName)
+    {
+        var startingDialogue = dialogueSO.DialogueSubjectByKey(cutsceneName);
+        textBoxController.ReadNewLines(startingDialogue.Prompt);
+        EventManager.TriggerEvent("Cutscene");
+    }
+    public void ShowOpening()
+    {
+        string cutsceneName = "act_start";
+        CutscenePlay(cutsceneName);
+    }
+
+    public void ShowConclusion()
+    {
+        string cutsceneName = "act_end";
+        CutscenePlay(cutsceneName);
+    }
 
     //Handle everything about actually getting the Dialogue set up with targets and selections
     public void StartDialogue()

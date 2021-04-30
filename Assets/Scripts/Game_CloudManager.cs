@@ -75,7 +75,11 @@ public class Game_CloudManager : MonoBehaviour
         cloudSelectionIndex = -1;
         ShapeArray = ShuffleImageArray(ShapeArray);
         CreateActiveClouds();
-        SetCloudToShape();
+
+        //Start Act Intro, not the cloud shape
+        EventManager.TriggerEvent("Introduction");
+
+        //SetCloudToShape();
     }
 
     Texture2D[] ShuffleImageArray(Texture2D[] arr)
@@ -120,18 +124,23 @@ public class Game_CloudManager : MonoBehaviour
     //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()
     {
+
         cloudSelectionIndex++;
+        if (cloudSelectionIndex > ShapeArray.Length)
+        {
+            //we've already seen the ending
+            EventManager.TriggerEvent("AllShapesSeen");
+            return;
+        }
 
         if (cloudSelectionIndex == ShapeArray.Length)
         {
-            EventManager.TriggerEvent("AllShapesSeen");
+            EventManager.TriggerEvent("Conclusion");
             //  Debug.Log("This is over");// the problem with this is that it controls dialogue logic in the cloud. This is confusing to maintain
 
             //don't set a shape anymore
             return;
         }
-
-
 
         //choose a random cloud to turn into a shape
         //This whole logic might need to be changed

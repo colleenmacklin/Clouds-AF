@@ -58,12 +58,19 @@ public class Raycaster : MonoBehaviour
     {
         EventManager.StartListening("ConversationEnded", StartGazeTracking);
         EventManager.StartListening("Correct", StopGazeTracking);
+        EventManager.StartListening("Cutscene", ReadingMode);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("ConversationEnded", StartGazeTracking);
         EventManager.StopListening("Correct", StopGazeTracking);
+        EventManager.StopListening("Cutscene", ReadingMode);
+    }
+
+    void ReadingMode()
+    {
+        state = MouseState.READING;
     }
 
     //None of the tracking should be doing as many mutations as it is now

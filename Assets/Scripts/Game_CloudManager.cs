@@ -71,12 +71,16 @@ public class Game_CloudManager : MonoBehaviour
         EventManager.StopListening("FoundCloud", TurnOffCloud);
         EventManager.StopListening("ConversationEnded", SetCloudToShape);
     }
-
-    void Start()
+    void Awake()
     {
+        points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples);
         cloudSelectionIndex = -1;
         ShapeArray = ShuffleImageArray(ShapeArray);
         CreateActiveClouds();
+    }
+
+    void Start()
+    {
 
         //Start Act Intro, not the cloud shape
         EventManager.TriggerEvent("Introduction");
@@ -126,6 +130,8 @@ public class Game_CloudManager : MonoBehaviour
     {
 
         cloudSelectionIndex++;
+
+
         if (cloudSelectionIndex > ShapeArray.Length)
         {
             //we've already seen the ending
@@ -141,6 +147,8 @@ public class Game_CloudManager : MonoBehaviour
             //don't set a shape anymore
             return;
         }
+
+        Debug.Log(ActiveClouds.Count);
 
         //choose a random cloud to turn into a shape
         //This whole logic might need to be changed
@@ -190,6 +198,7 @@ public class Game_CloudManager : MonoBehaviour
     {
         points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples);
     }
+
     //Handy Gizmo draw calls for debugging cloud placement.
     /*
     void OnDrawGizmos()
@@ -233,6 +242,7 @@ public class Game_CloudManager : MonoBehaviour
 
     private void SpawnClouds()
     {
+        Debug.Log("Attempting to SpawnClouds");
         var _y = 60; //based on how high clouds should spawn
         Vector3 gv3 = new Vector3(regionSize.x, 0, regionSize.y); //scale
         Vector3 gv3half = new Vector3(gv3.x / 2, _y, gv3.z / 2); //center point

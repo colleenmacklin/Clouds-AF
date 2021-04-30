@@ -18,7 +18,7 @@ public class TextBoxController : MonoBehaviour
 
     [SerializeField]
     string currentLine = "";
-    int index;
+    int textLineIndex;
 
 
     [SerializeField]
@@ -78,8 +78,6 @@ public class TextBoxController : MonoBehaviour
             return;
         }
 
-
-
     }
 
     //Set activeline to the next line in the list
@@ -87,11 +85,11 @@ public class TextBoxController : MonoBehaviour
     void NextLine()
     {
         //set complete to true if we increment to the last sentence
-        if (index < linesList.Length - 1)
+        if (textLineIndex < linesList.Length - 1)
         {
-            index++;//increment sentence
+            textLineIndex++;//increment sentence
             //set the next active line
-            activeLine = linesList[index];
+            activeLine = linesList[textLineIndex];
             //clear the current text
             textField.text = "";
             //start typing
@@ -109,7 +107,7 @@ public class TextBoxController : MonoBehaviour
     void Reset()
     {
         complete = false;
-        index = 0;
+        textLineIndex = 0;
         textField.text = "";
         activeLine = "";
     }

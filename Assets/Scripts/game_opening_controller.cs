@@ -26,10 +26,16 @@ public class game_opening_controller : MonoBehaviour
 
         }
 
+        if (Input.GetKeyDown("f"))
+        {
+            EventManager.TriggerEvent("Dissipate");
+        }
+
+
 
     }
 
-    
+
     private void SetCloudToShape()
     {
         //choose a random cloud to turn into a shape

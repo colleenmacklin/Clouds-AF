@@ -45,7 +45,7 @@ namespace UnityEngine.AzureSky
         private void sunrise()
         {
             azureTimeController.SetTimeline(start_time);
-            azureTimeController.StartTimelineTransition(end_time, 0, 2, AzureTimeDirection.Forward);
+            azureTimeController.StartTimelineTransition(end_time, 0, 1.5f, AzureTimeDirection.Forward);
 
             /*
             Vector2 time_of_day = azureTimeController.GetTimeOfDay();

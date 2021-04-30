@@ -30,11 +30,15 @@ public class Game_Cloud : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("UpdateMe", UpdateMe);
+        EventManager.StartListening("ClarifyCloud", ClarifyCloud);
+        EventManager.StartListening("Dissipate", Dissipate);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("UpdateMe", UpdateMe);
+        EventManager.StopListening("ClarifyCloud", ClarifyCloud);
+        EventManager.StartListening("Dissipate", Dissipate);
     }
 
 
@@ -104,6 +108,19 @@ public class Game_Cloud : MonoBehaviour
         //spriteRenderer.sprite = Sprite.Create(shapeTexture, myRect, myPivot);
 
 
+    }
+
+    public void ClarifyCloud() //this sets the cloud to a more "clear" cloud
+    {
+        var _main = ps.main;
+        _main.simulationSpeed = 0.30f;
+        _main.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3f);
+    }
+
+
+    public void Dissipate() //called from controller
+    {
+        ps.Stop();
     }
 
 

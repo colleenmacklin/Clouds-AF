@@ -116,7 +116,7 @@ public class Raycaster : MonoBehaviour
         {
             Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, rot, focusInSpeed);
 
-            Debug.Log($"looking at target, {rot},{Camera.main.transform.localRotation}");
+            //Debug.Log($"looking at target, {rot},{Camera.main.transform.localRotation}");
             yield return null;
         }
 

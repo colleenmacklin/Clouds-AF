@@ -30,12 +30,14 @@ public class Raycaster : MonoBehaviour
     Vector3 lookAtSelected = new Vector3();
     //Get the camera mover so we can turn it on and off during dialogue
     public SimpleCameraController gazeMover; //attached to the camera *it probably shouldn't be
+    public TextBoxController textBoxControl;
     // Raycasting variables 
     Ray ray;
     RaycastHit hit;
     LayerMask mask;
 
     Quaternion initialCameraRot;
+    Coroutine activeCoroutine;
     void Start()
     {
         mask = LayerMask.GetMask("Clouds");
@@ -53,39 +55,62 @@ public class Raycaster : MonoBehaviour
         EventManager.StopListening("ConversationEnded", StartGazeTracking);
         EventManager.StopListening("Correct", StopGazeTracking);
     }
+
+    //None of the tracking should be doing as many mutations as it is now
+    //gazeMover, state, and the coroutines all require some reconfiguration in the future
     void StartGazeTracking()
     {
-        //StartCoroutine(ReturnToDefaultView());
+        if (activeCoroutine != null)
+        {
+
+            StopCoroutine(activeCoroutine);
+
+        }
+        activeCoroutine = StartCoroutine(ReturnToDefaultView());
 
         gazeMover.enabled = true;
+        state = MouseState.EMPTY;
+
     }
     IEnumerator ReturnToDefaultView()
     {
-        while (Quaternion.Angle(Camera.main.transform.localRotation, Quaternion.Euler(new Vector3(0, 0, 0))) > .2f)
+        while (Quaternion.Angle(Camera.main.transform.localRotation, Quaternion.identity) > 10f)
         {
-            Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.Euler(new Vector3(0, 0, 0)), .2f);
+            Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.identity, .2f);
+
+            //returning to center
             yield return null;
         }
-
-        gazeMover.enabled = true;
     }
     void StopGazeTracking()
     {
-        Debug.Log("hello");
+        state = MouseState.READING;
+        if (activeCoroutine != null)
+        {
+
+            StopCoroutine(activeCoroutine);
+
+        }
         gazeMover.enabled = false;
-        //look at selected 
-        StartCoroutine(LookAtSelection());
+        activeCoroutine = StartCoroutine(LookAtSelection());
+        EventManager.TriggerEvent("closeEye");
     }
 
+    //Look directly at target
+    //Does not end because the Quaternion Angle is in the wrong relative space (local to world angle comparison gives high values like 60 degrees).
     IEnumerator LookAtSelection()
     {
         Quaternion rot = Quaternion.LookRotation(Selected.transform.position, Camera.main.transform.up);
 
-        while (Quaternion.Angle(rot, Camera.main.transform.localRotation) > .2f)
+        while (Quaternion.Angle(rot, Camera.main.transform.localRotation) > 1f)// these values are just wrong
         {
             Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, rot, .2f);
+
+            Debug.Log($"looking at target, {rot},{Camera.main.transform.localRotation}");
             yield return null;
         }
+
+        Debug.Log("TargetFound");
     }
     void Update()
     {
@@ -120,6 +145,11 @@ public class Raycaster : MonoBehaviour
                 break;
             case MouseState.READING:
 
+                if (Input.GetMouseButtonDown(0))
+                {
+                    //in the future this should be some sort of reading state input
+                    textBoxControl.Check();//bad mutation management.
+                }
                 break;
         }
     }

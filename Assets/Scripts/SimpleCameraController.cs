@@ -12,6 +12,12 @@ namespace UnityTemplateProjects
         public float maxAngleX;
         public float maxAngleY;
 
+        public Vector3 initialEulerAngle;
+
+        void Start()
+        {
+            initialEulerAngle = new Vector3(-66, 0, 0);
+        }
 
         void Update()
         {
@@ -28,7 +34,9 @@ namespace UnityTemplateProjects
 
             // print(yaw);
             // print(pitch);
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(new Vector3(-pitch, yaw, 0)), .2f);
+            transform.localRotation = Quaternion.Slerp(
+                transform.localRotation,
+                Quaternion.Euler(new Vector3(-pitch, yaw, 0)), .2f);
 
         }
     }

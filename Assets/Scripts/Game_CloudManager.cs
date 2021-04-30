@@ -12,6 +12,11 @@ public class Game_CloudManager : MonoBehaviour
     private List<GameObject> ActiveClouds;
     [SerializeField]
     private GameObject cloudGroup;
+
+    //valid shapes for us to choose from.
+    //this needs to be updated so that a story can choose its parts
+    //we will have to update that in the future. -- story has slots
+
     [SerializeField]
     private Texture2D[] ShapeArray; //textures stay as an array because we are not generating run time textures
 
@@ -35,12 +40,14 @@ public class Game_CloudManager : MonoBehaviour
     List<Vector2> points;
 
 
+
     [Header("Debug Cloud Selections")]
     public GameObject chosenCloud;
     public Texture2D chosenShape;
     public GameObject shapeCollider; //our testing box that we resuse, will be a GameObject with only a collider on it
     public Bounds shapeBounds;
-
+    List<string> selectionHistory = new List<string>();
+    public int cloudSelectionIndex = -1;
 
     ///////////////////////
     //
@@ -65,20 +72,34 @@ public class Game_CloudManager : MonoBehaviour
 
     void Start()
     {
+        cloudSelectionIndex = -1;
+        ShapeArray = ShuffleImageArray(ShapeArray);
         CreateActiveClouds();
         SetCloudToShape();
+    }
+
+    Texture2D[] ShuffleImageArray(Texture2D[] arr)
+    {
+        Texture2D[] shuffledResult = arr;
+        int n = arr.Length;
+        while (n > 1)
+        {
+            n--;//simplifies the shuffledResult[n] down below
+
+            int i = Random.Range(0, n + 1);
+            var temp = shuffledResult[i];
+
+            shuffledResult[i] = shuffledResult[n];
+            shuffledResult[n] = temp;
+        }
+        return shuffledResult;
+
     }
 
 
     // Update is called once per frame
     void Update()
     {
-
-        //call this on a timer, or set of co-routines
-        if (Input.GetKeyDown("o"))
-        {
-            SetCloudToShape();
-        }
 
 
     }
@@ -96,14 +117,30 @@ public class Game_CloudManager : MonoBehaviour
         SpawnClouds();
     }
 
+    //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()
     {
+        cloudSelectionIndex++;
+
+        if (cloudSelectionIndex == ShapeArray.Length)
+        {
+            EventManager.TriggerEvent("AllShapesSeen");
+            //  Debug.Log("This is over");// the problem with this is that it controls dialogue logic in the cloud. This is confusing to maintain
+
+            //don't set a shape anymore
+            return;
+        }
+
+
+
         //choose a random cloud to turn into a shape
         //This whole logic might need to be changed
-        int shapeNum = (Random.Range(0, ShapeArray.Length));
+        int shapeNum = cloudSelectionIndex;//(Random.Range(0, ShapeArray.Length));
         int cloudNum = (Random.Range(0, ActiveClouds.Count));
         chosenShape = ShapeArray[shapeNum];
         chosenCloud = ActiveClouds[cloudNum];
+        selectionHistory.Add(chosenShape.name);
+
         Debug.Log("chosenCloud: " + chosenCloud);
 
         //tells cloud that it is not a shape anymore, changes it's shape...

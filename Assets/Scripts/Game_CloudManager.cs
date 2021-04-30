@@ -39,6 +39,8 @@ public class Game_CloudManager : MonoBehaviour
 
     List<Vector2> points;
 
+    [Range(0f, 40f)]
+    public float pauseBetweenText = 5f;
 
 
     [Header("Debug Cloud Selections")]
@@ -69,13 +71,21 @@ public class Game_CloudManager : MonoBehaviour
         EventManager.StopListening("FoundCloud", TurnOffCloud);
         EventManager.StopListening("ConversationEnded", SetCloudToShape);
     }
-
-    void Start()
+    void Awake()
     {
+        points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples);
         cloudSelectionIndex = -1;
         ShapeArray = ShuffleImageArray(ShapeArray);
         CreateActiveClouds();
-        SetCloudToShape();
+    }
+
+    void Start()
+    {
+
+        //Start Act Intro, not the cloud shape
+        EventManager.TriggerEvent("Introduction");
+        EventManager.TriggerEvent("SpawnShape");
+        //SetCloudToShape();
     }
 
     Texture2D[] ShuffleImageArray(Texture2D[] arr)
@@ -109,8 +119,6 @@ public class Game_CloudManager : MonoBehaviour
     // Cloud Functions
     //
     /////////////////////////
-
-
     void CreateActiveClouds()
     {
         //this doesn't really need to be it's own function, but leaving it for now in case we want to call anything else here.
@@ -120,18 +128,27 @@ public class Game_CloudManager : MonoBehaviour
     //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()
     {
+
         cloudSelectionIndex++;
+
+
+        if (cloudSelectionIndex > ShapeArray.Length)
+        {
+            //we've already seen the ending
+            EventManager.TriggerEvent("AllShapesSeen");
+            return;
+        }
 
         if (cloudSelectionIndex == ShapeArray.Length)
         {
-            EventManager.TriggerEvent("AllShapesSeen");
+            EventManager.TriggerEvent("Conclusion");
             //  Debug.Log("This is over");// the problem with this is that it controls dialogue logic in the cloud. This is confusing to maintain
 
             //don't set a shape anymore
             return;
         }
 
-
+        Debug.Log(ActiveClouds.Count);
 
         //choose a random cloud to turn into a shape
         //This whole logic might need to be changed
@@ -154,9 +171,17 @@ public class Game_CloudManager : MonoBehaviour
 
         EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
 
+        StartCoroutine(PauseBeforeTalking());
         //This is where the dialogue manager is activated.
         //maybe trigger this once the cloud has become a shape?
-        EventManager.TriggerEvent("Talk"); //Friend starts talking about the shape (on a timer)
+        //EventManager.TriggerEvent("Talk"); //Friend starts talking about the shape (on a timer)
+    }
+
+    private IEnumerator PauseBeforeTalking()
+    {
+        yield return new WaitForSeconds(pauseBetweenText);
+
+        EventManager.TriggerEvent("Talk");
     }
 
     private void TurnOffCloud()
@@ -173,6 +198,7 @@ public class Game_CloudManager : MonoBehaviour
     {
         points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples);
     }
+
     //Handy Gizmo draw calls for debugging cloud placement.
     /*
     void OnDrawGizmos()
@@ -216,6 +242,7 @@ public class Game_CloudManager : MonoBehaviour
 
     private void SpawnClouds()
     {
+        Debug.Log("Attempting to SpawnClouds");
         var _y = 60; //based on how high clouds should spawn
         Vector3 gv3 = new Vector3(regionSize.x, 0, regionSize.y); //scale
         Vector3 gv3half = new Vector3(gv3.x / 2, _y, gv3.z / 2); //center point

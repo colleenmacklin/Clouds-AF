@@ -42,7 +42,7 @@ public class DialogueManager : MonoBehaviour
     public string selectedTarget;
 
     [SerializeField]
-    [Range(3, 25)]
+    [Range(0, 25)]
     public float conversational_pause = 12;
 
     [SerializeField]
@@ -85,13 +85,19 @@ public class DialogueManager : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("Talk", StartDialogue);
+        EventManager.StartListening("Introduction", ShowOpening);
+        EventManager.StartListening("Conclusion", ShowConclusion);
         EventManager.StartListening("Respond", Respond); //click events do this function??? where??
+        EventManager.StartListening("DoneReading", ConversationalPauseTransition);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("Talk", StartDialogue);
+        EventManager.StopListening("Introduction", ShowOpening);
+        EventManager.StopListening("Conclusion", ShowConclusion);
         EventManager.StopListening("Respond", Respond);
+        EventManager.StopListening("DoneReading", ConversationalPauseTransition);
     }
 
 
@@ -100,6 +106,23 @@ public class DialogueManager : MonoBehaviour
     ///   Dialogue Handling
     //
     ///////////////////
+    private void CutscenePlay(string cutsceneName)
+    {
+        var startingDialogue = dialogueSO.DialogueSubjectByKey(cutsceneName);
+        textBoxController.ReadNewLines(startingDialogue.Prompt);
+        EventManager.TriggerEvent("Cutscene");
+    }
+    public void ShowOpening()
+    {
+        string cutsceneName = "act_start";
+        CutscenePlay(cutsceneName);
+    }
+
+    public void ShowConclusion()
+    {
+        string cutsceneName = "act_end";
+        CutscenePlay(cutsceneName);
+    }
 
     //Handle everything about actually getting the Dialogue set up with targets and selections
     public void StartDialogue()
@@ -114,10 +137,12 @@ public class DialogueManager : MonoBehaviour
         activeLines = subjectMatter.DialogueOptionsAtLevel(1);
         ResetCurrentLine(); //set currentLine to -1 to account for prompt
         //set the active line to the prompt
-        activeSentence = subjectMatter.Prompt;
+        //activeSentence = subjectMatter.Prompt;
         linesFinished = false;
 
-        textBoxController.ReadNewLines(new[] { activeSentence });
+        //textBoxController.ReadNewLines(new[] { activeSentence });
+        textBoxController.ReadNewLines(subjectMatter.Prompt);
+
     }
 
     void ResetCurrentLine()
@@ -149,12 +174,12 @@ public class DialogueManager : MonoBehaviour
         //StartCoroutine(UpdateTextWithSentence(1));
 
         //if we are at the last option, we should move on without a click
-        if (currentLine == activeLines.Length - 1)
-        {
-            linesFinished = true;
-            StartCoroutine(TransitionToNextCloud()); //transition the lines
-            // EventManager.TriggerEvent("FadeOutSpace"); //fades out the space indicator
-        }
+        // if (currentLine == activeLines.Length - 1)
+        // {
+        //     linesFinished = true;
+        //     StartCoroutine(TransitionToNextCloud()); //transition the lines
+        //     // EventManager.TriggerEvent("FadeOutSpace"); //fades out the space indicator
+        // }
     }
 
 
@@ -177,17 +202,17 @@ public class DialogueManager : MonoBehaviour
         That is - we need to talk about what our event structure and our game sequence is
 
     */
+
+    void ConversationalPauseTransition()
+    {
+        Debug.Log("---ending dialogue, conversational pause---");
+
+        StartCoroutine(TransitionToNextCloud());
+    }
     IEnumerator TransitionToNextCloud()
     {
-
-        Debug.Log("---ending dialogue---");
-        yield return new WaitForSeconds(3f);
-        activeSentence = ""; //I wonder what other clouds we might see.
-                             // StartCoroutine(UpdateTextWithSentence(1));
-        yield return new WaitForSeconds(3f);
         activeSentence = "";
-        // StartCoroutine(UpdateTextWithSentence(1));
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(conversational_pause);
 
         EndConversation(); //activate the event for ending the convo
     }

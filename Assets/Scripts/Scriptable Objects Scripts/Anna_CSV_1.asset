@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Anna_CSV_1
   m_EditorClassIdentifier: 
   dialogueFile: {fileID: 4900000, guid: ecd37a343d3cbc24984e82550dd885db, type: 3}
+  bufferLines: 1

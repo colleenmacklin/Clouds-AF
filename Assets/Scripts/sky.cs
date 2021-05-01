@@ -9,24 +9,31 @@ namespace UnityEngine.AzureSky
 
         public AzureTimeController azureTimeController;
         public AzureWeatherController weatherController;
-        public int start_time = 5;
-        public int end_time = 13;
+        public int sunrise_start_time = 5;
+        public int sunrise_end_time = 13;
+        public int sunset_start_time;
+        public int sunset_end_time = 24;
 
 
         // Start is called before the first frame update
         void OnEnable()
         {
             EventManager.StartListening("sunrise", sunrise);
+            EventManager.StartListening("sunset", sunset);
+
         }
 
         void OnDisable()
         {
             EventManager.StopListening("sunrise", sunrise);
+            EventManager.StopListening("sunset", sunset);
+
         }
 
         void Start()
         {
-            sunrise();
+            //azureTimeController.PauseTime;
+            //sunrise();
         }
 
         // Update is called once per frame
@@ -44,8 +51,8 @@ namespace UnityEngine.AzureSky
 
         private void sunrise()
         {
-            azureTimeController.SetTimeline(start_time);
-            azureTimeController.StartTimelineTransition(end_time, 0, 1.5f, AzureTimeDirection.Forward);
+            azureTimeController.SetTimeline(sunrise_start_time);
+            azureTimeController.StartTimelineTransition(sunrise_end_time, 0, 1.5f, AzureTimeDirection.Forward);
 
             /*
             Vector2 time_of_day = azureTimeController.GetTimeOfDay();
@@ -59,6 +66,16 @@ namespace UnityEngine.AzureSky
 
         }
 
-    }
-}
+        private void sunset()
+        {
+            var current_hour = azureTimeController.GetTimeOfDay().x;
+            var current_minute = azureTimeController.GetTimeOfDay().y;
+            azureTimeController.SetTimeline(current_hour);
+            azureTimeController.StartTimelineTransition(sunset_end_time, 0, 1.5f, AzureTimeDirection.Forward);
 
+
+        }
+
+    }
+
+}

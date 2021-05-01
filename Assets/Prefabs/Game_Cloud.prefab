@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3025029212260664773}
   - component: {fileID: 857159031385798982}
   - component: {fileID: -6267938805638723363}
+  - component: {fileID: 6607191602038463313}
   m_Layer: 9
   m_Name: Game_Cloud
   m_TagString: Cloud
@@ -69,11 +70,21 @@ MonoBehaviour:
   spawnDelay: 0
   cloudName: {fileID: 4001077985832164262}
   cloudShapes:
-  - {fileID: 2800000, guid: d0a97bec7e8be44cda435f991fe42fd6, type: 3}
   - {fileID: 2800000, guid: db989459f96c34b03bec57a4ab1dc67a, type: 3}
+  - {fileID: 2800000, guid: be7aa186c1b374544a3dc00acf183838, type: 3}
+  - {fileID: 2800000, guid: 07088ea9221d24318a5ca7f2ecfb3782, type: 3}
+  - {fileID: 2800000, guid: 72340f11290aa490c99f82bdd825a7b6, type: 3}
+  - {fileID: 2800000, guid: 4adcf921b06e7428fb5cc2c5581c3bd6, type: 3}
+  - {fileID: 2800000, guid: 63dc3dd98e2fe4840b195dccdd1306c3, type: 3}
+  - {fileID: 2800000, guid: eef1ec0332b464955b6ec3d92b3b231c, type: 3}
   - {fileID: 2800000, guid: b3818abe7acc34310abbb065cbefbb84, type: 3}
+  - {fileID: 2800000, guid: 881ba9c5c775a4b70a5b4501473a9c89, type: 3}
+  - {fileID: 2800000, guid: ad65923c9b8b4448cbbc1e3db75e4942, type: 3}
   - {fileID: 2800000, guid: 6c7e34122f1ab4c54932123dd42be44b, type: 3}
+  - {fileID: 2800000, guid: 39d4c79552af44a81966ef371adb0808, type: 3}
   - {fileID: 2800000, guid: 137d745cd15324f8a8d5e7b5e36e7712, type: 3}
+  - {fileID: 2800000, guid: 137d745cd15324f8a8d5e7b5e36e7712, type: 3}
+  - {fileID: 2800000, guid: b1684d45589d84d59ad2b57666b136f4, type: 3}
   isShape: 0
   myName: 
   new_Shape: {fileID: 0}
@@ -126,6 +137,22 @@ ConstantForce:
   m_RelativeForce: {x: 0, y: 0, z: 0}
   m_Torque: {x: 0, y: 0, z: 0}
   m_RelativeTorque: {x: 0, y: 0, z: 0}
+--- !u!114 &6607191602038463313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4001077985798978744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f3c39ea5ea824fd5a128ed906b818bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeDelay: 7
+  fadeTime: 5
+  fadeInOnStart: 1
+  fadeOutOnStart: 0
 --- !u!23 &6677913822787891109
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -186,6 +213,7 @@ MonoBehaviour:
     height: 0
   m_Renderer: {fileID: 6677913822787891109}
   myScale: {x: 0, y: 0, z: 0}
+  visible_at_start: 1
 --- !u!1001 &4001077985832131846
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -247,7 +275,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 12
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.startSize.minScalar
@@ -255,7 +283,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 1500
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: ExternalForcesModule.enabled
@@ -299,7 +327,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.maxNumParticles
-      value: 1500
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: lengthInSec
@@ -395,7 +423,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: simulationSpeed
-      value: 0.05
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.startLifetime.minMaxState
@@ -411,12 +439,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: EmissionModule.rateOverTime.minScalar
-      value: 500
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: moveWithTransform
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
+      propertyPath: ShapeModule.m_Texture
+      value: 
+      objectReference: {fileID: 2800000, guid: 39d4c79552af44a81966ef371adb0808, type: 3}
     - target: {fileID: 19900000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: m_MaxParticleSize
       value: 10

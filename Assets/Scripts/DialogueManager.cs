@@ -108,7 +108,7 @@ public class DialogueManager : MonoBehaviour
     ///////////////////
     private void CutscenePlay(string cutsceneName)
     {
-        var startingDialogue = dialogueSO.DialogueSubjectByKey(cutsceneName);
+        var startingDialogue = dialogueSO.DialogueSubjectByKey(cutsceneName); //startingdialogue is the wrong name for this
         textBoxController.ReadNewLines(startingDialogue.Prompt);
         EventManager.TriggerEvent("Cutscene");
     }
@@ -116,12 +116,17 @@ public class DialogueManager : MonoBehaviour
     {
         string cutsceneName = "act_start";
         CutscenePlay(cutsceneName);
+        //we might need to use timelines or something for better timing of events in the opening and closing but for now this works
+        EventManager.TriggerEvent("SlowDown"); //tells the cloud particle system to slow down to normal speed(speeds up in the beginning to enable fully-formed look at start
+
     }
 
     public void ShowConclusion()
     {
         string cutsceneName = "act_end";
         CutscenePlay(cutsceneName);
+        EventManager.TriggerEvent("Dissipate"); //dissolves clouds
+        EventManager.TriggerEvent("sunset"); //
     }
 
     //Handle everything about actually getting the Dialogue set up with targets and selections

@@ -32,16 +32,18 @@ public class Game_Cloud : MonoBehaviour
         EventManager.StartListening("UpdateMe", UpdateMe);
         EventManager.StartListening("ClarifyCloud", ClarifyCloud);
         EventManager.StartListening("Dissipate", Dissipate);
+        EventManager.StartListening("SlowDown", SlowDown);
+
     }
 
     void OnDisable()
     {
         EventManager.StopListening("UpdateMe", UpdateMe);
         EventManager.StopListening("ClarifyCloud", ClarifyCloud);
-        EventManager.StartListening("Dissipate", Dissipate);
+        EventManager.StopListening("Dissipate", Dissipate);
+        EventManager.StopListening("SlowDown", SlowDown);
+
     }
-
-
 
     void Awake()
     {
@@ -123,5 +125,12 @@ public class Game_Cloud : MonoBehaviour
         ps.Stop();
     }
 
+
+    private void SlowDown()
+    {
+        var _main = ps.main;
+        _main.simulationSpeed = .08f;
+       // _main.duration = 100000.00f;
+    }
 
 }

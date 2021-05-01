@@ -32,6 +32,9 @@ public class Game_CloudManager : MonoBehaviour
     public Vector2 regionSize = Vector2.one;
 
     [SerializeField]
+    public Vector2 regionOffset = Vector2.one;
+
+    [SerializeField]
     public int rejectionSamples = 30;
 
     [SerializeField]
@@ -199,6 +202,59 @@ public class Game_CloudManager : MonoBehaviour
         points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples);
     }
 
+
+    //shifts vector3
+    Vector3 ScaleAndShiftVector(Vector3 v, Vector3 shift, Vector3 scale)
+    {
+        return Vector3.Scale(v, scale) + shift;
+    }
+
+    private void SpawnClouds()
+    {
+        Debug.Log("Attempting to SpawnClouds");
+        var _y = 60; //based on how high clouds should spawn
+        Vector3 gv3 = new Vector3(regionSize.x, 0, regionSize.y); //scale
+        Vector3 gv3half = new Vector3(gv3.x / 2, _y, gv3.z / 2); //center point
+        //now we need to slightly shift things based on the trees, field of vision, etc.
+
+        Vector3 region_shift = new Vector3(gv3.x - regionSize.x, _y, gv3.z - regionSize.y);
+        Vector3 region_scale = new Vector3(0, 0, 0);
+        Vector3 newRegion = ScaleAndShiftVector(gv3half, region_shift, region_scale); //would want to use a region_shift relative to the player
+
+        Vector3 v3point_shift = new Vector3();
+        Vector3 scaleChange = new Vector3();
+        ActiveClouds = new List<GameObject>();
+        GameObject go;
+        int i = 0;
+
+        if (points != null)
+        {
+            foreach (Vector2 point in points)
+            {
+                //convert vector2D to vector3d
+                Vector3 v3point = new Vector3(point.x, _y, point.y); //turn vector2 point into vector3
+                Vector3 _shift = new Vector3(v3point.x - (gv3half.x + regionOffset.x), v3point.y, v3point.z - (gv3half.z + regionOffset.y)); //would want to use a region_shift relative to the player
+                Vector3 _scale = new Vector3(0, 0, 0);
+                v3point_shift = ScaleAndShiftVector(v3point, _shift, _scale);
+
+                float scaleNum = Random.Range(scaleRange.x, scaleRange.y);
+                scaleChange = new Vector3(scaleNum, scaleNum, scaleNum);
+                Debug.Log("points: " + v3point_shift);
+                //var go = SpawnClouds(ActiveClouds);
+                i++;
+                go = (GameObject)Instantiate(cloudGroup, v3point_shift, Quaternion.Euler(0, 0, 0), transform);
+                go.transform.localScale = scaleChange;
+
+                go.name = $"cloud {i}";
+                ActiveClouds.Add(go);
+
+            }
+
+        }
+
+
+    }
+
     //Handy Gizmo draw calls for debugging cloud placement.
     /*
     void OnDrawGizmos()
@@ -234,54 +290,5 @@ public class Game_CloudManager : MonoBehaviour
         }
     }
     */
-    //shifts vector3
-    Vector3 ScaleAndShiftVector(Vector3 v, Vector3 shift, Vector3 scale)
-    {
-        return Vector3.Scale(v, scale) + shift;
-    }
-
-    private void SpawnClouds()
-    {
-        Debug.Log("Attempting to SpawnClouds");
-        var _y = 60; //based on how high clouds should spawn
-        Vector3 gv3 = new Vector3(regionSize.x, 0, regionSize.y); //scale
-        Vector3 gv3half = new Vector3(gv3.x / 2, _y, gv3.z / 2); //center point
-        Vector3 region_shift = new Vector3(gv3.x - regionSize.x, _y, gv3.z - regionSize.y);
-        Vector3 region_scale = new Vector3(0, 0, 0);
-        Vector3 newRegion = ScaleAndShiftVector(gv3half, region_shift, region_scale); //would want to use a region_shift relative to the player
-
-        Vector3 v3point_shift = new Vector3();
-        Vector3 scaleChange = new Vector3();
-        ActiveClouds = new List<GameObject>();
-        GameObject go;
-        int i = 0;
-
-        if (points != null)
-        {
-            foreach (Vector2 point in points)
-            {
-                //convert vector2D to vector3d
-                Vector3 v3point = new Vector3(point.x, _y, point.y); //turn vector2 point into vector3
-                Vector3 _shift = new Vector3(v3point.x - gv3half.x, v3point.y, v3point.z - gv3half.z); //would want to use a region_shift relative to the player
-                Vector3 _scale = new Vector3(0, 0, 0);
-                v3point_shift = ScaleAndShiftVector(v3point, _shift, _scale);
-
-                float scaleNum = Random.Range(scaleRange.x, scaleRange.y);
-                scaleChange = new Vector3(scaleNum, scaleNum, scaleNum);
-                Debug.Log("points: " + v3point_shift);
-                //var go = SpawnClouds(ActiveClouds);
-                i++;
-                go = (GameObject)Instantiate(cloudGroup, v3point_shift, Quaternion.Euler(0, 0, 0), transform);
-                go.transform.localScale = scaleChange;
-
-                go.name = $"cloud {i}";
-                ActiveClouds.Add(go);
-
-            }
-
-        }
-
-
-    }
 
 }

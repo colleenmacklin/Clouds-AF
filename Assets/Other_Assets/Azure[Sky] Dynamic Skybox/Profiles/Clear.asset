@@ -2617,7 +2617,7 @@ MonoBehaviour:
     outputType: 0
     floatPropertyType: 0
     colorPropertyType: 0
-    slider: 0.1
+    slider: 0.02
     timelineBasedCurve:
       serializedVersion: 2
       m_Curve:
@@ -2783,7 +2783,7 @@ MonoBehaviour:
     outputType: 0
     floatPropertyType: 0
     colorPropertyType: 0
-    slider: 0
+    slider: 0.1
     timelineBasedCurve:
       serializedVersion: 2
       m_Curve:

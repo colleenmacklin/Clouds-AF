@@ -87,9 +87,10 @@ public class CloudManager : MonoBehaviour
         {
             var go = SpawnRandomNonIntersectingCloud(ActiveClouds);
             go.name = $"cloud {i}";
-            ActiveClouds.Add(go);
+            ActiveClouds.Add(go); //can make these the "special" clouds that end of getting changed to a shape
         }
     }
+
 
     private void SetCloudToShape()
     {
@@ -135,7 +136,7 @@ public class CloudManager : MonoBehaviour
 
             Debug.Log("Instantiation Attempts: " + n);
 
-            //set up random location
+            //set up random location within the range of possible locations
             float _xAxis = Random.Range(xRange.x, xRange.y);
             float _yAxis = Random.Range(yRange.x, yRange.y);
             float _zAxis = Random.Range(zRange.x, zRange.y);

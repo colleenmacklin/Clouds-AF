@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using EasyButtons;
 
 public class Game_Cloud : MonoBehaviour
 {
@@ -65,6 +66,7 @@ public class Game_Cloud : MonoBehaviour
         m_Renderer = GetComponent<MeshRenderer>();
     }
 
+    [Button]
     public void UpdateMe() //called from cloudlayer
     {
         //this function primarily makes sure that the underlying texture remains true to aspect ratio. Otherwise it squares everything off!
@@ -93,7 +95,7 @@ public class Game_Cloud : MonoBehaviour
             var ratio = Mathf.Max(minWidth / srcWidth, minHeight / srcHeight);
 
             var newsize = new Vector3(srcWidth * ratio, srcHeight * ratio, 10f);
-            
+
             return newsize;
         }
 
@@ -130,7 +132,7 @@ public class Game_Cloud : MonoBehaviour
     {
         var _main = ps.main;
         _main.simulationSpeed = .08f;
-       // _main.duration = 100000.00f;
+        // _main.duration = 100000.00f;
     }
 
 }

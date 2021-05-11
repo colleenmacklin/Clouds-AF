@@ -36,7 +36,7 @@ public class ScreenshotUtility : MonoBehaviour
         _autoScreenshotOn = false;
         StartCoroutine(AutomaticScreenshot());
         //access current texture name
-        current_shape = GameObject.Find("Game_Cloud").GetComponent<Opening_Cloud_Layer>().curr_Shape.name;
+        //    current_shape = GameObject.Find("Game_Cloud").GetComponent<Opening_Cloud_Layer>().curr_Shape.name;
     }
 
     void Update()

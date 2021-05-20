@@ -36,7 +36,7 @@ public class ScreenshotUtility : MonoBehaviour
         _autoScreenshotOn = false;
         StartCoroutine(AutomaticScreenshot());
         //access current texture name
-        current_shape = GameObject.Find("Game_Cloud").GetComponent<Opening_Cloud_Layer>().curr_Shape.name;
+        current_shape = GameObject.Find("Game_Cloud").GetComponent<Training_Cloud_Layer>().curr_Shape.name;
     }
 
     void Update()
@@ -67,7 +67,7 @@ public class ScreenshotUtility : MonoBehaviour
     private void SpawnShape()
     {
         //just makes sure to find the new name for the texture
-        current_shape = GameObject.Find("Game_Cloud").GetComponent<Opening_Cloud_Layer>().curr_Shape.name;
+        current_shape = GameObject.Find("Game_Cloud").GetComponent<Training_Cloud_Layer>().curr_Shape.name;
     }
 
     //For reference http://docs.unity3d.com/ScriptReference/Application.CaptureScreenshot.html

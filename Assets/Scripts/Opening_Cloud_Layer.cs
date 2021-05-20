@@ -69,9 +69,10 @@ public class Opening_Cloud_Layer : MonoBehaviour
             isShape = true;
 
             //do stuff
-            var shape = GameObject.FindWithTag("CloudManager").GetComponent<game_opening_controller>().chosenShape;
+            //var shape = GameObject.FindWithTag("CloudManager").GetComponent<game_opening_controller>().chosenShape;
+            var shape = GameObject.FindWithTag("CloudManager").GetComponent<training_controller>().chosenShape;
 
-            Shape = ps.shape;
+        Shape = ps.shape;
 
             Shape.texture = shape;
             curr_Shape = shape;

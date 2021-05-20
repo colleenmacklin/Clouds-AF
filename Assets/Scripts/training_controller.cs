@@ -5,7 +5,10 @@ using UnityEngine;
 public class training_controller : MonoBehaviour
 {
     public GameObject Cloud;
+    [Header("press 'o' to change to next texture")]
+    
     public Texture2D[] ShapeArray; //textures stay as an array because we are not generating run time textures
+
     public Texture2D chosenShape;
     private int i = 0;
 

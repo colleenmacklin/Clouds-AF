@@ -1,0 +1,32 @@
+fileFormatVersion: 2
+guid: 0b518dd9cd25f5842a486bd8c4358730
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Be Vietnam
+  fontNames:
+  - Be Vietnam
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c57cd540f1f7bbc48aa6941d0eff3deb, type: 3}
+  - {fileID: 12800000, guid: 0351dbc134f5f6749bc0a51fa8e82ae2, type: 3}
+  - {fileID: 12800000, guid: 18adb5f3994075f4091cca9a7afb3c79, type: 3}
+  - {fileID: 12800000, guid: 64444724f2a6b7244b46054b07486de9, type: 3}
+  - {fileID: 12800000, guid: a9624077f7339fb49a98628e4d2d55f7, type: 3}
+  - {fileID: 12800000, guid: d150aedaa7849ce468d84964689d01de, type: 3}
+  - {fileID: 12800000, guid: 19f27ebd825c8c34baa944b517e4f0b5, type: 3}
+  - {fileID: 12800000, guid: 80b59cdd8cf34474dbee88ed821b1deb, type: 3}
+  - {fileID: 12800000, guid: c6028aeea53394048a03c50f7156e98d, type: 3}
+  - {fileID: 12800000, guid: e741073f09e98374ab50dd6bee6a0b64, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

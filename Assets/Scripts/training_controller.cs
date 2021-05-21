@@ -10,6 +10,7 @@ public class training_controller : MonoBehaviour
     public Texture2D[] ShapeArray; //textures stay as an array because we are not generating run time textures
 
     public Texture2D chosenShape;
+
     private int i = 0;
 
     // Start is called before the first frame update
@@ -52,7 +53,6 @@ public class training_controller : MonoBehaviour
 
 
         //int shapeNum = (Random.Range(0, ShapeArray.Length));
-
         Debug.Log("shape: " + chosenShape.name);
         //EventManager.TriggerEvent("UpdateMe"); //tell components to update, again, might be a more performant/efficient way to do this
 

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using EasyButtons;
+
 
 
 // Potential data structure for every object's dialogues

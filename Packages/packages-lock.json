@@ -1,12 +1,6 @@
 {
   "dependencies": {
-    "com.madsbangh.easybuttons": {
-      "version": "https://github.com/madsbangh/EasyButtons.git#upm",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "807631633b64c8aa39801f6e767ee087acd72de3"
-    },
+    
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

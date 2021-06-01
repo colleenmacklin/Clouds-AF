@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using EasyButtons;
+
 
 public class Game_Cloud : MonoBehaviour
 {
@@ -66,7 +66,7 @@ public class Game_Cloud : MonoBehaviour
         m_Renderer = GetComponent<MeshRenderer>();
     }
 
-    [Button]
+
     public void UpdateMe() //called from cloudlayer
     {
         //this function primarily makes sure that the underlying texture remains true to aspect ratio. Otherwise it squares everything off!

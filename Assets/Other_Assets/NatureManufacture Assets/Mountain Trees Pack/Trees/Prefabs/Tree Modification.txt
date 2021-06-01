@@ -1,0 +1,4 @@
+If you want to modify  tree materials we recomand to modify MountainTreeSpruce object. We reconnect other tree materials into 01 material to avoid new texture generation. 
+Tree creater generates textures per tree but with our setup when we use put optimised materials from a tree into rest trees new textures are uneccesary. 
+This mean each whole tree type use only 1 texture set.
+If you want to change leaves color go to leaves for example Leaves_9 change its color and recompile tree_a which use that leaves.

@@ -131,6 +131,19 @@ public class Game_CloudManager : MonoBehaviour
         //       EventManager.TriggerEvent("SpawnShape");
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            GenerateNewClouds();
+        }
+    }
+
+    public void GenerateNewClouds()
+    {
+        SetCloudsToGenericShapes();
+        SetCloudsToTargetShapes();
+    }
     void SetTextureArrays()
     {
         cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
@@ -143,43 +156,6 @@ public class Game_CloudManager : MonoBehaviour
         SetTextureArrays();
     }
 
-    //Generic Shuffler
-    List<T> ShuffleList<T>(List<T> list)
-    {
-        List<T> shuffledResult = list;
-        int n = list.Count;
-        while (n > 1)
-        {
-            n--;//simplifies the shuffledResult[n] down below
-
-            int i = Random.Range(0, n + 1);
-            var temp = shuffledResult[i];
-
-            shuffledResult[i] = shuffledResult[n];
-            shuffledResult[n] = temp;
-        }
-        return shuffledResult;
-
-    }
-
-
-    T[] ShuffleArray<T>(T[] array)
-    {
-        T[] shuffledResult = array;
-        int n = array.Length;
-        while (n > 1)
-        {
-            n--;//simplifies the shuffledResult[n] down below
-
-            int i = Random.Range(0, n + 1);
-            var temp = shuffledResult[i];
-
-            shuffledResult[i] = shuffledResult[n];
-            shuffledResult[n] = temp;
-        }
-        return shuffledResult;
-
-    }
 
     ///////////////////////
     //
@@ -226,9 +202,12 @@ public class Game_CloudManager : MonoBehaviour
             generatedCloudObjects.Add(go);
         }
 
+        EventManager.TriggerEvent("CloudsGenerated");
+
     }
 
     //Set all clouds to some generic non target Shapes
+    //Note this is simpler because we do not care about repeats here
     void SetCloudsToGenericShapes()
     {
         //Shuffle clouds shape array
@@ -241,7 +220,7 @@ public class Game_CloudManager : MonoBehaviour
             //Get the shape component
             CloudShape cloud = generatedCloudObjects[i].GetComponent<CloudShape>();
             //Tell the cloud to handle the texture
-            cloud.SetShape(cloudGenericsArray[i]);
+            cloud.SetShape(cloudGenericsArray[i % cloudGenericsArray.Length]);
         }
     }
 
@@ -273,6 +252,7 @@ public class Game_CloudManager : MonoBehaviour
             Texture2D nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
 
             //compare current texture with existing selections
+            //if it's already been used, then we skip forward in the deck
             while (cloudsActiveHistory.Contains(cloud.CurrentShapeName) ||
                     cloudsSelectedHistory.Contains(cloud.CurrentShapeName) ||
                     nextShape.name == cloud.CurrentShapeName)
@@ -280,6 +260,7 @@ public class Game_CloudManager : MonoBehaviour
                 indexOffset++;
                 nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
 
+                //if we've gone through all the options, break out.
                 if (indexOffset >= cloudTargetsArray.Length)
                 {
                     Debug.Log("Looped through all possible targets but could not find nonduplicate, breaking");
@@ -302,7 +283,50 @@ public class Game_CloudManager : MonoBehaviour
         //TO DO
     }
 
+    ///////////////////////
+    //
+    //  Utilities
+    //
+    ///////////////////////////////
 
+
+    //Generic Shuffler
+    List<T> ShuffleList<T>(List<T> list)
+    {
+        List<T> shuffledResult = list;
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;//simplifies the shuffledResult[n] down below
+
+            int i = Random.Range(0, n + 1);
+            var temp = shuffledResult[i];
+
+            shuffledResult[i] = shuffledResult[n];
+            shuffledResult[n] = temp;
+        }
+        return shuffledResult;
+
+    }
+
+
+    T[] ShuffleArray<T>(T[] array)
+    {
+        T[] shuffledResult = array;
+        int n = array.Length;
+        while (n > 1)
+        {
+            n--;//simplifies the shuffledResult[n] down below
+
+            int i = Random.Range(0, n + 1);
+            var temp = shuffledResult[i];
+
+            shuffledResult[i] = shuffledResult[n];
+            shuffledResult[n] = temp;
+        }
+        return shuffledResult;
+
+    }
     //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()
     {

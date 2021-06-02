@@ -130,9 +130,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentShape: {fileID: 0}
   ps: {fileID: 4001077985846674118}
-  shapeRenderer: {fileID: 1364893356364409663}
   spawnTime: 0
   spawnDelay: 0
+  shapeRenderer: {fileID: 1364893356364409663}
 --- !u!65 &3025029212260664773
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -199,7 +199,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: m_Name
-      value: cloud1
+      value: CloudSystem
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: m_Layer

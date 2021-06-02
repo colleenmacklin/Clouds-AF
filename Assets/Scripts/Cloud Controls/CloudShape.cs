@@ -73,8 +73,8 @@ public class CloudShape : MonoBehaviour
 
         //Set the scale *of the collider* that represents the shape
         Vector3 colliderSize = new Vector3(
-            5f * textureScaleAdjustment.x,
-            5f * textureScaleAdjustment.y,
+            5f * textureScaleAdjustment.x / 10f,
+            5f * textureScaleAdjustment.y / 10f,
             2f
         );
         cloudCollider.size = colliderSize;

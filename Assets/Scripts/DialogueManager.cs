@@ -225,7 +225,7 @@ public class DialogueManager : MonoBehaviour
     void ReadSelection()
     {
         //be careful about script component: it has to match the cloud.
-        selectedTarget = GetComponent<Raycaster>()?.Selected.GetComponent<GameCloudGroup>().curr_Shape.name;
+        selectedTarget = GetComponent<Raycaster>()?.Selected.GetComponent<CloudShape>().CurrentShapeName;
     }
 
     bool ValidateSelection(string selection)

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,10 @@ using PoissonDisc;
         *   TurnOffCloud
         *   GenerateClouds
 
+    Developmental Note** because poisson positions actually come in an ordered fashion, we 
+    can actually use the structure to select for the "middle" if we start there and fan out.
+    The fan out naturally allow us to center our target shapes without additional search.
+    This is left as a task for a future developer.
 */
 
 public class Game_CloudManager : MonoBehaviour
@@ -47,8 +52,9 @@ public class Game_CloudManager : MonoBehaviour
     [SerializeField]
     private Texture2D[] cloudGenericsArray; //textures stay as an array because we are not generating run time textures
     [SerializeField]
-    private List<string> cloudSelectedHistory;
-    List<Vector2> points;//I don't think we need this
+    private List<string> cloudsSelectedHistory;
+    [SerializeField]
+    private List<string> cloudsActiveHistory;
 
 
     [Header("Debug Cloud Selections")]
@@ -66,16 +72,16 @@ public class Game_CloudManager : MonoBehaviour
 
     [SerializeField]
     [Tooltip("The collision distance for the poisson discs. Effectively setting grid density")]
-    public float poissonRadius = 50;//default is 50
+    public float poissonRadius = 20;//default is 20
 
     [SerializeField]
     [Tooltip("The size of the region to create points in")] //This region is from 0,0 and must be translated 
-    public Vector2 poissonRegionSize = new Vector2(150f, 120f);//default we will use 150x120
+    public Vector2 poissonRegionSize = new Vector2(150f, 100f);//default we will use 150x120
 
     [SerializeField]
 
     [Tooltip("How far to translate offset the region")]
-    public Vector3 regionTranslation = new Vector3(-30f, 60f, -40f);//default is -30,-40,0
+    public Vector3 regionTranslation = new Vector3(-75, 60f, -40f);//default is -30,-40,0
 
     [SerializeField]
     [Tooltip("Number of rejection samples before giving up on a sample. Default is 30 ")]
@@ -107,6 +113,7 @@ public class Game_CloudManager : MonoBehaviour
     }
     void Awake()
     {
+        SetTextureArrays(); //more intensive(?) do this in awake
         // points = PoissonDiscSampling.GeneratePoints(poissonRadius, poissonRegionSize, poissonRejectionSamples);
         // cloudSelectionIndex = -1;
         // cloudTargetsArray = ShuffleTexture2DArray(cloudTargetsArray);
@@ -116,17 +123,31 @@ public class Game_CloudManager : MonoBehaviour
     void Start()
     {
         GenerateClouds();
+        SetCloudsToGenericShapes();
+        SetCloudsToTargetShapes();
         EventManager.TriggerEvent("ConversationEnded");
         //Start Act Intro, not the cloud shape
         //        EventManager.TriggerEvent("Introduction");
         //       EventManager.TriggerEvent("SpawnShape");
     }
 
-    //Generic Shuffler
-    Texture2D[] ShuffleTexture2DArray(Texture2D[] arr)
+    void SetTextureArrays()
     {
-        Texture2D[] shuffledResult = arr;
-        int n = arr.Length;
+        cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+        cloudGenericsArray = Resources.LoadAll("Cloud_Natural", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+
+    }
+
+    void OnValidate()
+    {
+        SetTextureArrays();
+    }
+
+    //Generic Shuffler
+    List<T> ShuffleList<T>(List<T> list)
+    {
+        List<T> shuffledResult = list;
+        int n = list.Count;
         while (n > 1)
         {
             n--;//simplifies the shuffledResult[n] down below
@@ -141,10 +162,11 @@ public class Game_CloudManager : MonoBehaviour
 
     }
 
-    List<T> ShuffleList<T>(List<T> list)
+
+    T[] ShuffleArray<T>(T[] array)
     {
-        List<T> shuffledResult = list;
-        int n = list.Count;
+        T[] shuffledResult = array;
+        int n = array.Length;
         while (n > 1)
         {
             n--;//simplifies the shuffledResult[n] down below
@@ -206,11 +228,80 @@ public class Game_CloudManager : MonoBehaviour
 
     }
 
-    void CreateActiveClouds()
+    //Set all clouds to some generic non target Shapes
+    void SetCloudsToGenericShapes()
     {
-        //this doesn't really need to be it's own function, but leaving it for now in case we want to call anything else here.
-        SpawnClouds();
+        //Shuffle clouds shape array
+        cloudGenericsArray = ShuffleArray(cloudGenericsArray);
+
+        //loop through all clouds
+
+        for (int i = 0; i < generatedCloudObjects.Count; i++)
+        {
+            //Get the shape component
+            CloudShape cloud = generatedCloudObjects[i].GetComponent<CloudShape>();
+            //Tell the cloud to handle the texture
+            cloud.SetShape(cloudGenericsArray[i]);
+        }
     }
+
+    //Set specified number of clouds to the target shapes
+    //Is uncontrolled to an extent, entirely random
+    //Create a comparison list as we go along so we do not repeat shapes set to set
+    void SetCloudsToTargetShapes()
+    {
+        //shuffle possible targets
+        cloudTargetsArray = ShuffleArray(cloudTargetsArray);
+
+        //shuffle the generated clouds
+        generatedCloudObjects = ShuffleList(generatedCloudObjects);
+
+        //Store the next set of active targets so we compare them later
+        List<string> incomingActiveTargets = new List<string>();
+        for (int i = 0; i < numberOfTargetsToGenerate; i++)
+        {
+
+            int indexOffset = 0;
+            if (i >= generatedCloudObjects.Count)
+            {
+                Debug.Log($"Out of potential clouds to convert to target, reached {i} of {numberOfTargetsToGenerate}.");
+                break;
+            }
+            //Get the shape component
+            CloudShape cloud = generatedCloudObjects[i].GetComponent<CloudShape>();
+
+            Texture2D nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
+
+            //compare current texture with existing selections
+            while (cloudsActiveHistory.Contains(cloud.CurrentShapeName) ||
+                    cloudsSelectedHistory.Contains(cloud.CurrentShapeName) ||
+                    nextShape.name == cloud.CurrentShapeName)
+            {
+                indexOffset++;
+                nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
+
+                if (indexOffset >= cloudTargetsArray.Length)
+                {
+                    Debug.Log("Looped through all possible targets but could not find nonduplicate, breaking");
+                    break;
+                }
+            }
+            //Tell the cloud to handle the texture
+            cloud.SetShape(cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length]);
+            incomingActiveTargets.Add(nextShape.name);
+        }
+
+        //replace active history with new set of targets
+        cloudsActiveHistory = incomingActiveTargets;
+    }
+
+
+    //Set a specific cloud to a shape
+    void SetCloudToShape(int index, Texture2D shape)
+    {
+        //TO DO
+    }
+
 
     //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()

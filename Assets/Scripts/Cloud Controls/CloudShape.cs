@@ -38,7 +38,11 @@ public class CloudShape : MonoBehaviour
     [Tooltip("Set to Quad renderer")]
     private Renderer shapeRenderer;
 
-
+    private void Awake()
+    {
+        psShape = ps.shape; // do not forget to set this first! will throw null reference exception
+        cloudCollider = GetComponent<BoxCollider>();
+    }
 
     //In start we look at the camera and
     //We set the collider reference
@@ -47,7 +51,6 @@ public class CloudShape : MonoBehaviour
         //rotate to look at the camera 
         var camera = Camera.main.transform;
         transform.LookAt(camera, Vector3.back);
-        cloudCollider = this.GetComponent<BoxCollider>();
 
     }
 

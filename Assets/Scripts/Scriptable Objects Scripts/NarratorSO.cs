@@ -38,7 +38,7 @@ public class NarratorSO : ScriptableObject
     [Tooltip("Dialogue delimiter, can be anything, default is ==")]
     public string DialogueDelimiter = "==";
 
-    public List<Story> AllStory = new List<Story>();
+    public List<Story> StoryData = new List<Story>();
 
     public bool ProcessNarratorFile(TextAsset dataFile = null)
     {
@@ -63,8 +63,7 @@ public class NarratorSO : ScriptableObject
         //create list of all data
         //where 0 is story 1, 1 is story 2, 2 is story 3
         //this is a vertical list of all the data, where indices are off by 1
-        List<Dictionary<string, string[]>> data = new List<Dictionary<string, string[]>>(storyTitles.Length - 1);
-
+        List<Dictionary<string, string[]>> data = new List<Dictionary<string, string[]>>();
         for (int i = 1; i < records.Length; i++)
         {
             //second line is in format:
@@ -75,8 +74,17 @@ public class NarratorSO : ScriptableObject
             //started from j = 1 because the 0 position is just the key
             for (int j = 1; j < keyedText.Length; j++)
             {
-                var key = keyedText[0];
-                var dialogue = keyedText[j].Split(dialogueOperator, StringSplitOptions.None);
+                string key = keyedText[0];
+                string[] dialogue = keyedText[j].Split(dialogueOperator, StringSplitOptions.None);
+                //add string keys per entry
+                //if dictionary is not present, create dictionary
+                //over time, assemble the list of data which is all those dictionaries
+                if (data.Count < j)
+                {
+                    data.Add(new Dictionary<string, string[]>());
+                }
+
+                //j is shuffled around because of the offset of counting from 1
                 data[j - 1].Add(key, dialogue);
             }
 
@@ -85,7 +93,7 @@ public class NarratorSO : ScriptableObject
         //Add all stories into the list of stories with keys
         for (int i = 1; i < storyTitles.Length; i++)
         {
-            AllStory.Add(new Story(storyTitles[i], data[i - 1]));
+            StoryData.Add(new Story(storyTitles[i], data[i - 1]));
         }
 
         return true;

@@ -14,6 +14,7 @@ the dialogueText reference.
 4/27/21 This is now responsible for three things: handling choices, sending dialogue, and advancing choices
 Perhaps this should be reconsidered.
 */
+
 [RequireComponent(typeof(Raycaster))]
 public class DialogueManager : MonoBehaviour
 {
@@ -106,6 +107,7 @@ public class DialogueManager : MonoBehaviour
     ///   Dialogue Handling
     //
     ///////////////////
+
     private void CutscenePlay(string cutsceneName)
     {
         var startingDialogue = dialogueSO.DialogueSubjectByKey(cutsceneName); //startingdialogue is the wrong name for this
@@ -163,7 +165,7 @@ public class DialogueManager : MonoBehaviour
         if (linesFinished) return;
 
         ReadSelection();
-        if (ValidateSelection(selectedTarget))
+        if (SelectionIsValid(selectedTarget))
         {
             //activeSentence = ActivateNextSentence();
             textBoxController.ReadNewLines(activeLines);
@@ -228,7 +230,7 @@ public class DialogueManager : MonoBehaviour
         selectedTarget = GetComponent<Raycaster>()?.Selected.GetComponent<CloudShape>().CurrentShapeName;
     }
 
-    bool ValidateSelection(string selection)
+    bool SelectionIsValid(string selection)
     {
         return conversationTarget == selection;
     }

@@ -72,9 +72,11 @@ public class CloudShape : MonoBehaviour
         psShape.texture = shapeTexture;
 
         //Set the scale *of the collider* that represents the shape
+        //Collider is rotated, so the values are x and y.
+        //And the 7f arbbitrarily for "best fit"
         Vector3 colliderSize = new Vector3(
-            5f * textureScaleAdjustment.x / 7.5f,
-            5f * textureScaleAdjustment.y / 7.5f,
+            5f * textureScaleAdjustment.x / 7f,
+            5f * textureScaleAdjustment.y / 7f,
             2f
         );
         cloudCollider.size = colliderSize;

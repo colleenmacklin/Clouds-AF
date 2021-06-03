@@ -2,13 +2,13 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(Game_CloudManager))]
+[CustomEditor(typeof(CloudManager))]
 public class CloudManagerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
 
-        Game_CloudManager script = (Game_CloudManager)target;
+        CloudManager script = (CloudManager)target;
         if (GUILayout.Button("Generate New Cloudscape"))
         {
             script.GenerateNewClouds();

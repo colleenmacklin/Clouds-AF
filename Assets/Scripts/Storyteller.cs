@@ -10,8 +10,8 @@ public class Storyteller : MonoBehaviour
     void Start()
     {
         narrator.ProcessNarratorFile();
-        Debug.Log(narrator.StoryData[0].Name);
-        Debug.Log(narrator.StoryData[0].Content["unicorn"][0]);
+        //        Debug.Log(narrator.StoryData[0].Name);
+        //        Debug.Log(narrator.StoryData[0].Content["unicorn"][0]);
     }
 
     // Update is called once per frame

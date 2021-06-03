@@ -11,6 +11,10 @@ using UnityEngine.Events;
     The primary function is the SetTexture method which will rescale the images into
 
 */
+// TO DO
+
+//REMOVE ALL EVENTS FROM INDIVIDUAL CLOUDS
+
 public class CloudShape : MonoBehaviour
 {
 
@@ -37,6 +41,20 @@ public class CloudShape : MonoBehaviour
     [SerializeField]
     [Tooltip("Set to Quad renderer")]
     private Renderer shapeRenderer;
+
+    private void OnEnable()
+    {
+        EventManager.StartListening("StopClouds", StopClouds);
+        EventManager.StartListening("ClarifyClouds", ClarifyClouds);
+        EventManager.StartListening("SlowDownClouds", SlowDownClouds);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening("StopClouds", StopClouds);
+        EventManager.StopListening("ClarifyClouds", ClarifyClouds);
+        EventManager.StopListening("SlowDownClouds", SlowDownClouds);
+    }
 
     private void Awake()
     {

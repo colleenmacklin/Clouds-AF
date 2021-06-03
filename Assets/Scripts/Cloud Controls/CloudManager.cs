@@ -13,12 +13,14 @@ using PoissonDisc;
     It is also the source of the event handling, as it can route the event to the clouds. 
     The Manager, then, acts as the cloud conductor as it controls how clouds should be acting
 
-    It handles the following events
-        *   ClarifyCloud
-        *   Dissipate
-        *   SlowDown
-        *   TurnOffCloud
-        *   GenerateClouds
+    Events have been mostly shifted over to the clouds
+
+    But generation events and transitions are still on the manager
+    * Begin -> GenerateNew
+    * StoryEnded -> NewTargets
+
+    //TODO:: BRING THE CLOUD EVENTS INTO THIS MANAGER SO WE CAN CONTROL HOW THEY ALL BEHAVE
+    IN TANDEM AND ALSO FIRE EVENTS WHEN THEY FINISH ACTING
 
     Developmental Note** because poisson positions actually come in an ordered fashion, we 
     can actually use the structure to select for the "middle" if we start there and fan out.
@@ -94,38 +96,25 @@ public class CloudManager : MonoBehaviour
     //
     /////////////////////////
 
-    //behaviors:
-    //tell EventManager to "SpawnShape" (CloudArray[n], ShapeArray[n])
-    //tell EventManager to remove "SpawnShape" (CloudArray[n])
     void OnEnable()
     {
-        //  EventManager.StartListening("FoundCloud", TurnOffCloud);
-        // EventManager.StartListening("ConversationEnded", SetCloudToShape);
+        EventManager.StartListening("Setup", SetCloudsToTargetShapes);
+        EventManager.StartListening("StoryEnded", SetNextShapes);
 
-        // EventManager.StartListening("UpdateMe",ClarifyCloud);
-        // EventManager.StartListening("UpdateMe",Dissipate);
-        // EventManager.StartListening("UpdateMe",SlowDown);
     }
 
     void OnDisable()
     {
-        //EventManager.StopListening("FoundCloud", TurnOffCloud);
-        // EventManager.StopListening("ConversationEnded", SetCloudToShape);
+        EventManager.StopListening("Setup", SetCloudsToTargetShapes);
+        EventManager.StopListening("StoryEnded", SetNextShapes);
     }
     void Awake()
     {
-        SetTextureArrays(); //more intensive(?) do this in awake
-        // points = PoissonDiscSampling.GeneratePoints(poissonRadius, poissonRegionSize, poissonRejectionSamples);
-        // cloudSelectionIndex = -1;
-        // cloudTargetsArray = ShuffleTexture2DArray(cloudTargetsArray);
-        // CreateActiveClouds();
+        SetTextureArrays(); //more intensive(?), so we do this in awake
     }
 
     void Start()
     {
-        GenerateClouds();
-        SetCloudsToGenericShapes();
-        SetCloudsToTargetShapes();
         EventManager.TriggerEvent("ConversationEnded");
         //Start Act Intro, not the cloud shape
         //        EventManager.TriggerEvent("Introduction");
@@ -134,24 +123,32 @@ public class CloudManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            GenerateNewClouds();
-        }
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     GenerateNewClouds();
+        // }
     }
 
-    public void GenerateNewClouds()
+    private void GenerateNewClouds()
     {
+        GenerateClouds();
+        SetNextShapes();
+    }
+
+    private void SetNextShapes()
+    {
+
         SetCloudsToGenericShapes();
         SetCloudsToTargetShapes();
     }
     void SetTextureArrays()
-    {
+    {//from unity docs
         cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
         cloudGenericsArray = Resources.LoadAll("Cloud_Natural", typeof(Texture2D)).Cast<Texture2D>().ToArray();
 
     }
 
+    //Basically make sure we always have updated images in our array
     void OnValidate()
     {
         SetTextureArrays();
@@ -264,7 +261,7 @@ public class CloudManager : MonoBehaviour
                 //if we've gone through all the options, break out.
                 if (indexOffset >= cloudTargetsArray.Length)
                 {
-                    Debug.Log("Looped through all possible targets but could not find nonduplicate, breaking");
+                    Debug.Log("Looped through all possible targets but could not find non-duplicate, breaking");
                     break;
                 }
             }
@@ -293,6 +290,11 @@ public class CloudManager : MonoBehaviour
     //Two versions of the Cloud Actions from the manager level
     //But because events can't take furhter data right now, we would need to add yet another function
     //To wrap around this.
+
+
+    // TODO:: Set up these manager level functions because they let us fire events when
+    // all the cloud actions are **DONE** 
+    // That is actually pretty important!!!
     IEnumerable PerformCloudActionOverTime(Action<T> cloudAction, float totalExecutionTIme)
     {
         float interval = totalExecutionTIme / generatedCloudObjects.Count;
@@ -312,8 +314,6 @@ public class CloudManager : MonoBehaviour
             cloudAction(c);
         }
     }
-
-
 
     //These are added at the manager level in case we need to do any high order scope comparisons
     //Otherwise, the event driven form is fine.

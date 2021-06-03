@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine.Events;
 
 /*
-The Dialogue Manager should take the chosen object from the Game_CloudManager
+The Dialogue Manager should take the chosen object from the CloudManager
 and then choose that as the active dialogue. It will then move through that dialogue list
 as one presses the space bar (or calls the function). This will change the text that is inside
 the dialogueText reference. 
@@ -135,7 +135,7 @@ public class DialogueManager : MonoBehaviour
     public void StartDialogue()
     {
         Debug.Log("Start dialogue beginning");
-        var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<Game_CloudManager>().chosenShape;
+        var myTarget = GameObject.FindWithTag("CloudManager").GetComponent<CloudManager>().chosenShape;
         var targetName = myTarget.name;
 
         conversationTarget = targetName;

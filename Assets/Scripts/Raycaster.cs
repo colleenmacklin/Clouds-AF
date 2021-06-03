@@ -8,6 +8,7 @@ Raycaster started as a means of controlling the clicking events and having state
 It is ballooning into a more full player class. Consider a state pattern implementation.
 
 Just in general the movement of the camera needs to be reconsidered. It shouldn't be trailing the mouse.
+Movement of the mouse should be made relative to the screen rect bounds.
 */
 public class Raycaster : MonoBehaviour
 {

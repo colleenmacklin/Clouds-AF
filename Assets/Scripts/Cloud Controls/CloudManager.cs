@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -281,6 +282,52 @@ public class CloudManager : MonoBehaviour
     void SetCloudToShape(int index, Texture2D shape)
     {
         //TO DO
+    }
+
+    //////////////////
+    //
+    //   Event Behavior
+    //
+    //////////////////////
+
+    //Two versions of the Cloud Actions from the manager level
+    //But because events can't take furhter data right now, we would need to add yet another function
+    //To wrap around this.
+    IEnumerable PerformCloudActionOverTime(Action<T> cloudAction, float totalExecutionTIme)
+    {
+        float interval = totalExecutionTIme / generatedCloudObjects.Count;
+
+        foreach (GameObject go in generatedCloudObjects)
+        {
+            CloudShape c = go.GetComponent<CloudShape>();
+            cloudAction(c);
+            yield return new WaitForSeconds(interval);
+        }
+    }
+    void PerformCloudAction(Action<T> cloudAction)
+    {
+        foreach (GameObject go in generatedCloudObjects)
+        {
+            CloudShape c = go.GetComponent<CloudShape>();
+            cloudAction(c);
+        }
+    }
+
+
+
+    //These are added at the manager level in case we need to do any high order scope comparisons
+    //Otherwise, the event driven form is fine.
+    void SlowDownCloud(CloudShape c)
+    {
+        c.SlowDownClouds();
+    }
+    void ClarifyCloud(CloudShape c)
+    {
+        c.ClarifyCloud();
+    }
+    void StopCloud(CloudShape c)
+    {
+        c.StopCloud();
     }
 
     ///////////////////////

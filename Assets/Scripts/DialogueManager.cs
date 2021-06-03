@@ -127,7 +127,7 @@ public class DialogueManager : MonoBehaviour
     {
         string cutsceneName = "act_end";
         CutscenePlay(cutsceneName);
-        EventManager.TriggerEvent("Dissipate"); //dissolves clouds
+        EventManager.TriggerEvent("StopClouds"); //dissolves clouds
         EventManager.TriggerEvent("sunset"); //
     }
 

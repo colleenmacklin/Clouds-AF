@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 /*
 The Dialogue Manager should take the chosen object from the CloudManager
@@ -52,6 +53,7 @@ public class DialogueManager : MonoBehaviour
         // EventManager.StartListening("Talk", StartDialogue);
         // EventManager.StartListening("Introduction", ShowOpening);
         // EventManager.StartListening("Conclusion", ShowConclusion);
+        EventManager.StartListening("sunset", EndGame);
         EventManager.StartListening("Respond", Respond); //click events do this function??? where??
         EventManager.StartListening("DoneReading", ConversationalPauseTransition);
 
@@ -59,6 +61,7 @@ public class DialogueManager : MonoBehaviour
 
     void OnDisable()
     {
+        EventManager.StopListening("sunset", EndGame);
         EventManager.StopListening("Respond", Respond);
         EventManager.StopListening("DoneReading", ConversationalPauseTransition);
 
@@ -93,7 +96,7 @@ public class DialogueManager : MonoBehaviour
         if (linesFinished)
         {
             Debug.Log("Lines Finished, no response");
-            EndGame();
+            return;
         }
         ReadSelection();
         Teller.RespondToShape(selectedTarget);
@@ -109,7 +112,14 @@ public class DialogueManager : MonoBehaviour
     {
         yield return new WaitForSeconds(conversational_pause);
 
-        EndConversation(); //activate the event for ending the convo
+        //YIKES LINE IS IN HERE
+        if (!linesFinished)
+            EndConversation(); //activate the event for ending the convo
+        else
+        {
+            EventManager.TriggerEvent("EndingConclusion");
+            EventManager.TriggerEvent("");
+        }
     }
 
     void EndConversation()

@@ -106,9 +106,7 @@ public class Raycaster : MonoBehaviour
         ReadingMode();
         if (activeCoroutine != null)
         {
-
             StopCoroutine(activeCoroutine);
-
         }
         gazeMover.enabled = false;
         activeCoroutine = StartCoroutine(LookAtSelection());

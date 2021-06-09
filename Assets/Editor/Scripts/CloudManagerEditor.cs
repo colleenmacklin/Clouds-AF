@@ -13,6 +13,11 @@ public class CloudManagerEditor : Editor
         {
             script.GenerateNewClouds();
         }
+        if (GUILayout.Button("Set Next Clouds"))
+        {
+            script.SetNextShapes();
+        }
+
 
         DrawDefaultInspector();
     }

@@ -38,8 +38,6 @@ public class TextBoxController : MonoBehaviour
     {
         dialogueAudio = GetComponent<AudioSource>();
         dialogueAudio.clip = typeSound;
-        Reset();
-        typingCoroutine = StartCoroutine(TypeString());
     }
 
     //Print out the string over time and play audio
@@ -49,7 +47,7 @@ public class TextBoxController : MonoBehaviour
         {
             textField.text += character;
 
-            dialogueAudio.Play(); //play audio event
+            dialogueAudio?.Play(); //play audio event
 
             yield return new WaitForSeconds(1f / charactersPerSecond);
         }

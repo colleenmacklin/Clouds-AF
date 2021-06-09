@@ -72,6 +72,17 @@ public class CloudShape : MonoBehaviour
 
     }
 
+    public void TurnOnCollider()
+    {
+        cloudCollider.enabled = true;
+    }
+
+    public void TurnOffCollider()
+    {
+        cloudCollider.enabled = false;
+    }
+
+
     //SetShape takes a texture (and sets it after a rescale)
     //this also sets the collider size to update with it
     public void SetShape(Texture2D shapeTexture)

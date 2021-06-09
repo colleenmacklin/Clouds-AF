@@ -98,15 +98,15 @@ public class CloudManager : MonoBehaviour
 
     void OnEnable()
     {
-        EventManager.StartListening("Setup", SetCloudsToTargetShapes);
-        EventManager.StartListening("StoryEnded", SetNextShapes);
+        EventManager.StartListening("Setup", GenerateNewClouds);
+        EventManager.StartListening("MusingEnded", SetNextShapes);
 
     }
 
     void OnDisable()
     {
-        EventManager.StopListening("Setup", SetCloudsToTargetShapes);
-        EventManager.StopListening("StoryEnded", SetNextShapes);
+        EventManager.StopListening("Setup", GenerateNewClouds);
+        EventManager.StopListening("MusingEnded", SetNextShapes);
     }
     void Awake()
     {
@@ -115,7 +115,6 @@ public class CloudManager : MonoBehaviour
 
     void Start()
     {
-        EventManager.TriggerEvent("ConversationEnded");
         //Start Act Intro, not the cloud shape
         //        EventManager.TriggerEvent("Introduction");
         //       EventManager.TriggerEvent("SpawnShape");
@@ -125,22 +124,22 @@ public class CloudManager : MonoBehaviour
     {
         // if (Input.GetKeyDown(KeyCode.Space))
         // {
-        //     GenerateNewClouds();
+        //     SetNextShapes();
         // }
     }
 
-    private void GenerateNewClouds()
+    public void GenerateNewClouds()
     {
         GenerateClouds();
         SetNextShapes();
     }
 
-    private void SetNextShapes()
+    public void SetNextShapes()
     {
-
         SetCloudsToGenericShapes();
         SetCloudsToTargetShapes();
     }
+
     void SetTextureArrays()
     {//from unity docs
         cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
@@ -190,7 +189,7 @@ public class CloudManager : MonoBehaviour
             //instantiate the prefab
             go = Instantiate(cloudObjectPrefab, cloudPosition, Quaternion.Euler(0f, 0f, 0f), transform);
 
-            float sizeScale = Random.Range(scaleRange.x, scaleRange.y);
+            float sizeScale = UnityEngine.Random.Range(scaleRange.x, scaleRange.y);
             Vector3 scaleVector = new Vector3(sizeScale, sizeScale, sizeScale);
 
             //get a random scale for the transform
@@ -201,6 +200,7 @@ public class CloudManager : MonoBehaviour
         }
 
         EventManager.TriggerEvent("CloudsGenerated");
+        EventManager.TriggerEvent("SlowDownClouds");
 
     }
 
@@ -219,6 +219,7 @@ public class CloudManager : MonoBehaviour
             CloudShape cloud = generatedCloudObjects[i].GetComponent<CloudShape>();
             //Tell the cloud to handle the texture
             cloud.SetShape(cloudGenericsArray[i % cloudGenericsArray.Length]);
+            cloud.TurnOffCollider();
         }
     }
 
@@ -267,6 +268,7 @@ public class CloudManager : MonoBehaviour
             }
             //Tell the cloud to handle the texture
             cloud.SetShape(cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length]);
+            cloud.TurnOnCollider();
             incomingActiveTargets.Add(nextShape.name);
         }
 
@@ -295,7 +297,7 @@ public class CloudManager : MonoBehaviour
     // TODO:: Set up these manager level functions because they let us fire events when
     // all the cloud actions are **DONE** 
     // That is actually pretty important!!!
-    IEnumerable PerformCloudActionOverTime(Action<T> cloudAction, float totalExecutionTIme)
+    IEnumerable PerformCloudActionOverTime(Action<CloudShape> cloudAction, float totalExecutionTIme)
     {
         float interval = totalExecutionTIme / generatedCloudObjects.Count;
 
@@ -306,7 +308,7 @@ public class CloudManager : MonoBehaviour
             yield return new WaitForSeconds(interval);
         }
     }
-    void PerformCloudAction(Action<T> cloudAction)
+    void PerformCloudAction(Action<CloudShape> cloudAction)
     {
         foreach (GameObject go in generatedCloudObjects)
         {
@@ -323,11 +325,11 @@ public class CloudManager : MonoBehaviour
     }
     void ClarifyCloud(CloudShape c)
     {
-        c.ClarifyCloud();
+        c.ClarifyClouds();
     }
     void StopCloud(CloudShape c)
     {
-        c.StopCloud();
+        c.StopClouds();
     }
 
     ///////////////////////
@@ -346,7 +348,7 @@ public class CloudManager : MonoBehaviour
         {
             n--;//simplifies the shuffledResult[n] down below
 
-            int i = Random.Range(0, n + 1);
+            int i = UnityEngine.Random.Range(0, n + 1);
             var temp = shuffledResult[i];
 
             shuffledResult[i] = shuffledResult[n];
@@ -365,7 +367,7 @@ public class CloudManager : MonoBehaviour
         {
             n--;//simplifies the shuffledResult[n] down below
 
-            int i = Random.Range(0, n + 1);
+            int i = UnityEngine.Random.Range(0, n + 1);
             var temp = shuffledResult[i];
 
             shuffledResult[i] = shuffledResult[n];
@@ -402,7 +404,7 @@ public class CloudManager : MonoBehaviour
         //choose a random cloud to turn into a shape
         //This whole logic might need to be changed
         int shapeNum = cloudSelectionIndex;//(Random.Range(0, ShapeArray.Length));
-        int cloudNum = (Random.Range(0, generatedCloudObjects.Count));
+        int cloudNum = (UnityEngine.Random.Range(0, generatedCloudObjects.Count));
         chosenShape = cloudTargetsArray[shapeNum];
         chosenCloud = generatedCloudObjects[cloudNum];
         selectionHistory.Add(chosenShape.name);

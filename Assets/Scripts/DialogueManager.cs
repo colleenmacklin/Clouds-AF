@@ -22,18 +22,10 @@ public class DialogueManager : MonoBehaviour
     private CloudDialogue dialogueSO;
 
     [SerializeField]
-    public GameObject cloudManager; //need to look in here and see what the current active cloud and shape spritename is
+    public Storyteller Teller;
 
     [SerializeField]
-    public GameObject textBox;
-
-    [SerializeField]
-    public GameObject space; //gonna remove this
-
-    //[SerializeField]
-    //public Animator textBoxAnimator;
-
-    [SerializeField]
+    [Tooltip("The Dialogue GUI text box")]
     private TextMeshProUGUI dialogueText; //reference to text field in Friend
 
     [SerializeField]
@@ -43,10 +35,12 @@ public class DialogueManager : MonoBehaviour
     public string selectedTarget;
 
     [SerializeField]
+    [Tooltip("Pause between sending new lines")]
     [Range(0, 25)]
     public float conversational_pause = 12;
 
     [SerializeField]
+    [Tooltip("The current line that is being read by the GUI, reference only")]
     private int currentLine;
 
     [SerializeField]
@@ -85,11 +79,11 @@ public class DialogueManager : MonoBehaviour
 
     void OnEnable()
     {
-        EventManager.StartListening("Talk", StartDialogue);
-        EventManager.StartListening("Introduction", ShowOpening);
-        EventManager.StartListening("Conclusion", ShowConclusion);
-        EventManager.StartListening("Respond", Respond); //click events do this function??? where??
-        EventManager.StartListening("DoneReading", ConversationalPauseTransition);
+        // EventManager.StartListening("Talk", StartDialogue);
+        // EventManager.StartListening("Introduction", ShowOpening);
+        // EventManager.StartListening("Conclusion", ShowConclusion);
+        // EventManager.StartListening("Respond", Respond); //click events do this function??? where??
+        // EventManager.StartListening("DoneReading", ConversationalPauseTransition);
     }
 
     void OnDisable()
@@ -177,16 +171,6 @@ public class DialogueManager : MonoBehaviour
         {
             activeSentence = WrongAnswer();
         }
-
-        //StartCoroutine(UpdateTextWithSentence(1));
-
-        //if we are at the last option, we should move on without a click
-        // if (currentLine == activeLines.Length - 1)
-        // {
-        //     linesFinished = true;
-        //     StartCoroutine(TransitionToNextCloud()); //transition the lines
-        //     // EventManager.TriggerEvent("FadeOutSpace"); //fades out the space indicator
-        // }
     }
 
 

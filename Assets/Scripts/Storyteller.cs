@@ -40,18 +40,18 @@ public class Storyteller : MonoBehaviour
     [SerializeField] List<string> viewedShapes = new List<string>();//the shapes we've viewed so far
 
     Story chosenStory;//the active story we will use
-
+    private void OnEnable()
+    {
+        EventManager.StartListening("ConversationEnded", CheckForCompletion);
+        //    EventManager.StopListening("Conclusion", ShowConclusion);        
+    }
     private void OnDisable()
     {
 
-        EventManager.StopListening("DoneReading", CheckForCompletion);
+        EventManager.StopListening("ConversationEnded", CheckForCompletion);
         //    EventManager.StartListening("Conclusion", ShowConclusion);    
     }
-    private void OnEnable()
-    {
-        EventManager.StartListening("DoneReading", CheckForCompletion);
-        //    EventManager.StopListening("Conclusion", ShowConclusion);        
-    }
+
 
 
     // Start is called before the first frame update
@@ -119,6 +119,7 @@ public class Storyteller : MonoBehaviour
         if (musingsGiven == numberOfMusings)
         {
             EventManager.TriggerEvent("Musing");
+            EventManager.TriggerEvent("Cutscene");
             EventManager.TriggerEvent("sunset");
             EndStory();
         }

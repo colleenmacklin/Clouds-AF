@@ -103,7 +103,7 @@ public class Raycaster : MonoBehaviour
     }
     void StopGazeTracking()
     {
-        state = MouseState.READING;
+        ReadingMode();
         if (activeCoroutine != null)
         {
 

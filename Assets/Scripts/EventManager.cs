@@ -45,7 +45,7 @@ public class EventManager : MonoBehaviour
 
         }
     }
-    
+
     public static void StartListening(string eventName, UnityAction listener)
     {
         UnityEvent thisEvent = null; //comment if using parameters
@@ -60,7 +60,7 @@ public class EventManager : MonoBehaviour
             instance.eventDictionary.Add(eventName, thisEvent);
         }
     }
-    
+
     //parameter
     /*
       public static void StartListening(string eventName, Action listener)
@@ -85,7 +85,7 @@ public class EventManager : MonoBehaviour
             thisEvent.RemoveListener(listener);
         }
     }
-    
+
     //parameter
     /*
     public static void StopListening(string eventName, Action listener)
@@ -103,6 +103,7 @@ public class EventManager : MonoBehaviour
         //Action thisEvent = null; //parameter 
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
+            Debug.Log($"Triggering {eventName}");
             thisEvent.Invoke();
         }
     }

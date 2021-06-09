@@ -99,14 +99,14 @@ public class CloudManager : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("Setup", GenerateNewClouds);
-        EventManager.StartListening("MusingEnded", SetNextShapes);
+        EventManager.StartListening("DoneReading", SetNextShapes);
 
     }
 
     void OnDisable()
     {
         EventManager.StopListening("Setup", GenerateNewClouds);
-        EventManager.StopListening("MusingEnded", SetNextShapes);
+        EventManager.StopListening("DoneReading", SetNextShapes);
     }
     void Awake()
     {
@@ -144,7 +144,6 @@ public class CloudManager : MonoBehaviour
     {//from unity docs
         cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
         cloudGenericsArray = Resources.LoadAll("Cloud_Natural", typeof(Texture2D)).Cast<Texture2D>().ToArray();
-
     }
 
     //Basically make sure we always have updated images in our array

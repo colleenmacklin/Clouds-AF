@@ -58,15 +58,15 @@ public class Raycaster : MonoBehaviour
 
     void OnEnable()
     {
-        EventManager.StartListening("DoneReading", StartGazeTracking);
-        EventManager.StartListening("Correct", StopGazeTracking);
+        EventManager.StartListening("ConversationEnded", StartGazeTracking);
+        EventManager.StartListening("Musing", StopGazeTracking);
         EventManager.StartListening("Cutscene", ReadingMode);
     }
 
     void OnDisable()
     {
-        EventManager.StopListening("DoneReading", StartGazeTracking);
-        EventManager.StopListening("Correct", StopGazeTracking);
+        EventManager.StopListening("ConversationEnded", StartGazeTracking);
+        EventManager.StopListening("Musing", StopGazeTracking);
         EventManager.StopListening("Cutscene", ReadingMode);
     }
 

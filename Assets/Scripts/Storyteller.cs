@@ -44,10 +44,12 @@ public class Storyteller : MonoBehaviour
     private void OnDisable()
     {
 
+        EventManager.StopListening("DoneReading", CheckForCompletion);
         //    EventManager.StartListening("Conclusion", ShowConclusion);    
     }
     private void OnEnable()
     {
+        EventManager.StartListening("DoneReading", CheckForCompletion);
         //    EventManager.StopListening("Conclusion", ShowConclusion);        
     }
 
@@ -59,10 +61,10 @@ public class Storyteller : MonoBehaviour
         EventManager.TriggerEvent("Cutscene");
         SetupStory();
         EventManager.TriggerEvent("Setup"); //tell clouds to get ready
-        //access pattern for the narrator story content
-        //internally the data is kept in a Story structure that has a Name and Content (dictionary of string to string[])
-        //        Debug.Log(narrator.StoryData[0].Name);
-        //        Debug.Log(narrator.StoryData[0].Content["unicorn"][0]);
+                                            //access pattern for the narrator story content
+                                            //internally the data is kept in a Story structure that has a Name and Content (dictionary of string to string[])
+                                            //        Debug.Log(narrator.StoryData[0].Name);
+        Debug.Log(narrator.StoryData[0].Content["entertainer"][0]);
 
     }
 
@@ -82,22 +84,82 @@ public class Storyteller : MonoBehaviour
         textBoxController.ReadNewLines(musing);
     }
 
+    void NextMusing(string key)
+    {
+        //store the shape
+        viewedShapes.Add(key);
+        //send the musing
+        SendMusing(chosenStory.Content[key]);
+        //increase musings
+        musingsGiven += 1;
+        EventManager.TriggerEvent("Musing");
+
+        EventManager.TriggerEvent("Correct");
+
+    }
+
     //Respond to a selection from the raycaster, send string[] if found, nothing if not.
     public void RespondToShape(string shapeKey)
     {
+        Debug.Log($"Responding to {shapeKey}");
+
         if (chosenStory.Content.ContainsKey(shapeKey))
         {
-            SendMusing(chosenStory.Content[shapeKey]); //send the dialogue if there
+            NextMusing(shapeKey);
             return;
         }
 
         //if not found then send... nothing?
-        SendMusing(new string[] { "I don't think I have anything for that." });//graceful failure
+        SendMusing(new string[] { $"I don't think I have anything for that." });//graceful failure
     }
 
+    //Ending Event
     void CheckForCompletion()
     {
-        if ()
+        if (musingsGiven == numberOfMusings)
+        {
+            EventManager.TriggerEvent("Musing");
+            EventManager.TriggerEvent("sunset");
+            EndStory();
+        }
+    }
+
+    //create the ending story
+    void EndStory()
+    {
+        //first create the list
+        //"A, B, and C"
+        //We would likely replace this with a different, combination key in the future.
+        string chosenList = "";
+        for (int i = 0; i < viewedShapes.Count; i++)
+        {
+            string shapeName = viewedShapes[i];
+            shapeName = shapeName.Replace("_", " ");
+            if (i == 0)
+            {
+                chosenList = shapeName;
+            }
+            else if (i == viewedShapes.Count - 1)
+            {
+                chosenList += $", and {shapeName}";
+            }
+            else
+            {
+                chosenList += $", {shapeName}";
+            }
+        }
+
+        //Adjust the lines in the original by replacing <CLOUD_LIST> with our list.
+        List<string> adjustedLines = new List<string>();
+        foreach (string line in chosenStory.Content["closing"])
+        {
+            string adjustedLine = line.Replace("<CLOUD_LIST>", chosenList);
+
+            adjustedLines.Add(adjustedLine);
+        }
+
+        //create the list of chosen items.
+        SendMusing(adjustedLines.ToArray());
     }
 
     // Update is called once per frame

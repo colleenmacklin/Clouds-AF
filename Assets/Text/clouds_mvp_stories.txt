@@ -13,10 +13,10 @@ ak47|The ak-47 is a jet-powered machine with a missile launcher.== It's both bea
 jumping cat|The jumping cat is watching life, watching the universe, watching life.== And that cat's feet are making clouds.
 hammerhead shark|The hammerhead shark has a mouth full of razor-sharp teeth, and it's impossibly beautiful.== This is the result of the miraculous laws of soft-bodied physics.
 flamingo|The flamingo is the living manifestation of a theory about the world that has been around for thousands of year.== The question is why the flamingo is there, but the answer is that the flamingo is there because of the questions the philosophers ask.
-dancing spider|The dancing spider represents imagination, one of the most powerful of the unconscious processes.== This cloud contains within itself the seeds for the future evolution of the universe.=
+dancing spider|The dancing spider represents imagination, one of the most powerful of the unconscious processes.== This cloud contains within itself the seeds for the future evolution of the universe.
 singing crocodile|The singing crocodile is called the cloud of confusions, and it is the cloud that forms the basis of philosophical arguments.== That cloud is the source of a great many philosophical problems, and since it is so omnipresent, it is, at least in part, responsible for the paradoxes that philosophers have to deal with.==  Now, I think that the resolution of the paradoxes is not straightforward.
 walrus wearing a hat|The walrus wearing a hat, just in case you didn't notice, requires a leap of intellect.== He would make a good philosopher.=
-rooster|The rooster is the symbol of Lévi-Strauss's concept of the 'clock of inevitability'.== When I was young, I would see this cloud in the sky at night, and then I would ask my parents, 'Is that a rooster? Is it a cloud
+rooster|The rooster is the symbol of Lévi-Strauss's concept of the 'clock of inevitability'.== When I was young, I would see this cloud in the sky at night, and then I would ask my parents, 'Is that a rooster? Is it a cloud?'
 poodle|The poodle is a poodle because the cloud is a poodle.== It is a poodle because we are all poodle.== And so on.== If all you have noticed about the universe is that it is a bit like a poodle, you have been watching the clouds, and it is mostly is.
 unicorn|The unicorn is a beautiful creature.== Because of this, it causes us happiness.== Whoa...
 penguin smoking a pipe|Now, if you look at the clouds, they are not always what you expect them to be.== The penguin smoking a pipe? That's the cloud of reason, you see.
@@ -29,5 +29,5 @@ someone watering a fish|Someone watering a fish perhaps? If the cloud is made of
 girl talking to a horse|The girl talking to a horse is a girl named Dorothy.== She has a very peculiar way of speaking.== It's not quite a horse's voice but it is very strange.== I wonder, what is the nature of that nois
 witch with a cat|This dialogue is missing for witch with a cat
 surfer|The surfer is going to fall, you see.== That's because the waves are moving in a certain way.== Or should I say the clouds are moving in a certain way.
-entertainer|The entertainer is singing a song called "Raindrops.==" Though I am afraid he has no idea what he is doing.
-closing|Of course, I know that <CLOUD_LIST> are not the work of some master sculptor.== They are the work of an imperfect machine capable of a great variety of shapes, one human hand clapping and the other twiddling keys.
+entertainer|The entertainer is singing a song called "Raindrops."==Though I am afraid he has no idea what he is doing.
+closing|Of course, I know that <CLOUD_LIST> are not the work of some master sculptor.==They are the work of an imperfect machine capable of a great variety of shapes, one human hand clapping and the other twiddling keys.

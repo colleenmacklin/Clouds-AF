@@ -254,6 +254,7 @@ public class CursorManager : MonoBehaviour
     {
         for (int increment = 0; increment < CursorSprites.Length - 1; increment++)
         {
+            if (SpriteLoc <= 0 || SpriteLoc >= CursorSprites.Length) break;
             SpriteLoc += direction;
             cursorImage.overrideSprite = CursorSprites[SpriteLoc];
             yield return null;

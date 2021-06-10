@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a82f6368f2297443bd127ab01b864bb, type: 3}
   m_Name: NarratorSO
   m_EditorClassIdentifier: 
-  narratorFile: {fileID: 4900000, guid: 1db8a135eb672054f93448910862a064, type: 3}
+  narratorFile: {fileID: 4900000, guid: bd003c9beae74f048b98487f175a9255, type: 3}
   ColumnDelimiter: '|'
   DialogueDelimiter: ==

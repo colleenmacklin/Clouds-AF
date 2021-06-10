@@ -33,6 +33,8 @@ public class Storyteller : MonoBehaviour
 {
     [SerializeField]
     NarratorSO narrator;
+    [Tooltip("Chooses a random story if on, otherwise picks first one")]
+    [SerializeField] bool ChooseRandomStory = false;
 
     [SerializeField] int numberOfMusings = 3; //total musings for our story
     [SerializeField] int musingsGiven = 0; //how many musings we've done
@@ -64,14 +66,19 @@ public class Storyteller : MonoBehaviour
                                             //access pattern for the narrator story content
                                             //internally the data is kept in a Story structure that has a Name and Content (dictionary of string to string[])
                                             //        Debug.Log(narrator.StoryData[0].Name);
-        Debug.Log(narrator.StoryData[0].Content["entertainer"][0]);
+                                            //Debug.Log(narrator.StoryData[0].Content["entertainer"][0]);
 
     }
 
     //Pick one of the narrator's random stories
     void SetupStory()
     {
-        int storyIndex = Random.Range(0, narrator.StoryData.Count);
+        int storyIndex = 0;
+        if (ChooseRandomStory)
+        {
+            storyIndex = Random.Range(0, narrator.StoryData.Count);
+        }
+
         chosenStory = narrator.StoryData[storyIndex]; //picked story
 
         //Send the story opening to the dialogue manager

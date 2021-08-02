@@ -74,7 +74,7 @@ public class TextBoxController : MonoBehaviour
         //forever
         while (true)
         {
-            dialogueAudio?.Play(); //play audio event
+//            dialogueAudio?.Play(); //play audio event
 
 
             // fade in

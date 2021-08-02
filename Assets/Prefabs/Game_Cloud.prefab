@@ -144,7 +144,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5, y: 5, z: 2}
+  m_Size: {x: 7, y: 7, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &857159031385798982
 Rigidbody:
@@ -205,6 +205,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -255,7 +259,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar

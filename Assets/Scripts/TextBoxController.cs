@@ -20,6 +20,12 @@ public class TextBoxController : MonoBehaviour
     string currentLine = "";
     int textLineIndex;
 
+    [SerializeField]
+    bool typeLines;
+
+    [SerializeField]
+    [Range(.5f, 5f)]
+    float fadePause;
 
     [SerializeField]
     [Range(1f, 240f)]
@@ -31,6 +37,10 @@ public class TextBoxController : MonoBehaviour
     AudioSource dialogueAudio;
 
     Coroutine typingCoroutine; //needed to stop the specific coroutine
+    Coroutine fadeCoroutine; //needed to stop the specific coroutine
+
+    float fadeSpeed = 1;
+    public GameObject textCanvas;
 
 
     // Start is called before the first frame update
@@ -53,6 +63,44 @@ public class TextBoxController : MonoBehaviour
         }
 
     }
+    IEnumerator fadeLineInOut()
+    {
+        //var material = textCanvas.GetComponent<Renderer>().material;
+        var text = textCanvas.GetComponent<CanvasGroup>();
+        textField.text = activeLine;
+        //set alpha to 0 first
+        text.alpha = 0;
+
+        //forever
+        while (true)
+        {
+//            dialogueAudio?.Play(); //play audio event
+
+
+            // fade in
+            yield return Fade(text, 1);
+            // wait
+            yield return new WaitForSeconds(fadePause);
+            // fade out
+            //yield return Fade(text, 0);
+            // wait
+            //yield return new WaitForSeconds(fadePause);
+        }
+    }
+
+    IEnumerator Fade(CanvasGroup text, float targetAlpha)
+    {
+        while (text.alpha != targetAlpha)
+        {
+            var newAlpha = Mathf.MoveTowards(text.alpha, targetAlpha, fadeSpeed * Time.deltaTime);
+            text.alpha = newAlpha;
+            //        mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, newAlpha);
+
+
+            yield return null;
+        }
+    }
+
 
 
     //This function first checks if the line is done.
@@ -73,6 +121,7 @@ public class TextBoxController : MonoBehaviour
         {
             textField.text = activeLine;
             StopCoroutine(typingCoroutine);//stop the coroutine so it doesn't type on us.
+            //StopAllCoroutines();
             return;
         }
 
@@ -88,10 +137,23 @@ public class TextBoxController : MonoBehaviour
             textLineIndex++;//increment sentence
             //set the next active line
             activeLine = linesList[textLineIndex];
-            //clear the current text
-            textField.text = "";
-            //start typing
-            typingCoroutine = StartCoroutine(TypeString());
+            //textField.text = "";
+            //show line
+            if (typeLines)
+            {
+                //clear the current text
+
+                textField.text = "";
+
+                typingCoroutine = StartCoroutine(TypeString()); //begin typing
+            }
+            else
+            {
+                Debug.Log("fading");
+
+                fadeCoroutine = StartCoroutine(fadeLineInOut());//display the whole line (fadein)
+            }
+
         }
         else
         {
@@ -117,7 +179,15 @@ public class TextBoxController : MonoBehaviour
         Reset(); //reset first and then ingest lines
         CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
-        typingCoroutine = StartCoroutine(TypeString()); //begin typing
+        if (typeLines) {
+            typingCoroutine = StartCoroutine(TypeString()); //begin typing
+        }
+        else
+        {
+            Debug.Log("fading");
+
+            fadeCoroutine = StartCoroutine(fadeLineInOut());//display the whole line (fadein)
+        }
     }
 
     //Set the lines array to the lines list

@@ -16,11 +16,12 @@ the dialogueText reference.
 Perhaps this should be reconsidered.
 */
 
-[RequireComponent(typeof(Raycaster))]
+[RequireComponent(typeof(Raycaster), typeof(Storyteller))]
 public class DialogueManager : MonoBehaviour
 {
 
     [SerializeField]
+    [Tooltip("The storyteller we will use")]
     private Storyteller Teller;
 
     [SerializeField]
@@ -28,35 +29,30 @@ public class DialogueManager : MonoBehaviour
     [Range(0, 25)]
     public float conversational_pause = 12;
 
-    [SerializeField] string selectedTarget;
-    [SerializeField] private TextBoxController textBoxController;
+    [SerializeField]
+    [Tooltip("The raycaster's target")]
+    string selectedTarget;
+    [SerializeField]
+    [Tooltip("UI text Controller")]
+    private TextBoxController textBoxController;
 
-    [SerializeField] private bool linesFinished;
+    [SerializeField]
+    [Tooltip("If Lines are completed. This is handled in script")]
+    private bool linesFinished;
 
     //////////////////////////////////////
     //
     //    Monobehaviors
-    ///
+    //
     ////////////////////////////////
 
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            Debug.Log("-----space-----");
-            EventManager.TriggerEvent("Respond");//in case something else is hooked to this event
-        }
-    }
+    private void Update() { }
 
     void OnEnable()
     {
-        // EventManager.StartListening("Talk", StartDialogue);
-        // EventManager.StartListening("Introduction", ShowOpening);
-        // EventManager.StartListening("Conclusion", ShowConclusion);
         EventManager.StartListening("sunset", EndGame);
-        EventManager.StartListening("Respond", Respond); //click events do this function??? where??
+        EventManager.StartListening("Respond", Respond);
         EventManager.StartListening("DoneReading", ConversationalPauseTransition);
-
     }
 
     void OnDisable()
@@ -64,9 +60,7 @@ public class DialogueManager : MonoBehaviour
         EventManager.StopListening("sunset", EndGame);
         EventManager.StopListening("Respond", Respond);
         EventManager.StopListening("DoneReading", ConversationalPauseTransition);
-
     }
-
 
     //////////////////////
     //
@@ -81,13 +75,14 @@ public class DialogueManager : MonoBehaviour
     public void ShowConclusion()
     {
         EventManager.TriggerEvent("StopClouds"); //dissolves clouds
-        EventManager.TriggerEvent("sunset"); //
+        EventManager.TriggerEvent("sunset");
     }
 
     void ReadSelection()
     {
         selectedTarget = GetComponent<Raycaster>()?.Selected.GetComponent<CloudShape>().CurrentShapeName;
     }
+
     //This now houses the primary logic for responses.
     // first check if the selection is valid, then update active sentence accordingly
     // then send the sentence to the text box.
@@ -126,7 +121,5 @@ public class DialogueManager : MonoBehaviour
     {
         EventManager.TriggerEvent("ConversationEnded"); //this is moved to the text box controller
     }
-
-
 
 }

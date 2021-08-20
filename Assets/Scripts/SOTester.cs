@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using EasyButtons;
+
 
 public class SOTester : MonoBehaviour
 {
@@ -14,9 +14,10 @@ public class SOTester : MonoBehaviour
         Debug.Log(dialogueTest.DialogueByKey("poodle")[0]);
     }
 
-    [Button]
-    public void TestKey(){
-        Debug.Log(dialogueTest.DialogueByKey(testKey)[0]);  
+
+    public void TestKey()
+    {
+        Debug.Log(dialogueTest.DialogueByKey(testKey)[0]);
     }
 
 }

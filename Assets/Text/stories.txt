@@ -1,0 +1,33 @@
+key|story_1|story_2|story_3
+opening|When I look up at the clouds, I like to imagine they are the work of some master sculptor.||
+telephone|That cloud looks like a telephone, doesn't it?== Unfortunately, it appears the telephonist is off duty.||
+teapot|The teapot is a common representation of the human heart.||
+table_lamp|The lamp is a representation of my concept of reality.== The concept of reality itself is an illusion.||
+scissors|The scissors in this cloud are not sharp, but they are sharp in a way that is not a matter of degree but of kind.== They have the property that they cut things equally.||
+scales_of_justice|The scales of justice are a metaphor for the heavens and the earth.||
+high_heeled_shoe|The high heeled shoe holds a very special place in my favorite philosophers' pantheon.== The shoe was invented by the French philosopher Jean-Jacques Rousseau in the eighteenth century.== It is a key to understanding the world; it is a metaphor that is universal, invisible, and indestructible.||
+candle|The candle is a manifestation of change by the process of change.== When I look at the cloud I see the process by which the cloud is transformed into the candle.||
+bucket|The bucket is made of water, but it has no lid.== The clouds are made of water, but they have no lid.||
+banana|The banana has a mind of its own.== It is a trap, a way of deceiving you into thinking that you are seeing a real thing when in fact you are only seeing the slippery image of a real thing.||
+ak47|The ak-47 is a jet-powered machine with a missile launcher.== It's both beautiful and terrifying.||
+jumping_cat|The jumping cat is watching life, watching the universe, watching life.== And that cat's feet are making clouds.||
+hammerhead_shark|The hammerhead shark has a mouth full of razor-sharp teeth, and it's impossibly beautiful.== This is the result of the miraculous laws of soft-bodied physics.||
+flamingo|The flamingo is the living manifestation of a theory about the world that has been around for thousands of years.== The question is why the flamingo is there, but the answer is that the flamingo is there because of the questions the philosophers ask.||
+dancing_spider|The dancing spider represents imagination, one of the most powerful of the unconscious processes.== This cloud contains within itself the seeds for the future evolution of the universe.||
+singing_crocodile|The singing crocodile is called the cloud of confusions, and it is the cloud that forms the basis of philosophical arguments.== That cloud is the source of a great many philosophical problems, and since it is so omnipresent, it is, at least in part, responsible for the paradoxes that philosophers have to deal with.==  Now, I think that the resolution of the paradoxes is not straightforward.||
+walrus_wearing_a_hat|The walrus wearing a hat, just in case you didn't notice, requires a leap of intellect.== He would make a good philosopher.||
+rooster|The rooster is the symbol of Lévi-Strauss's concept of the 'clock of inevitability'.== When I was young, I would see this cloud in the sky at night, and then I would ask my parents, Is that a rooster?==Is it a cloud?||
+poodle|The poodle is a poodle because the cloud is a poodle.== It is a poodle because we are all poodles.== And so on.== If all you have noticed about the universe is that it is a bit like a poodle, you have been watching the clouds, and it mostly is.||
+unicorn|The unicorn is a beautiful creature.== Because of this, it causes us happiness.== Why?||
+penguin_smoking_a_pipe|Now, if you look at the clouds, they are not always what you expect them to be.== The penguin smoking a pipe?== That's the cloud of reason, you see.||
+business_woman|The business woman is doing what she's doing because she's trying to make money.== If a cloud was doing what it was doing in a way that would be socially advantageous, then it would be considered a successful cloud.==  The thing that makes a cloud successful is that it carries important papers with confidence.||
+batter_waiting_for_a_ball|The batter waiting for a ball?== Or is he waiting for a thunderstorm to pass so the game can continue?||
+kung_fu_master|The kung fu master is the one who's been training the other clouds to fly, as if into the eye of a tornado.||
+moon_fairy|The moon fairy is a cloud that, in a sense, has been the object of our imaginations for a long time.== She represents an important part of the philosophy of science: the more the individual's consciousness is expanded to a higher level, the more intense is the sense of unity and communion between the individual and the physical world.== What do you think of this?||
+person_with_a_walking_cane|The person with a walking cane is Bertrand Russell.== He walks around the world researching clouds.||
+someone_watering_a_fish|Someone watering a fish perhaps?== If the cloud is made of water and it has a surface area of about one square kilometer, then you can water your fish with that cloud and it will grow.||
+girl_talking_to_a_horse|The girl talking to a horse is a girl named Dorothy.== She has a very peculiar way of speaking.== It's not quite a horse's voice but it is very strange.== I wonder, what is the nature of that noise?||
+witch_with_a_cat|A wicked one, isn't she?==Nevertheless, the evidence is undeniable: she has a gift for flight.||
+surfer|The surfer is going to fall, you see.== That's because the waves are moving in a certain way.== Or should I say the clouds are moving in a certain way.||
+entertainer|The entertainer is singing a song called "Raindrops".==Though I am afraid he has no idea what he is doing.||
+closing|Of course, I know that <CLOUD_LIST> are not the work of some master sculptor.== They are the work of an imperfect machine capable of a great variety of shapes, one human hand clapping and the other twiddling keys.||

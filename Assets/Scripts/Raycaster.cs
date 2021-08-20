@@ -8,6 +8,7 @@ Raycaster started as a means of controlling the clicking events and having state
 It is ballooning into a more full player class. Consider a state pattern implementation.
 
 Just in general the movement of the camera needs to be reconsidered. It shouldn't be trailing the mouse.
+Movement of the mouse should be made relative to the screen rect bounds.
 */
 public class Raycaster : MonoBehaviour
 {
@@ -58,14 +59,14 @@ public class Raycaster : MonoBehaviour
     void OnEnable()
     {
         EventManager.StartListening("ConversationEnded", StartGazeTracking);
-        EventManager.StartListening("Correct", StopGazeTracking);
+        EventManager.StartListening("Musing", StopGazeTracking);
         EventManager.StartListening("Cutscene", ReadingMode);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("ConversationEnded", StartGazeTracking);
-        EventManager.StopListening("Correct", StopGazeTracking);
+        EventManager.StopListening("Musing", StopGazeTracking);
         EventManager.StopListening("Cutscene", ReadingMode);
     }
 
@@ -102,12 +103,10 @@ public class Raycaster : MonoBehaviour
     }
     void StopGazeTracking()
     {
-        state = MouseState.READING;
+        ReadingMode();
         if (activeCoroutine != null)
         {
-
             StopCoroutine(activeCoroutine);
-
         }
         gazeMover.enabled = false;
         activeCoroutine = StartCoroutine(LookAtSelection());

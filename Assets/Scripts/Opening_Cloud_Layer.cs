@@ -11,10 +11,6 @@ public class Opening_Cloud_Layer : MonoBehaviour
     private Transform camera;
     public int cloudNum;
     private GameObject target;
-    //private ParticleSystem ps;
-
-    //public Game_Cloud cloud;
-    //public Game_Cloud lowClouds;
 
     public GameObject cloud;
 
@@ -55,7 +51,6 @@ public class Opening_Cloud_Layer : MonoBehaviour
 
     private void Start()
     {
-
         //rotate to look at the camera
         camera = Camera.main.transform;
         transform.LookAt(camera, Vector3.back);
@@ -74,9 +69,10 @@ public class Opening_Cloud_Layer : MonoBehaviour
             isShape = true;
 
             //do stuff
-            var shape = GameObject.FindWithTag("CloudManager").GetComponent<game_opening_controller>().chosenShape;
+            //var shape = GameObject.FindWithTag("CloudManager").GetComponent<game_opening_controller>().chosenShape;
+            var shape = GameObject.FindWithTag("CloudManager").GetComponent<training_controller>().chosenShape;
 
-            Shape = ps.shape;
+        Shape = ps.shape;
 
             Shape.texture = shape;
             curr_Shape = shape;

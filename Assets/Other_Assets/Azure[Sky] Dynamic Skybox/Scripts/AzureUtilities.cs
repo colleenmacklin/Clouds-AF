@@ -124,6 +124,8 @@ namespace UnityEngine.AzureSky
         public int year = 2020;
         public int month = 1;
         public int day = 1;
+        public int executedHour = 0;
+        public bool isAlreadyExecutedOnThisHour = false;
     }
 
     [Serializable]

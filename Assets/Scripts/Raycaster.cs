@@ -8,6 +8,7 @@ Raycaster started as a means of controlling the clicking events and having state
 It is ballooning into a more full player class. Consider a state pattern implementation.
 
 Just in general the movement of the camera needs to be reconsidered. It shouldn't be trailing the mouse.
+Movement of the mouse should be made relative to the screen rect bounds.
 */
 public class Raycaster : MonoBehaviour
 {
@@ -51,19 +52,27 @@ public class Raycaster : MonoBehaviour
     void Start()
     {
         mask = LayerMask.GetMask("Clouds");
+        gazeMover.enabled = false;
         initialCameraRot = Camera.main.transform.localRotation;
     }
 
     void OnEnable()
     {
         EventManager.StartListening("ConversationEnded", StartGazeTracking);
-        EventManager.StartListening("Correct", StopGazeTracking);
+        EventManager.StartListening("Musing", StopGazeTracking);
+        EventManager.StartListening("Cutscene", ReadingMode);
     }
 
     void OnDisable()
     {
         EventManager.StopListening("ConversationEnded", StartGazeTracking);
-        EventManager.StopListening("Correct", StopGazeTracking);
+        EventManager.StopListening("Musing", StopGazeTracking);
+        EventManager.StopListening("Cutscene", ReadingMode);
+    }
+
+    void ReadingMode()
+    {
+        state = MouseState.READING;
     }
 
     //None of the tracking should be doing as many mutations as it is now
@@ -94,12 +103,10 @@ public class Raycaster : MonoBehaviour
     }
     void StopGazeTracking()
     {
-        state = MouseState.READING;
+        ReadingMode();
         if (activeCoroutine != null)
         {
-
             StopCoroutine(activeCoroutine);
-
         }
         gazeMover.enabled = false;
         activeCoroutine = StartCoroutine(LookAtSelection());
@@ -116,7 +123,7 @@ public class Raycaster : MonoBehaviour
         {
             Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, rot, focusInSpeed);
 
-            Debug.Log($"looking at target, {rot},{Camera.main.transform.localRotation}");
+            //Debug.Log($"looking at target, {rot},{Camera.main.transform.localRotation}");
             yield return null;
         }
 

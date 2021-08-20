@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using EasyButtons;
+
 using UnityEngine.Events;
 
 /*
@@ -73,7 +73,7 @@ public class GameCloudLayerGroup_Archive : MonoBehaviour
     public string myName; //store the name of the underlying shape here
 
    
-    [Button]
+    
     void UpdateClouds(){
         //we have to get these at run time which is ridiculous
         var hcM = highClouds.ps.main;

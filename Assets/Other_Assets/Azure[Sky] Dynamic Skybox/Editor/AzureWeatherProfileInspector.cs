@@ -1,5 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.AzureSky;
+
+/*may need to use this
+#if UNITY_EDITOR
+using UnityEditorInternal;
+#endif
+*/
 using UnityEditorInternal;
 
 namespace UnityEditor.AzureSky

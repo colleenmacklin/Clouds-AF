@@ -4784,3 +4784,4 @@ MonoBehaviour:
     height: 0
   m_Renderer: {fileID: 6677913822787891109}
   myScale: {x: 0, y: 0, z: 0}
+  visible_at_start: 1

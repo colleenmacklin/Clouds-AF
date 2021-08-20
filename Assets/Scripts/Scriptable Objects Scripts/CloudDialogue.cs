@@ -4,17 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using EasyButtons;
+
 
 
 // Potential data structure for every object's dialogues
 public struct DialogueSubject
 {
     public string Name { get; private set; }
-    public string Prompt { get; private set; }
+    public string[] Prompt { get; private set; }
     public Dictionary<int, string[]> LevelDialogues { get; private set; }
 
-    public DialogueSubject(string name, string prompt, Dictionary<int, string[]> levelDialogues)
+    public DialogueSubject(string name, string[] prompt, Dictionary<int, string[]> levelDialogues)
     {
         this.Name = name;
         this.Prompt = prompt;
@@ -33,6 +33,8 @@ public class CloudDialogue : ScriptableObject
 
     [SerializeField]
     public TextAsset dialogueFile; //ingest all dialogue
+    [Tooltip("Number of lines to skip before data starts")]
+    public int bufferLines = 1;
 
     //List of dialogue options within the object
     public Dictionary<string, List<string>> dialogues = new Dictionary<string, List<string>>();
@@ -53,7 +55,7 @@ public class CloudDialogue : ScriptableObject
         string[] records = textFile.text.Split('\n');
 
         //skip the first line
-        records = records.Skip(1).ToArray();
+        records = records.Skip(bufferLines).ToArray();
 
 
         //For every line
@@ -64,12 +66,13 @@ public class CloudDialogue : ScriptableObject
             //currently assuming this pattern
             // name|prompt|text1==text1.2==text1.3|text2|text3
             string[] fields = record.Split('|');
+            string splitString = "==";
 
             string name = fields[0];
-            string prompt = fields[1];
+            string[] prompt = ReadLines(fields[1], splitString);
             Dictionary<int, string[]> dialogueDictionary = new Dictionary<int, string[]>();
 
-            string[] splitOperator = { "==" };
+            string[] splitOperator = { splitString };
             int level = 1; //we use level 1 as a starting point
             //then for the remaining fields add all lines broken up by == markers
             for (int i = 2; i < fields.Length; i++)
@@ -91,6 +94,13 @@ public class CloudDialogue : ScriptableObject
         }
         objectDialogues = result;
         return result;
+    }
+
+    public string[] ReadLines(string allLines, string splitString)
+    {
+        string[] splitOperator = { splitString };
+        string[] lines = allLines.Split(splitOperator, StringSplitOptions.None);
+        return lines;
     }
 
     //Reads through a text file that follows the #Target dialogue form

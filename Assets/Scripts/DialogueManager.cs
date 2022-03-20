@@ -94,6 +94,7 @@ public class DialogueManager : MonoBehaviour
             return;
         }
         ReadSelection();
+        //Debug.Log(selectedTarget);
         Teller.RespondToShape(selectedTarget);
     }
 

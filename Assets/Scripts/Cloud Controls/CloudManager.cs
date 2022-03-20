@@ -40,12 +40,12 @@ public class CloudManager : MonoBehaviour
     [SerializeField]
     [Tooltip("How many of the clouds to turn into targets")]
     private int numberOfTargetsToGenerate;
-    [SerializeField]
-    private int numberOfPeopleToGenerate;
-    [SerializeField]
-    private int numberOfAnimalsToGenerate;
-    [SerializeField]
-    private int numberOfObjectsToGenerate;
+    //[SerializeField]
+    //private int numberOfPeopleToGenerate;
+    //[SerializeField]
+    //private int numberOfAnimalsToGenerate;
+    //[SerializeField]
+    //private int numberOfObjectsToGenerate;
     [SerializeField]
     [Tooltip("All the generated clouds in the sky")]
     private List<GameObject> generatedCloudObjects;
@@ -57,12 +57,12 @@ public class CloudManager : MonoBehaviour
     [Header("Cloud Data")]//consider refactor as cloud scriptable objects
     [SerializeField]
     private Texture2D[] cloudTargetsArray; //textures stay as an array because we are not generating run time textures
-    [SerializeField]
-    private Texture2D[] cloudPersonTargetsArray;
-    [SerializeField]
-    private Texture2D[] cloudAnimalTargetsArray;
-    [SerializeField]
-    private Texture2D[] cloudObjectTargetsArray;
+    //[SerializeField]
+    //private Texture2D[] cloudPersonTargetsArray;
+    //[SerializeField]
+    //private Texture2D[] cloudAnimalTargetsArray;
+    //[SerializeField]
+    //private Texture2D[] cloudObjectTargetsArray;
     [SerializeField]
     private Texture2D[] cloudGenericsArray; //textures stay as an array because we are not generating run time textures
     [SerializeField]
@@ -240,12 +240,12 @@ public class CloudManager : MonoBehaviour
     {
         //shuffle possible targets
         cloudTargetsArray = ShuffleArray(cloudTargetsArray);
-        cloudPersonTargetsArray = ShuffleArray(cloudPersonTargetsArray);
-        cloudAnimalTargetsArray = ShuffleArray(cloudAnimalTargetsArray);
-        cloudObjectTargetsArray = ShuffleArray(cloudObjectTargetsArray);
-        int tempPeople = numberOfPeopleToGenerate;
-        int tempAnimals = numberOfAnimalsToGenerate;
-        int tempObjects = numberOfObjectsToGenerate;
+        //cloudPersonTargetsArray = ShuffleArray(cloudPersonTargetsArray);
+        //cloudAnimalTargetsArray = ShuffleArray(cloudAnimalTargetsArray);
+        //cloudObjectTargetsArray = ShuffleArray(cloudObjectTargetsArray);
+        //int tempPeople = numberOfPeopleToGenerate;
+        //int tempAnimals = numberOfAnimalsToGenerate;
+        //int tempObjects = numberOfObjectsToGenerate;
 
         //shuffle the generated clouds
         generatedCloudObjects = ShuffleList(generatedCloudObjects);
@@ -266,22 +266,22 @@ public class CloudManager : MonoBehaviour
 
             Texture2D nextShape;
 
-            if (tempPeople != 0)
-            {
-                nextShape = cloudPersonTargetsArray[(i + indexOffset) % cloudPersonTargetsArray.Length];
-                tempPeople -= 1;
-            } else if (tempAnimals != 0)
-            {
-                nextShape = cloudAnimalTargetsArray[(i + indexOffset) % cloudAnimalTargetsArray.Length];
-                tempAnimals -= 1;
-            } else if (tempObjects != 0)
-            {
-                nextShape = cloudObjectTargetsArray[(i + indexOffset) % cloudObjectTargetsArray.Length];
-                tempObjects -= 1;
-            } else
-            {
+            //if (tempPeople != 0)
+            //{
+            //    nextShape = cloudPersonTargetsArray[(i + indexOffset) % cloudPersonTargetsArray.Length];
+            //    tempPeople -= 1;
+            //} else if (tempAnimals != 0)
+            //{
+            //    nextShape = cloudAnimalTargetsArray[(i + indexOffset) % cloudAnimalTargetsArray.Length];
+            //    tempAnimals -= 1;
+            //} else if (tempObjects != 0)
+            //{
+            //    nextShape = cloudObjectTargetsArray[(i + indexOffset) % cloudObjectTargetsArray.Length];
+            //    tempObjects -= 1;
+            //} else
+            //{
                 nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
-            }
+            //}
 
             //compare current texture with existing selections
             //if it's already been used, then we skip forward in the deck

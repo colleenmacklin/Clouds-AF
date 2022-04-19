@@ -238,6 +238,7 @@ public class CloudManager : MonoBehaviour
     //Create a comparison list as we go along so we do not repeat shapes set to set
     void SetCloudsToTargetShapes()
     {
+        Debug.Log("SetCloudsToTargetShapes");
         //shuffle possible targets
         cloudTargetsArray = ShuffleArray(cloudTargetsArray);
         //cloudPersonTargetsArray = ShuffleArray(cloudPersonTargetsArray);
@@ -289,6 +290,7 @@ public class CloudManager : MonoBehaviour
                     cloudsSelectedHistory.Contains(cloud.CurrentShapeName) ||
                     nextShape.name == cloud.CurrentShapeName)
             {
+                Debug.Log("shape was previously seen");
                 indexOffset++;
                 nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
 
@@ -301,6 +303,8 @@ public class CloudManager : MonoBehaviour
             }
             //Tell the cloud to handle the texture
             cloud.SetShape(nextShape);
+
+            //cm: add coRoutine here with a timer to delay the "clickability" of a forming cloud.
             cloud.TurnOnCollider();
             incomingActiveTargets.Add(nextShape.name);
         }
@@ -311,10 +315,11 @@ public class CloudManager : MonoBehaviour
 
 
     //Set a specific cloud to a shape
-    void SetCloudToShape(int index, Texture2D shape)
-    {
+    //cm 4/15 commented out
+    //void SetCloudToShape(int index, Texture2D shape)
+    //{
         //TO DO
-    }
+    //}
 
     //////////////////
     //
@@ -412,6 +417,7 @@ public class CloudManager : MonoBehaviour
     //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()
     {
+        print("setCloudtoShape called");
 
         cloudSelectionIndex++;
 
@@ -441,6 +447,8 @@ public class CloudManager : MonoBehaviour
         chosenShape = cloudTargetsArray[shapeNum];
         chosenCloud = generatedCloudObjects[cloudNum];
         selectionHistory.Add(chosenShape.name);
+        cloudsSelectedHistory.Add(chosenShape.name); //cm added 4/15
+
 
         Debug.Log("chosenCloud: " + chosenCloud);
 
@@ -453,7 +461,7 @@ public class CloudManager : MonoBehaviour
         //Because the manager, if it exists at all, should manage. Not respond.
         //i.e. clouds should not be responsible for knowing they are chosen
 
-        EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
+        EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape -- this should not all happen at the same time
 
         StartCoroutine(PauseBeforeTalking());
         //This is where the dialogue manager is activated.
@@ -463,9 +471,10 @@ public class CloudManager : MonoBehaviour
 
     private IEnumerator PauseBeforeTalking()
     {
-        yield return new WaitForSeconds(pauseBetweenText);
 
         EventManager.TriggerEvent("Talk");
+        yield return new WaitForSeconds(pauseBetweenText);
+
     }
 
     private void TurnOffCloud()
@@ -508,7 +517,7 @@ public class CloudManager : MonoBehaviour
 
             }
         }
-    }
-    */
+    }*/
+    
 
 }

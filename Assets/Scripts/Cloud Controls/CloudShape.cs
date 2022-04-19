@@ -21,6 +21,7 @@ public class CloudShape : MonoBehaviour
     [Header("Control Properties")]
     [SerializeField]
     private Texture2D currentShape;
+    private Texture2D incomingShape;
     public string CurrentShapeName { get => currentShape.name; }
     [SerializeField]
     private ParticleSystem ps;
@@ -82,23 +83,57 @@ public class CloudShape : MonoBehaviour
         cloudCollider.enabled = false;
     }
 
+    //cm added coroutine to this 4/15
 
     //SetShape takes a texture (and sets it after a rescale)
     //this also sets the collider size to update with it
     public void SetShape(Texture2D shapeTexture)
     {
-        var srcWidth = shapeTexture.width;
-        var srcHeight = shapeTexture.height;
+        //var srcWidth = shapeTexture.width;
+        //var srcHeight = shapeTexture.height;
+
+        //Calculate texture adjustment factor
+        //Vector3 textureScaleAdjustment = CalculateSquareScaleRatio(srcWidth, srcHeight);
+
+        //Set the object's shape reference to the shapeTexture for easy reference
+
+        //save shapeTexture to incomingShape
+        incomingShape = shapeTexture;
+
+        //put in a coroutine
+        StartCoroutine(changeShape());
+
+        //currentShape = shapeTexture;
+
+        //Set the scale and texture value in the shape module directly
+        //psShape.scale = textureScaleAdjustment;
+        //psShape.texture = shapeTexture;
+
+        //Set the scale *of the collider* that represents the shape
+        //Collider is rotated, so the values are x and y.
+        //And the 7f arbbitrarily for "best fit"
+        //Vector3 colliderSize = new Vector3(
+            //5f * textureScaleAdjustment.x / 7f,
+            //5f * textureScaleAdjustment.y / 7f,
+            //2f
+        //);
+        //cloudCollider.size = colliderSize;
+    }
+
+    IEnumerator changeShape()
+    {
+        var srcWidth = incomingShape.width;
+        var srcHeight = incomingShape.height;
 
         //Calculate texture adjustment factor
         Vector3 textureScaleAdjustment = CalculateSquareScaleRatio(srcWidth, srcHeight);
 
         //Set the object's shape reference to the shapeTexture for easy reference
-        currentShape = shapeTexture;
+        currentShape = incomingShape;
 
         //Set the scale and texture value in the shape module directly
         psShape.scale = textureScaleAdjustment;
-        psShape.texture = shapeTexture;
+        psShape.texture = incomingShape;
 
         //Set the scale *of the collider* that represents the shape
         //Collider is rotated, so the values are x and y.
@@ -109,6 +144,9 @@ public class CloudShape : MonoBehaviour
             2f
         );
         cloudCollider.size = colliderSize;
+        float timing = Random.Range(0.0f, 3.0f);
+        yield return new WaitForSeconds(timing);
+
     }
 
     ////////////////

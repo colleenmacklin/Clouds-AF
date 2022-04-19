@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /*
 
@@ -31,8 +32,14 @@ Major changes from Dialogue Manager:
 [RequireComponent((typeof(DialogueManager)))]
 public class Storyteller : MonoBehaviour
 {
+    //[SerializeField]
+    //NarratorSO narrator;
     [SerializeField]
-    NarratorSO narrator;
+    CloudMusingSO muse;
+    [SerializeField]
+    public RectTransform credits;
+    private bool gameover = false;
+    public List<string> names = new List<string>();
     [Tooltip("Chooses a random story if on, otherwise picks first one")]
     [SerializeField] bool ChooseRandomStory = false;
 
@@ -41,7 +48,8 @@ public class Storyteller : MonoBehaviour
     [SerializeField] TextBoxController textBoxController;
     [SerializeField] List<string> viewedShapes = new List<string>();//the shapes we've viewed so far
 
-    Story chosenStory;//the active story we will use
+
+    //Story chosenStory;//the active story we will use
     private void OnEnable()
     {
         EventManager.StartListening("ConversationEnded", CheckForCompletion);
@@ -59,8 +67,12 @@ public class Storyteller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        narrator.ProcessNarratorFile();
+
+        //.ProcessNarratorFile();
+        muse.ProcessNarratorFile();
+        //Debug.Log(muse.CloudData[5].Bindings[0].Content[1]);
         EventManager.TriggerEvent("Cutscene");
+        //EventManager.TriggerEvent("Intro");
         SetupStory();
         EventManager.TriggerEvent("Setup"); //tell clouds to get ready
                                             //access pattern for the narrator story content
@@ -73,16 +85,16 @@ public class Storyteller : MonoBehaviour
     //Pick one of the narrator's random stories
     void SetupStory()
     {
-        int storyIndex = 0;
-        if (ChooseRandomStory)
-        {
-            storyIndex = Random.Range(0, narrator.StoryData.Count);
-        }
+        //int storyIndex = 0;
+        //if (ChooseRandomStory)
+        //{
+        //    storyIndex = Random.Range(0, narrator.StoryData.Count);
+        //}
 
-        chosenStory = narrator.StoryData[storyIndex]; //picked story
+        //chosenStory = narrator.StoryData[storyIndex]; //picked story
 
         //Send the story opening to the dialogue manager
-        SendMusing(chosenStory.Content["opening"]);
+        SendMusing(muse.CloudData[0].Content);
     }
 
     //Send a musing to the text controller
@@ -94,9 +106,31 @@ public class Storyteller : MonoBehaviour
     void NextMusing(string key)
     {
         //store the shape
+        //Debug.Log(key);
         viewedShapes.Add(key);
         //send the musing
-        SendMusing(chosenStory.Content[key]);
+        for (int i = 0; i < muse.CloudData.Count; i++)
+        {
+
+            if (muse.CloudData[i].Name == key)
+            {
+                string[] currentMusing = muse.CloudData[i].Content;
+                for (int j = 0; j < viewedShapes.Count; j++)
+                {
+                    //Debug.Log(viewedShapes[j]);
+                    for (int k = 0; k < muse.CloudData[i].Bindings.Length; k++)
+                    {
+                        Debug.Log(muse.CloudData[i].Bindings[k].Name);
+                        if(viewedShapes[j] == muse.CloudData[i].Bindings[k].Name)
+                        {
+                            currentMusing = muse.CloudData[i].Bindings[k].Content;
+                        }
+                    }
+                }
+
+                SendMusing(currentMusing);
+            }
+        }
         //increase musings
         musingsGiven += 1;
         EventManager.TriggerEvent("Musing");
@@ -110,14 +144,14 @@ public class Storyteller : MonoBehaviour
     {
         Debug.Log($"Responding to {shapeKey}");
 
-        if (chosenStory.Content.ContainsKey(shapeKey))
-        {
-            NextMusing(shapeKey);
-            return;
-        }
+        //if (chosenStory.Content.ContainsKey(shapeKey))
+        //{
+        NextMusing(shapeKey);
+        //    return;
+        //}
 
         //if not found then send... nothing?
-        SendMusing(new string[] { $"I don't think I have anything for that." });//graceful failure
+        //SendMusing(new string[] { $"I don't think I have anything for that." });//graceful failure
     }
 
     //Ending Event
@@ -129,6 +163,8 @@ public class Storyteller : MonoBehaviour
             EventManager.TriggerEvent("Cutscene");
             EventManager.TriggerEvent("sunset");
             EndStory();
+            gameover = true;
+            //Credits();
         }
     }
 
@@ -159,7 +195,7 @@ public class Storyteller : MonoBehaviour
 
         //Adjust the lines in the original by replacing <CLOUD_LIST> with our list.
         List<string> adjustedLines = new List<string>();
-        foreach (string line in chosenStory.Content["closing"])
+        foreach (string line in muse.CloudData[31].Content)
         {
             string adjustedLine = line.Replace("<CLOUD_LIST>", chosenList);
 
@@ -170,9 +206,20 @@ public class Storyteller : MonoBehaviour
         SendMusing(adjustedLines.ToArray());
     }
 
+    void Credits()
+    {
+        if(credits.position.y < 1000.0f)
+        {
+            credits.position += new Vector3(0, 2.0f, 0);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-
+        //if(gameover)
+        //{
+        //    Credits();
+        //}
     }
 }

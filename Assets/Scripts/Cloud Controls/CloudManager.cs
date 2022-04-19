@@ -36,11 +36,16 @@ public class CloudManager : MonoBehaviour
     [Header("Cloud Properties")]
     [SerializeField]
     [Tooltip("How many clouds to create")]
-
     private int numberOfCloudsToGenerate;
     [SerializeField]
     [Tooltip("How many of the clouds to turn into targets")]
     private int numberOfTargetsToGenerate;
+    //[SerializeField]
+    //private int numberOfPeopleToGenerate;
+    //[SerializeField]
+    //private int numberOfAnimalsToGenerate;
+    //[SerializeField]
+    //private int numberOfObjectsToGenerate;
     [SerializeField]
     [Tooltip("All the generated clouds in the sky")]
     private List<GameObject> generatedCloudObjects;
@@ -52,6 +57,12 @@ public class CloudManager : MonoBehaviour
     [Header("Cloud Data")]//consider refactor as cloud scriptable objects
     [SerializeField]
     private Texture2D[] cloudTargetsArray; //textures stay as an array because we are not generating run time textures
+    //[SerializeField]
+    //private Texture2D[] cloudPersonTargetsArray;
+    //[SerializeField]
+    //private Texture2D[] cloudAnimalTargetsArray;
+    //[SerializeField]
+    //private Texture2D[] cloudObjectTargetsArray;
     [SerializeField]
     private Texture2D[] cloudGenericsArray; //textures stay as an array because we are not generating run time textures
     [SerializeField]
@@ -227,8 +238,15 @@ public class CloudManager : MonoBehaviour
     //Create a comparison list as we go along so we do not repeat shapes set to set
     void SetCloudsToTargetShapes()
     {
+        Debug.Log("SetCloudsToTargetShapes");
         //shuffle possible targets
         cloudTargetsArray = ShuffleArray(cloudTargetsArray);
+        //cloudPersonTargetsArray = ShuffleArray(cloudPersonTargetsArray);
+        //cloudAnimalTargetsArray = ShuffleArray(cloudAnimalTargetsArray);
+        //cloudObjectTargetsArray = ShuffleArray(cloudObjectTargetsArray);
+        //int tempPeople = numberOfPeopleToGenerate;
+        //int tempAnimals = numberOfAnimalsToGenerate;
+        //int tempObjects = numberOfObjectsToGenerate;
 
         //shuffle the generated clouds
         generatedCloudObjects = ShuffleList(generatedCloudObjects);
@@ -247,7 +265,24 @@ public class CloudManager : MonoBehaviour
             //Get the shape component
             CloudShape cloud = generatedCloudObjects[i].GetComponent<CloudShape>();
 
-            Texture2D nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
+            Texture2D nextShape;
+
+            //if (tempPeople != 0)
+            //{
+            //    nextShape = cloudPersonTargetsArray[(i + indexOffset) % cloudPersonTargetsArray.Length];
+            //    tempPeople -= 1;
+            //} else if (tempAnimals != 0)
+            //{
+            //    nextShape = cloudAnimalTargetsArray[(i + indexOffset) % cloudAnimalTargetsArray.Length];
+            //    tempAnimals -= 1;
+            //} else if (tempObjects != 0)
+            //{
+            //    nextShape = cloudObjectTargetsArray[(i + indexOffset) % cloudObjectTargetsArray.Length];
+            //    tempObjects -= 1;
+            //} else
+            //{
+                nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
+            //}
 
             //compare current texture with existing selections
             //if it's already been used, then we skip forward in the deck
@@ -255,6 +290,7 @@ public class CloudManager : MonoBehaviour
                     cloudsSelectedHistory.Contains(cloud.CurrentShapeName) ||
                     nextShape.name == cloud.CurrentShapeName)
             {
+                Debug.Log("shape was previously seen");
                 indexOffset++;
                 nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
 
@@ -266,7 +302,9 @@ public class CloudManager : MonoBehaviour
                 }
             }
             //Tell the cloud to handle the texture
-            cloud.SetShape(cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length]);
+            cloud.SetShape(nextShape);
+
+            //cm: add coRoutine here with a timer to delay the "clickability" of a forming cloud.
             cloud.TurnOnCollider();
             incomingActiveTargets.Add(nextShape.name);
         }
@@ -277,10 +315,11 @@ public class CloudManager : MonoBehaviour
 
 
     //Set a specific cloud to a shape
-    void SetCloudToShape(int index, Texture2D shape)
-    {
+    //cm 4/15 commented out
+    //void SetCloudToShape(int index, Texture2D shape)
+    //{
         //TO DO
-    }
+    //}
 
     //////////////////
     //
@@ -378,6 +417,7 @@ public class CloudManager : MonoBehaviour
     //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()
     {
+        print("setCloudtoShape called");
 
         cloudSelectionIndex++;
 
@@ -407,6 +447,8 @@ public class CloudManager : MonoBehaviour
         chosenShape = cloudTargetsArray[shapeNum];
         chosenCloud = generatedCloudObjects[cloudNum];
         selectionHistory.Add(chosenShape.name);
+        cloudsSelectedHistory.Add(chosenShape.name); //cm added 4/15
+
 
         Debug.Log("chosenCloud: " + chosenCloud);
 
@@ -419,7 +461,7 @@ public class CloudManager : MonoBehaviour
         //Because the manager, if it exists at all, should manage. Not respond.
         //i.e. clouds should not be responsible for knowing they are chosen
 
-        EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
+        EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape -- this should not all happen at the same time
 
         StartCoroutine(PauseBeforeTalking());
         //This is where the dialogue manager is activated.
@@ -429,9 +471,10 @@ public class CloudManager : MonoBehaviour
 
     private IEnumerator PauseBeforeTalking()
     {
-        yield return new WaitForSeconds(pauseBetweenText);
 
         EventManager.TriggerEvent("Talk");
+        yield return new WaitForSeconds(pauseBetweenText);
+
     }
 
     private void TurnOffCloud()
@@ -474,7 +517,7 @@ public class CloudManager : MonoBehaviour
 
             }
         }
-    }
-    */
+    }*/
+    
 
 }

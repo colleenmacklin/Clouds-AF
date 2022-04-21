@@ -156,6 +156,11 @@ public class Raycaster : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     Selected = hit.transform.gameObject;
+
+                    GameObject c = Selected;
+                    
+                    Actions.GetClickedCloud(c);
+
                     lookAtSelected = Selected.transform.position - Camera.main.transform.position;
                     EventManager.TriggerEvent("Respond");
                 }

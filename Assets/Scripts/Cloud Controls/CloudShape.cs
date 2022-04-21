@@ -23,6 +23,7 @@ public class CloudShape : MonoBehaviour
     private Texture2D currentShape;
     private Texture2D incomingShape;
     public string CurrentShapeName { get => currentShape.name; }
+    public bool ready;
     [SerializeField]
     private ParticleSystem ps;
     [SerializeField]
@@ -32,29 +33,45 @@ public class CloudShape : MonoBehaviour
 
     //public ParticleSystem.ShapeModule myShape;
     //stuff to do:
-    // --add slightly different timers to shape changing
     // --destroy myself when I blow offscreen
-    [Header("Under Construction")]
-    [Tooltip("Not in use")]
-    public float spawnTime;
-    [Tooltip("Not in use")]
-    public float spawnDelay;
+    [Header("Variable Timings and Scales")]
+    [SerializeField]
+    [Tooltip("Min and Max for Random timings behind clouds changing")] //CM added 4/19
+    public float changeTimeMin;
+    public float changeTimeMax;
+
+    [Tooltip("default was 10.0f")]
+    public float minScale;
+    public float maxScale;
+    public float currScale;
+
     [SerializeField]
     [Tooltip("Set to Quad renderer")]
     private Renderer shapeRenderer;
 
+    [Header("particle system")]
+    [SerializeField]
+    [Tooltip("Set to Quad renderer")]
+    public int numParticles;
+
     private void OnEnable()
     {
-        EventManager.StartListening("StopClouds", StopClouds);
-        EventManager.StartListening("ClarifyClouds", ClarifyClouds);
-        EventManager.StartListening("SlowDownClouds", SlowDownClouds);
+        EventManager.StartListening("StopClouds", StopCloud);
+        EventManager.StartListening("ClarifyClouds", ClarifyCloud);
+        EventManager.StartListening("SlowDownClouds", SlowDownCloud);
+        Actions.SharpenCloud += SharpenCloud;
+        Actions.BlurCloud += BlurCloud;
+
     }
 
     private void OnDisable()
     {
-        EventManager.StopListening("StopClouds", StopClouds);
-        EventManager.StopListening("ClarifyClouds", ClarifyClouds);
-        EventManager.StopListening("SlowDownClouds", SlowDownClouds);
+        EventManager.StopListening("StopClouds", StopCloud);
+        EventManager.StopListening("ClarifyClouds", ClarifyCloud);
+        EventManager.StopListening("SlowDownClouds", SlowDownCloud);
+        Actions.SharpenCloud -= SharpenCloud;
+        Actions.BlurCloud += BlurCloud;
+
     }
 
     private void Awake()
@@ -73,13 +90,28 @@ public class CloudShape : MonoBehaviour
 
     }
 
+    // checks the number of particles to see if this cloud is visible...
+    private void LateUpdate()
+    {
+        numParticles = ps.particleCount;
+        if (numParticles > 1000)
+        {
+            ready = true;
+        }
+        else
+            ready = false;
+    }
+
     public void TurnOnCollider()
     {
+        Debug.Log("turning on Collider..............");
         cloudCollider.enabled = true;
     }
 
     public void TurnOffCollider()
     {
+        Debug.Log("...........turning off Collider..............");
+
         cloudCollider.enabled = false;
     }
 
@@ -92,7 +124,7 @@ public class CloudShape : MonoBehaviour
         //var srcWidth = shapeTexture.width;
         //var srcHeight = shapeTexture.height;
 
-        //Calculate texture adjustment factor
+        //Calculate texture adjustment factor - no longer needed
         //Vector3 textureScaleAdjustment = CalculateSquareScaleRatio(srcWidth, srcHeight);
 
         //Set the object's shape reference to the shapeTexture for easy reference
@@ -100,8 +132,8 @@ public class CloudShape : MonoBehaviour
         //save shapeTexture to incomingShape
         incomingShape = shapeTexture;
 
-        //put in a coroutine
-        StartCoroutine(changeShape());
+        //played around with putting in a coroutine to randomly vary when clouds change shape (so they don't all do this in unison) -- probs should be put into cloud manager, which should be changed to conduct specific clouds
+        changeShape();
 
         //currentShape = shapeTexture;
 
@@ -120,18 +152,24 @@ public class CloudShape : MonoBehaviour
         //cloudCollider.size = colliderSize;
     }
 
-    IEnumerator changeShape()
+    public void changeShape()
     {
+        //old code - used to be a coroutine remove when we add this functionality to cloudmanager
+        //enable some variable timings for clouds to start changing shape
+        //float timing = UnityEngine.Random.Range(changeTimeMin, changeTimeMax);
+        //yield return new WaitForSeconds(timing);
+
+
+        //adjust the shape of the cloud and its collider based on the aspect ratio of the shape
         var srcWidth = incomingShape.width;
         var srcHeight = incomingShape.height;
-
-        //Calculate texture adjustment factor
         Vector3 textureScaleAdjustment = CalculateSquareScaleRatio(srcWidth, srcHeight);
+
 
         //Set the object's shape reference to the shapeTexture for easy reference
         currentShape = incomingShape;
 
-        //Set the scale and texture value in the shape module directly
+        //Set the scale and texture value in the particle system shape module
         psShape.scale = textureScaleAdjustment;
         psShape.texture = incomingShape;
 
@@ -144,8 +182,7 @@ public class CloudShape : MonoBehaviour
             2f
         );
         cloudCollider.size = colliderSize;
-        float timing = Random.Range(0.0f, 3.0f);
-        yield return new WaitForSeconds(timing);
+
 
     }
 
@@ -161,9 +198,15 @@ public class CloudShape : MonoBehaviour
     //It does require that the long edge of an image be 1024. Otherwise we might run into problems
     //Does not actually change the texture, we should probably move to 1024x1024 in the long run.
     //The 10f and 10f are our chosen  minimums.
-    private Vector3 CalculateSquareScaleRatio(float srcWidth, float srcHeight, float minWidth = 10f, float minHeight = 10f)
+    //private Vector3 CalculateSquareScaleRatio(float srcWidth, float srcHeight, float minWidth = 10f, float minHeight = 10f)
+    private Vector3 CalculateSquareScaleRatio(float srcWidth, float srcHeight)
+
     {
-        var ratio = Mathf.Max(minWidth / srcWidth, minHeight / srcHeight);
+        //adding a randomizer here for variable sizes
+        float scale = UnityEngine.Random.Range(minScale, maxScale);
+        currScale = scale; //just surfacing to the interface for debugging
+
+        var ratio = Mathf.Max(scale / srcWidth, scale / srcHeight);
 
         var newsize = new Vector3(srcWidth * ratio, srcHeight * ratio, 1f);
 
@@ -175,20 +218,42 @@ public class CloudShape : MonoBehaviour
     //    Mutation functions
     //       consider adding some state transitions in the future
     /////////////////
-    public void ClarifyClouds()
+    public void ClarifyCloud()
+    {
+        var particleSystemSettings = ps.main;
+        particleSystemSettings.simulationSpeed = 0.30f;
+        //particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3f);
+    }
+
+    public void SharpenCloud()
     {
         var particleSystemSettings = ps.main;
         particleSystemSettings.simulationSpeed = 0.30f;
         particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3f);
     }
+    public void BlurCloud()
+    {
+        var particleSystemSettings = ps.main;
+        particleSystemSettings.simulationSpeed = 0.30f;
+        particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(3f, 10f);
+    }
 
-    public void StopClouds()
+
+    public void StopCloud()
     {
         var particleSystem = ps;
         particleSystem.Stop();
     }
 
-    public void SlowDownClouds()
+    public void StartCloud()
+    {
+        var particleSystem = ps;
+        particleSystem.Play();
+        //Actions.CloudIsReady(this);
+    }
+
+
+    public void SlowDownCloud()
     {
         var particleSystemSettings = ps.main;
         particleSystemSettings.simulationSpeed = .08f;

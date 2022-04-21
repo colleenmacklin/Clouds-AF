@@ -35,7 +35,7 @@ public class Opening : MonoBehaviour
         GameObject temp = Instantiate(cloudObjectPrefab, cloudposition, Quaternion.Euler(0f, 0f, 0f), transform);
         CloudShape cloud = temp.GetComponent<CloudShape>();
         cloud.SetShape(cloudTheory);
-        cloud.ClarifyClouds();
+        cloud.ClarifyCloud();
         //cloud.SlowDownClouds();
 
         //cloud.StopClouds();

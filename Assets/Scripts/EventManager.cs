@@ -103,7 +103,7 @@ public class EventManager : MonoBehaviour
         //Action thisEvent = null; //parameter 
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            Debug.Log($"Triggering {eventName}");
+            //Debug.Log($"Triggering {eventName}");
             thisEvent.Invoke();
         }
     }

@@ -1,0 +1,43 @@
+Thank you for Purchasing the First person hands asset.
+
+This has recently been updated with generic animations that you can animate independently for unique motions. 
+It is reccommended that you also animate things in a secondary sense by attaching the arms to an game object that will have its own animation, this will help for fine tuning positioning. You can make a copy of specific animation clips and edit them to your taste by removing or adjusting keys, see video on this items store page.
+
+Many animation speeds will also need tweaking for better visual performance in your game.
+
+This pack is an update and includes new animations and textures and also a new mixer shader for blending between the non-blood and blood versions of the texture.
+
+Contact me for more improvements : me@robertramsay.co.uk
+
+Version 2.2:
+
+10 Texture bases for Sci-Fi GLoves plus mask-albedo added so that you can add your own.
+Male and Female Hands and Arms now available
+
+
+New:(V1.85)
+
+Texture fixes to diffuse and normal maps with and without gloves.
+Animation example of Root motion removed. (See video of how to do this for other animations)
+
+In Progress for Version 2:
+Brand New base arm Male.
+Gloves based hand (no hand just cool gloves with a shader that lets you customise them)
+Extra base animations
+Proxy Weapons (used just positioning only)
+
+Previously:
+
+New: (V1.70)
+
+Female Arm
+Male Arm with Glove (full and short)
+
+Animations:
+
+Rock on
+Point
+Cast spell (over and under and towards)
+Swim breast stroke
+Swim Front crawl
+Pick-up Low

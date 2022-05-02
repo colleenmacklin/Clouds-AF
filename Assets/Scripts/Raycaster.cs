@@ -159,7 +159,7 @@ public class Raycaster : MonoBehaviour
 
                     GameObject c = Selected;
                     
-                    Actions.GetClickedCloud(c);
+                    Actions.GetClickedCloud(c); //lets cloudmanager know which cloud has been clicked
 
                     lookAtSelected = Selected.transform.position - Camera.main.transform.position;
                     EventManager.TriggerEvent("Respond");

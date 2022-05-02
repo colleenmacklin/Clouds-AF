@@ -90,7 +90,7 @@ public class CloudShape : MonoBehaviour
 
     }
 
-    // checks the number of particles to see if this cloud is visible...
+    // checks the number of particles to see if this cloud is visible...//can be removed
     private void LateUpdate()
     {
         numParticles = ps.particleCount;

@@ -435,12 +435,13 @@ public class CloudManager : MonoBehaviour
 
     //Keep Track of Clicked Clouds
 
-    public void GetClickedCloud(GameObject c)
+    public void GetClickedCloud(GameObject c) //from storyteller
     {
         //write history code
         clickedCloud = c.GetComponent<CloudShape>();
         Debug.Log("----cloud clicked: " + clickedCloud.CurrentShapeName);
     }
+
     //Generic Shuffler
     List<T> ShuffleList<T>(List<T> list)
     {

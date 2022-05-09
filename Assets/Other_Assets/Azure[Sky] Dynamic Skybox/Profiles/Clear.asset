@@ -641,9 +641,9 @@ MonoBehaviour:
       ctime1: 16384
       ctime2: 22937
       ctime3: 32768
-      ctime4: 42598
-      ctime5: 49151
-      ctime6: 52428
+      ctime4: 53392
+      ctime5: 57247
+      ctime6: 60909
       ctime7: 0
       atime0: 0
       atime1: 65535
@@ -3583,16 +3583,16 @@ MonoBehaviour:
       key3: {r: 0.9716981, g: 0.9163301, b: 0.0045834924, a: 0}
       key4: {r: 1, g: 1, b: 1, a: 0}
       key5: {r: 1, g: 1, b: 1, a: 0}
-      key6: {r: 1, g: 0.036886618, b: 0, a: 0}
+      key6: {r: 0.990566, g: 0.49944103, b: 0.3504361, a: 0}
       key7: {r: 0.52205884, g: 0.68357, b: 1, a: 0}
       ctime0: 12143
       ctime1: 14456
       ctime2: 16769
       ctime3: 19661
       ctime4: 22937
-      ctime5: 50501
-      ctime6: 54163
-      ctime7: 58789
+      ctime5: 59945
+      ctime6: 62066
+      ctime7: 64764
       atime0: 0
       atime1: 65535
       atime2: 0
@@ -3956,9 +3956,9 @@ MonoBehaviour:
       ctime0: 14745
       ctime1: 17694
       ctime2: 21299
-      ctime3: 44236
-      ctime4: 47841
-      ctime5: 50790
+      ctime3: 55127
+      ctime4: 58789
+      ctime5: 62451
       ctime6: 0
       ctime7: 0
       atime0: 0
@@ -6691,7 +6691,7 @@ MonoBehaviour:
     outputType: 0
     floatPropertyType: 0
     colorPropertyType: 0
-    slider: 1
+    slider: 0
     timelineBasedCurve:
       serializedVersion: 2
       m_Curve:
@@ -7023,7 +7023,7 @@ MonoBehaviour:
     outputType: 0
     floatPropertyType: 0
     colorPropertyType: 0
-    slider: 1
+    slider: 0
     timelineBasedCurve:
       serializedVersion: 2
       m_Curve:

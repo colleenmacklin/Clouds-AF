@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Crosstales.RTVoice;
 
 /*
 
@@ -34,6 +35,7 @@ public class Storyteller : MonoBehaviour
 {
     //[SerializeField]
     //NarratorSO narrator;
+    public Speaker speaker;
     [SerializeField]
     CloudMusingSO muse;
     [SerializeField]
@@ -67,6 +69,7 @@ public class Storyteller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //speaker.SpeakNative("RT Voice is speaking");
 
         //.ProcessNarratorFile();
         muse.ProcessNarratorFile();
@@ -95,12 +98,20 @@ public class Storyteller : MonoBehaviour
 
         //Send the story opening to the dialogue manager
         SendMusing(muse.CloudData[0].Content);
+
+        //string speakText = "Hi how are you";
+        //speaker.Speak(speakText);
+        Debug.Log(speaker.VoiceForCulture("en"));
     }
 
     //Send a musing to the text controller
     void SendMusing(string[] musing)
     {
         textBoxController.ReadNewLines(musing);
+        //for (int i = 0; i < musing.Length; i++)
+        //{
+        //    speaker.Speak(musing[i]);
+        //}
     }
 
     void NextMusing(string key)

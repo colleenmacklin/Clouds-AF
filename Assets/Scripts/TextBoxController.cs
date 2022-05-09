@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Crosstales.RTVoice;
 
 
 [RequireComponent(typeof(AudioSource))]
@@ -15,6 +16,7 @@ public class TextBoxController : MonoBehaviour
 
     [SerializeField]
     string activeLine;
+    public Speaker speaker;
 
     [SerializeField]
     string currentLine = "";
@@ -137,6 +139,7 @@ public class TextBoxController : MonoBehaviour
             textLineIndex++;//increment sentence
             //set the next active line
             activeLine = linesList[textLineIndex];
+            speaker.Speak(activeLine);
             //textField.text = "";
             //show line
             if (typeLines)
@@ -179,6 +182,7 @@ public class TextBoxController : MonoBehaviour
         Reset(); //reset first and then ingest lines
         CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
+        speaker.Speak(activeLine);
         if (typeLines) {
             typingCoroutine = StartCoroutine(TypeString()); //begin typing
         }

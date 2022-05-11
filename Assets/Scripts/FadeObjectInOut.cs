@@ -43,7 +43,7 @@ public class FadeObjectInOut : MonoBehaviour
         {
             //create a cache of colors if necessary
             colors = new Color[rendererObjects.Length];
-            Debug.Log("colors" + colors);
+            //Debug.Log("colors" + colors);
 
             // store the original colours for all child objects
             for (int i = 0; i < rendererObjects.Length; i++)
@@ -66,7 +66,7 @@ public class FadeObjectInOut : MonoBehaviour
                     rendererObjects[i].material.color = tmp;
                 }
 
-                Debug.Log("renderer " + rendererObjects[i].material.color.a);
+                //Debug.Log("renderer " + rendererObjects[i].material.color.a);
             }
 
             FadeIn();
@@ -166,7 +166,7 @@ public class FadeObjectInOut : MonoBehaviour
         }
 
 
-        Debug.Log("fade sequence end : " + fadingOut);
+        //Debug.Log("fade sequence end : " + fadingOut);
 
     }
 

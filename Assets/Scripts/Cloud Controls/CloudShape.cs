@@ -22,7 +22,8 @@ public class CloudShape : MonoBehaviour
     [SerializeField]
     private Texture2D currentShape;
     private Texture2D incomingShape;
-    public string CurrentShapeName { get => currentShape.name; }
+    public string CurrentShapeName;
+    //public string CurrentShapeName { get => currentShape.name; } //not showing...
     public bool ready;
     [SerializeField]
     private ParticleSystem ps;
@@ -104,13 +105,13 @@ public class CloudShape : MonoBehaviour
 
     public void TurnOnCollider()
     {
-        Debug.Log("turning on Collider..............");
+        //Debug.Log("turning on Collider..............");
         cloudCollider.enabled = true;
     }
 
     public void TurnOffCollider()
     {
-        Debug.Log("...........turning off Collider..............");
+        //Debug.Log("...........turning off Collider..............");
 
         cloudCollider.enabled = false;
     }
@@ -183,7 +184,7 @@ public class CloudShape : MonoBehaviour
         );
         cloudCollider.size = colliderSize;
 
-
+        CurrentShapeName = currentShape.name;
     }
 
     ////////////////

@@ -20,8 +20,8 @@ public class CloudShape : MonoBehaviour
 
     [Header("Control Properties")]
     [SerializeField]
-    private Texture2D currentShape;
-    private Texture2D incomingShape;
+    public Texture2D currentShape;
+    public Texture2D incomingShape;
     public string CurrentShapeName;
     //public string CurrentShapeName { get => currentShape.name; } //not showing...
     public bool ready;

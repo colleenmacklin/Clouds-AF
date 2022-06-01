@@ -36,6 +36,8 @@ public class Storyteller : MonoBehaviour
     //[SerializeField]
     //NarratorSO narrator;
     public Speaker speaker;
+    public bool Intro;
+
     [SerializeField]
     CloudMusingSO muse;
     [SerializeField]
@@ -98,6 +100,7 @@ public class Storyteller : MonoBehaviour
 
         //Send the story opening to the dialogue manager
         SendMusing(muse.CloudData[0].Content);
+        Intro = true;
 
         //string speakText = "Hi how are you";
         //speaker.Speak(speakText);
@@ -177,6 +180,13 @@ public class Storyteller : MonoBehaviour
             gameover = true;
             //Credits();
         }
+        if (Intro)
+        {
+            Debug.Log("introDone");
+            EventManager.TriggerEvent("IntroDone");
+            Intro = false;
+        }
+
     }
 
     //create the ending story

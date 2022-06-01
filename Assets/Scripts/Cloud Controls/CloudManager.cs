@@ -119,8 +119,10 @@ public class CloudManager : MonoBehaviour
     {
         //EventManager.StartListening("Setup", GenerateNewClouds); //from Storyteller Start()
         EventManager.StartListening("Setup", GenerateClouds); //from Storyteller Start()
+        EventManager.StartListening("IntroDone", SetNextShapes); //from Storyteller finishIntro
 
-        EventManager.StartListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
+        //EventManager.StartListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
+        EventManager.StartListening("DoneReading", SeenCloud);
         Actions.GetClickedCloud += GetClickedCloud;
         //Actions.CloudIsReady += ReadyCloud;
     }
@@ -129,8 +131,10 @@ public class CloudManager : MonoBehaviour
     {
         //EventManager.StopListening("Setup", GenerateNewClouds);
         EventManager.StopListening("Setup", GenerateClouds);
+        EventManager.StopListening("IntroDone", SetNextShapes); //from Storyteller finishIntro
+        EventManager.StopListening("DoneReading", SeenCloud); //should only apply to the cloud that was being remarked upon - use an Action
 
-        EventManager.StopListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
+        //EventManager.StopListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
         Actions.GetClickedCloud -= GetClickedCloud;
         //Actions.CloudIsReady -= ReadyCloud;
 
@@ -240,7 +244,7 @@ public class CloudManager : MonoBehaviour
         cloudGenericsArray = ShuffleArray(cloudGenericsArray);
 
         //loop through all clouds
-          CloudShape cloud = c;
+         CloudShape cloud = c;
         //pick a random cloudGeneric from the cloudGenericsArray
         int index = UnityEngine.Random.Range(0, cloudGenericsArray.Length);
 
@@ -248,7 +252,6 @@ public class CloudManager : MonoBehaviour
         cloud.SetShape(cloudGenericsArray[index]);
             cloud.TurnOffCollider();
     }
-
 
     //Set specified number of clouds to the target shapes
     //Is uncontrolled to an extent, entirely random -- we might want to change that so that we can vary where these appear 
@@ -337,15 +340,36 @@ public class CloudManager : MonoBehaviour
 
             //Tell the cloud to handle the texture
             cloud.SetShape(nextShape);
-
             StartCoroutine(waitToMakeClickable(cloud));//this gets applied to all clouds - but should only apply to clouds that are "transitioning"
-
-
             incomingActiveTargets.Add(nextShape.name);
         }
 
         //replace active history with new set of targets
         cloudsActiveHistory = incomingActiveTargets;
+    }
+
+    //Set single cloud to a shape
+    void SetSingleCloudToShape(CloudShape c)
+    {
+        //Shuffle clouds shape array
+        cloudTargetsArray = ShuffleArray(cloudTargetsArray);
+
+        //loop through all clouds
+        CloudShape cloud = c;
+        //pick a random cloudGeneric from the cloudGenericsArray
+        int index = UnityEngine.Random.Range(0, cloudTargetsArray.Length);
+
+        //Tell the cloud to handle the texture
+        cloud.SetShape(cloudTargetsArray[index]);
+        StartCoroutine(waitToMakeClickable(cloud));//this gets applied to all clouds - but should only apply to clouds that are "transitioning"
+
+    }
+
+    private void SeenCloud()
+    {
+        CloudShape c = clickedCloud;
+        Debug.Log("I;ve seen this cloud: " + c.name);
+        SetSingleCloudToGenericShape(c);
     }
 
     //inactive
@@ -363,12 +387,7 @@ public class CloudManager : MonoBehaviour
 
     }
 
-    //Set a specific cloud to a shape
-    //cm 4/15 commented out
-    //void SetCloudToShape(int index, Texture2D shape)
-    //{
-    //TO DO
-    //}
+
     void ReadyCloud(CloudShape c)
     {
         //if (c.ready)
@@ -388,12 +407,11 @@ public class CloudManager : MonoBehaviour
         SetNextShapes();
     }
 
-    public void SetNextShapes() //called from Narrator -> "DoneReading" event 
+    public void SetNextShapes() //called from Narrator -> "DoneReading" event --but should be applied individually on a timer? 
     {
-        SetCloudsToGenericShapes(); //should be applied to only the cloud remarked upon from narrator
+        //SetCloudsToGenericShapes(); //should be applied to only the cloud remarked upon from narrator
         SetCloudsToTargetShapes(); //should be removed, and placed on a random timer
     }
-
 
 
     //////////////////

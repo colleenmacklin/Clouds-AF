@@ -129,15 +129,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentShape: {fileID: 0}
+  incomingShape: {fileID: 0}
+  CurrentShapeName: 
   ready: 0
   ps: {fileID: 4001077985846674118}
-  changeTimeMin: 0
-  changeTimeMax: 10
+  changeTimeMin: 70
+  changeTimeMax: 100
   minScale: 15
   maxScale: 25
   currScale: 0
   shapeRenderer: {fileID: 1364893356364409663}
-  numParticles: 0
 --- !u!65 &3025029212260664773
 BoxCollider:
   m_ObjectHideFlags: 0

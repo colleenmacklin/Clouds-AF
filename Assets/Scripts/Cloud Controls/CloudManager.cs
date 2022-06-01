@@ -124,7 +124,7 @@ public class CloudManager : MonoBehaviour
         //EventManager.StartListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
         EventManager.StartListening("DoneReading", SeenCloud);
         Actions.GetClickedCloud += GetClickedCloud;
-        //Actions.CloudIsReady += ReadyCloud;
+        Actions.CloudIsReady += ReadyCloud;
     }
 
     void OnDisable()
@@ -136,7 +136,7 @@ public class CloudManager : MonoBehaviour
 
         //EventManager.StopListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
         Actions.GetClickedCloud -= GetClickedCloud;
-        //Actions.CloudIsReady -= ReadyCloud;
+        Actions.CloudIsReady -= ReadyCloud;
 
     }
     void Awake()
@@ -250,7 +250,7 @@ public class CloudManager : MonoBehaviour
 
         //Tell the cloud to handle the texture
         cloud.SetShape(cloudGenericsArray[index]);
-            cloud.TurnOffCollider();
+        cloud.TurnOffCollider();
     }
 
     //Set specified number of clouds to the target shapes
@@ -352,7 +352,7 @@ public class CloudManager : MonoBehaviour
     void SetSingleCloudToShape(CloudShape c)
     {
         //Shuffle clouds shape array
-        cloudTargetsArray = ShuffleArray(cloudTargetsArray);
+        //cloudTargetsArray = ShuffleArray(cloudTargetsArray);
 
         //loop through all clouds
         CloudShape cloud = c;
@@ -368,8 +368,8 @@ public class CloudManager : MonoBehaviour
     private void SeenCloud()
     {
         CloudShape c = clickedCloud;
-        Debug.Log("I;ve seen this cloud: " + c.name);
-        SetSingleCloudToGenericShape(c);
+        SetSingleCloudToGenericShape(c); //turns the most recently discussed cloud to a generic shape
+        //should change another generic cloud to a shape 
     }
 
     //inactive
@@ -379,25 +379,21 @@ public class CloudManager : MonoBehaviour
         //we need to wait until the cloud has stopped transitioning - which is based on a guess!
         yield return new WaitForSeconds(transitionTime);
 
-
         //Start particle system
         //StartCloud(c);
-        //c.TurnOnCollider();
-        ReadyCloud(c);//probably don't need a seperate function
+        c.TurnOnCollider();
 
     }
 
 
-    void ReadyCloud(CloudShape c)
+    public void ReadyCloud(CloudShape c)
     {
-        //if (c.ready)
-        //{
-            //Debug.Log("Cloud: " + c + "Is ready");
-
-            c.TurnOnCollider();
-
-        //}
-        //else c.TurnOffCollider();
+        Debug.Log("Cloud: " + c + "Is ready");
+        //set this cloud to a new shape --CM 5/31
+        //TODO need to check the array of shapes—should not be repeating
+        //TODO might want to check on the type of shape the cloud is (generic or target) and then change accordingly
+        //TODO adjust the timing
+        SetSingleCloudToShape(c);
     }
 
 
@@ -503,6 +499,7 @@ public class CloudManager : MonoBehaviour
         cloudsSelectedHistory.Add(clickedCloud.CurrentShapeName);
         cloudTargetsList.Remove(clickedCloud.currentShape);
     }
+
 
     //Generic Shuffler
     List<T> ShuffleList<T>(List<T> list)

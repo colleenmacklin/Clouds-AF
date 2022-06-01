@@ -8,6 +8,8 @@ using UnityEngine.Events;
     manipulation required for our game. We can additionally define more behavior
     as needed going forward.
 
+    //probably should create random range timers for changing a clouds shape on the cloud, and signal the CloudManager when it is ready to be changed
+
     The primary function is the SetTexture method which will rescale the images into
 
 */
@@ -25,6 +27,7 @@ public class CloudShape : MonoBehaviour
     public string CurrentShapeName;
     //public string CurrentShapeName { get => currentShape.name; } //not showing...
     public bool ready;
+    public float timeLeft;
     [SerializeField]
     private ParticleSystem ps;
     [SerializeField]
@@ -50,10 +53,6 @@ public class CloudShape : MonoBehaviour
     [Tooltip("Set to Quad renderer")]
     private Renderer shapeRenderer;
 
-    [Header("particle system")]
-    [SerializeField]
-    [Tooltip("Set to Quad renderer")]
-    public int numParticles;
 
     private void OnEnable()
     {
@@ -62,7 +61,6 @@ public class CloudShape : MonoBehaviour
         EventManager.StartListening("SlowDownClouds", SlowDownCloud);
         Actions.SharpenCloud += SharpenCloud;
         Actions.BlurCloud += BlurCloud;
-
     }
 
     private void OnDisable()
@@ -92,6 +90,7 @@ public class CloudShape : MonoBehaviour
     }
 
     // checks the number of particles to see if this cloud is visible...//can be removed
+    /*
     private void LateUpdate()
     {
         numParticles = ps.particleCount;
@@ -102,6 +101,7 @@ public class CloudShape : MonoBehaviour
         else
             ready = false;
     }
+    */
 
     public void TurnOnCollider()
     {
@@ -133,33 +133,6 @@ public class CloudShape : MonoBehaviour
         //save shapeTexture to incomingShape
         incomingShape = shapeTexture;
 
-        //played around with putting in a coroutine to randomly vary when clouds change shape (so they don't all do this in unison) -- probs should be put into cloud manager, which should be changed to conduct specific clouds
-        changeShape();
-
-        //currentShape = shapeTexture;
-
-        //Set the scale and texture value in the shape module directly
-        //psShape.scale = textureScaleAdjustment;
-        //psShape.texture = shapeTexture;
-
-        //Set the scale *of the collider* that represents the shape
-        //Collider is rotated, so the values are x and y.
-        //And the 7f arbbitrarily for "best fit"
-        //Vector3 colliderSize = new Vector3(
-            //5f * textureScaleAdjustment.x / 7f,
-            //5f * textureScaleAdjustment.y / 7f,
-            //2f
-        //);
-        //cloudCollider.size = colliderSize;
-    }
-
-    public void changeShape()
-    {
-        //old code - used to be a coroutine remove when we add this functionality to cloudmanager
-        //enable some variable timings for clouds to start changing shape
-        //float timing = UnityEngine.Random.Range(changeTimeMin, changeTimeMax);
-        //yield return new WaitForSeconds(timing);
-
 
         //adjust the shape of the cloud and its collider based on the aspect ratio of the shape
         var srcWidth = incomingShape.width;
@@ -185,6 +158,21 @@ public class CloudShape : MonoBehaviour
         cloudCollider.size = colliderSize;
 
         CurrentShapeName = currentShape.name;
+        StartCoroutine(TimeToChange());
+
+        //add an action to trigger on Cloudmanager, with a reference to this cloud when the timer is done
+    }
+
+    IEnumerator TimeToChange()
+    {
+        //Start a variable timer countdown to signal when the cloud is ready to change
+        //enable some variable timings for clouds to start changing shape
+        float timing = Random.Range(changeTimeMin, changeTimeMax);
+        for (timeLeft = timing; timeLeft > 0; timeLeft -= Time.deltaTime)
+        yield return null;
+        Actions.CloudIsReady(this);
+
+        //yield return new WaitForSeconds(timing);
     }
 
     ////////////////

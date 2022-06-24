@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using PoissonDisc;
+using System.Linq;
 
 /*
 
@@ -33,25 +34,43 @@ public class CloudManager : MonoBehaviour
     [Range(0f, 40f)]
     public float pauseBetweenText = 5f;
 
+    public CloudShape clickedCloud;
+
     [Header("Cloud Properties")]
     [SerializeField]
     [Tooltip("How many clouds to create")]
-
     private int numberOfCloudsToGenerate;
     [SerializeField]
     [Tooltip("How many of the clouds to turn into targets")]
     private int numberOfTargetsToGenerate;
+    //[SerializeField]
+    //private int numberOfPeopleToGenerate;
+    //[SerializeField]
+    //private int numberOfAnimalsToGenerate;
+    //[SerializeField]
+    //private int numberOfObjectsToGenerate;
     [SerializeField]
     [Tooltip("All the generated clouds in the sky")]
     private List<GameObject> generatedCloudObjects;
     [SerializeField]
     [Tooltip("The base cloud prefab")]
     private GameObject cloudObjectPrefab;
+    [SerializeField]
+    [Tooltip("delay for making cloud clickable")]
+    private int transitionTime;
 
 
     [Header("Cloud Data")]//consider refactor as cloud scriptable objects
     [SerializeField]
     private Texture2D[] cloudTargetsArray; //textures stay as an array because we are not generating run time textures
+    [SerializeField]
+    private List<Texture2D> cloudTargetsList; //should probably try to convert this so we can remove items from the list
+    //[SerializeField]
+    //private Texture2D[] cloudPersonTargetsArray;
+    //[SerializeField]
+    //private Texture2D[] cloudAnimalTargetsArray;
+    //[SerializeField]
+    //private Texture2D[] cloudObjectTargetsArray;
     [SerializeField]
     private Texture2D[] cloudGenericsArray; //textures stay as an array because we are not generating run time textures
     [SerializeField]
@@ -98,15 +117,27 @@ public class CloudManager : MonoBehaviour
 
     void OnEnable()
     {
-        EventManager.StartListening("Setup", GenerateNewClouds);
-        EventManager.StartListening("DoneReading", SetNextShapes);
+        //EventManager.StartListening("Setup", GenerateNewClouds); //from Storyteller Start()
+        EventManager.StartListening("Setup", GenerateClouds); //from Storyteller Start()
+        EventManager.StartListening("IntroDone", SetNextShapes); //from Storyteller finishIntro
 
+        //EventManager.StartListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
+        EventManager.StartListening("DoneReading", SeenCloud);
+        Actions.GetClickedCloud += GetClickedCloud;
+        Actions.CloudIsReady += ReadyCloud;
     }
 
     void OnDisable()
     {
-        EventManager.StopListening("Setup", GenerateNewClouds);
-        EventManager.StopListening("DoneReading", SetNextShapes);
+        //EventManager.StopListening("Setup", GenerateNewClouds);
+        EventManager.StopListening("Setup", GenerateClouds);
+        EventManager.StopListening("IntroDone", SetNextShapes); //from Storyteller finishIntro
+        EventManager.StopListening("DoneReading", SeenCloud); //should only apply to the cloud that was being remarked upon - use an Action
+
+        //EventManager.StopListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
+        Actions.GetClickedCloud -= GetClickedCloud;
+        Actions.CloudIsReady -= ReadyCloud;
+
     }
     void Awake()
     {
@@ -120,29 +151,12 @@ public class CloudManager : MonoBehaviour
         //       EventManager.TriggerEvent("SpawnShape");
     }
 
-    void Update()
-    {
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     SetNextShapes();
-        // }
-    }
-
-    public void GenerateNewClouds()
-    {
-        GenerateClouds();
-        SetNextShapes();
-    }
-
-    public void SetNextShapes()
-    {
-        SetCloudsToGenericShapes();
-        SetCloudsToTargetShapes();
-    }
-
     void SetTextureArrays()
     {//from unity docs
+     // would be how to do it as a List
+        
         cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+        cloudTargetsList = new List<Texture2D>(cloudTargetsArray);
         cloudGenericsArray = Resources.LoadAll("Cloud_Natural", typeof(Texture2D)).Cast<Texture2D>().ToArray();
     }
 
@@ -192,18 +206,19 @@ public class CloudManager : MonoBehaviour
             Vector3 scaleVector = new Vector3(sizeScale, sizeScale, sizeScale);
 
             //get a random scale for the transform
-            go.transform.localScale = scaleVector;
+            go.transform.localScale = scaleVector; //CM: Need to change to scale the underlying shape - which will unify the fluffiness of the clouds, but differentiate their shapes.
             go.name = $"Cloud {i}";
 
             generatedCloudObjects.Add(go);
         }
 
-        EventManager.TriggerEvent("CloudsGenerated");
-        EventManager.TriggerEvent("SlowDownClouds");
-
+        EventManager.TriggerEvent("CloudsGenerated"); //heard by nothing?
+        EventManager.TriggerEvent("SlowDownClouds"); //heard by CloudShape
+        //should add some generic shapes here...
+        SetCloudsToGenericShapes();
     }
 
-    //Set all clouds to some generic non target Shapes
+    //Set all clouds to some generic cloud (non target) Shapes
     //Note this is simpler because we do not care about repeats here
     void SetCloudsToGenericShapes()
     {
@@ -222,19 +237,43 @@ public class CloudManager : MonoBehaviour
         }
     }
 
+    //---------For future implementation, call from Narrator after a shaped cloud has been selected
+    void SetSingleCloudToGenericShape(CloudShape c) //for a future action on a single cloud called from narrator
+    {
+        //Shuffle clouds shape array
+        cloudGenericsArray = ShuffleArray(cloudGenericsArray);
+
+        //loop through all clouds
+         CloudShape cloud = c;
+        //pick a random cloudGeneric from the cloudGenericsArray
+        int index = UnityEngine.Random.Range(0, cloudGenericsArray.Length);
+
+        //Tell the cloud to handle the texture
+        cloud.SetShape(cloudGenericsArray[index]);
+        cloud.TurnOffCollider();
+    }
+
     //Set specified number of clouds to the target shapes
-    //Is uncontrolled to an extent, entirely random
+    //Is uncontrolled to an extent, entirely random -- we might want to change that so that we can vary where these appear 
     //Create a comparison list as we go along so we do not repeat shapes set to set
     void SetCloudsToTargetShapes()
     {
         //shuffle possible targets
-        cloudTargetsArray = ShuffleArray(cloudTargetsArray);
+        cloudTargetsList = ShuffleList(cloudTargetsList);
+        //cloudTargetsArray = ShuffleArray(cloudTargetsArray);
+        //cloudPersonTargetsArray = ShuffleArray(cloudPersonTargetsArray);
+        //cloudAnimalTargetsArray = ShuffleArray(cloudAnimalTargetsArray);
+        //cloudObjectTargetsArray = ShuffleArray(cloudObjectTargetsArray);
+        //int tempPeople = numberOfPeopleToGenerate;
+        //int tempAnimals = numberOfAnimalsToGenerate;
+        //int tempObjects = numberOfObjectsToGenerate;
 
         //shuffle the generated clouds
         generatedCloudObjects = ShuffleList(generatedCloudObjects);
 
         //Store the next set of active targets so we compare them later
         List<string> incomingActiveTargets = new List<string>();
+
         for (int i = 0; i < numberOfTargetsToGenerate; i++)
         {
 
@@ -247,27 +286,61 @@ public class CloudManager : MonoBehaviour
             //Get the shape component
             CloudShape cloud = generatedCloudObjects[i].GetComponent<CloudShape>();
 
-            Texture2D nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
+            Texture2D nextShape;
+
+            //if (tempPeople != 0)
+            //{
+            //    nextShape = cloudPersonTargetsArray[(i + indexOffset) % cloudPersonTargetsArray.Length];
+            //    tempPeople -= 1;
+            //} else if (tempAnimals != 0)
+            //{
+            //    nextShape = cloudAnimalTargetsArray[(i + indexOffset) % cloudAnimalTargetsArray.Length];
+            //    tempAnimals -= 1;
+            //} else if (tempObjects != 0)
+            //{
+            //    nextShape = cloudObjectTargetsArray[(i + indexOffset) % cloudObjectTargetsArray.Length];
+            //    tempObjects -= 1;
+            //} else
+            //{
+                nextShape = cloudTargetsList[(i + indexOffset) % cloudTargetsList.Count];
+            //}
 
             //compare current texture with existing selections
             //if it's already been used, then we skip forward in the deck
-            while (cloudsActiveHistory.Contains(cloud.CurrentShapeName) ||
-                    cloudsSelectedHistory.Contains(cloud.CurrentShapeName) ||
-                    nextShape.name == cloud.CurrentShapeName)
-            {
+            //=================================================================NOTE: this doesn't work, check logic (CM, 5/10)
+            Debug.Log("Cloud CurrentShapeName: " + cloud.CurrentShapeName);
+
+
+            //while (cloudsActiveHistory.Contains(cloud.CurrentShapeName) ||
+                    //cloudsSelectedHistory.Contains(cloud.CurrentShapeName) ||
+                    //nextShape.name == cloud.CurrentShapeName)
+
+                while (cloudsActiveHistory.Contains(nextShape.name) ||
+                    cloudsSelectedHistory.Contains(nextShape.name))
+                {
+                 Debug.Log("shape was previously seen");
+                 //cloudTargetsList.Remove(nextShape);
+                
+
+                //we should remove the object from the array - but this would be easier if it was a list!
                 indexOffset++;
-                nextShape = cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length];
+
+                nextShape = cloudTargetsList[(i + indexOffset) % cloudTargetsList.Count];
 
                 //if we've gone through all the options, break out.
-                if (indexOffset >= cloudTargetsArray.Length)
+                if (indexOffset >= cloudTargetsList.Count)
                 {
                     Debug.Log("Looped through all possible targets but could not find non-duplicate, breaking");
                     break;
                 }
             }
+
+            //stop particles
+            //StopCloud(cloud);
+
             //Tell the cloud to handle the texture
-            cloud.SetShape(cloudTargetsArray[(i + indexOffset) % cloudTargetsArray.Length]);
-            cloud.TurnOnCollider();
+            cloud.SetShape(nextShape);
+            StartCoroutine(waitToMakeClickable(cloud));//this gets applied to all clouds - but should only apply to clouds that are "transitioning"
             incomingActiveTargets.Add(nextShape.name);
         }
 
@@ -275,12 +348,67 @@ public class CloudManager : MonoBehaviour
         cloudsActiveHistory = incomingActiveTargets;
     }
 
-
-    //Set a specific cloud to a shape
-    void SetCloudToShape(int index, Texture2D shape)
+    //Set single cloud to a shape
+    void SetSingleCloudToShape(CloudShape c)
     {
-        //TO DO
+        //Shuffle clouds shape array
+        //cloudTargetsArray = ShuffleArray(cloudTargetsArray);
+
+        //loop through all clouds
+        CloudShape cloud = c;
+        //pick a random cloudGeneric from the cloudGenericsArray
+        int index = UnityEngine.Random.Range(0, cloudTargetsArray.Length);
+
+        //Tell the cloud to handle the texture
+        cloud.SetShape(cloudTargetsArray[index]);
+        StartCoroutine(waitToMakeClickable(cloud));//this gets applied to all clouds - but should only apply to clouds that are "transitioning"
+
     }
+
+    private void SeenCloud()
+    {
+        CloudShape c = clickedCloud;
+        SetSingleCloudToGenericShape(c); //turns the most recently discussed cloud to a generic shape
+        //should change another generic cloud to a shape 
+    }
+
+    //inactive
+    IEnumerator waitToMakeClickable(CloudShape c)
+    {
+
+        //we need to wait until the cloud has stopped transitioning - which is based on a guess!
+        yield return new WaitForSeconds(transitionTime);
+
+        //Start particle system
+        //StartCloud(c);
+        c.TurnOnCollider();
+
+    }
+
+
+    public void ReadyCloud(CloudShape c)
+    {
+        Debug.Log("Cloud: " + c + "Is ready");
+        //set this cloud to a new shape --CM 5/31
+        //TODO need to check the array of shapes—should not be repeating
+        //TODO might want to check on the type of shape the cloud is (generic or target) and then change accordingly
+        //TODO adjust the timing
+        SetSingleCloudToShape(c);
+    }
+
+
+    public void GenerateNewClouds() //called from "setup" event, via storyteller, Start() 
+    {
+        //GenerateClouds();
+        SetNextShapes();
+    }
+
+    public void SetNextShapes() //called from Narrator -> "DoneReading" event --but should be applied individually on a timer? 
+    {
+        //SetCloudsToGenericShapes(); //should be applied to only the cloud remarked upon from narrator
+        SetCloudsToTargetShapes(); //should be removed, and placed on a random timer
+    }
+
 
     //////////////////
     //
@@ -318,24 +446,59 @@ public class CloudManager : MonoBehaviour
 
     //These are added at the manager level in case we need to do any high order scope comparisons
     //Otherwise, the event driven form is fine.
+
+
     void SlowDownCloud(CloudShape c)
     {
-        c.SlowDownClouds();
+        c.SlowDownCloud();
     }
     void ClarifyCloud(CloudShape c)
     {
-        c.ClarifyClouds();
+        c.ClarifyCloud();
     }
+
+    void SharpenCloud(CloudShape c)
+    {
+        c.SharpenCloud();
+        Debug.Log("SharpenCloud: " + c);
+
+    }
+
+    void BlurCloud(CloudShape c)
+    {
+        c.BlurCloud();
+        Debug.Log("Blur: " + c);
+
+    }
+
+
     void StopCloud(CloudShape c)
     {
-        c.StopClouds();
+        c.StopCloud();
     }
+
+    void StartCloud(CloudShape c)
+    {
+        c.StartCloud();
+    }
+
 
     ///////////////////////
     //
     //  Utilities
     //
     ///////////////////////////////
+
+    //Keep Track of Clicked Clouds
+
+    public void GetClickedCloud(GameObject c) //from storyteller
+    {
+        //write history code
+        clickedCloud = c.GetComponent<CloudShape>();
+        Debug.Log("----cloud clicked: " + clickedCloud.CurrentShapeName);
+        cloudsSelectedHistory.Add(clickedCloud.CurrentShapeName);
+        cloudTargetsList.Remove(clickedCloud.currentShape);
+    }
 
 
     //Generic Shuffler
@@ -378,18 +541,19 @@ public class CloudManager : MonoBehaviour
     //for the prototype we add this behavior of game logic here, it needs to be separate
     private void SetCloudToShape()
     {
+        print("setCloudtoShape called");
 
         cloudSelectionIndex++;
 
 
-        if (cloudSelectionIndex > cloudTargetsArray.Length)
+        if (cloudSelectionIndex > cloudTargetsList.Count)
         {
             //we've already seen the ending
             EventManager.TriggerEvent("AllShapesSeen");
             return;
         }
 
-        if (cloudSelectionIndex == cloudTargetsArray.Length)
+        if (cloudSelectionIndex == cloudTargetsList.Count)
         {
             EventManager.TriggerEvent("Conclusion");
             //  Debug.Log("This is over");// the problem with this is that it controls dialogue logic in the cloud. This is confusing to maintain
@@ -404,11 +568,14 @@ public class CloudManager : MonoBehaviour
         //This whole logic might need to be changed
         int shapeNum = cloudSelectionIndex;//(Random.Range(0, ShapeArray.Length));
         int cloudNum = (UnityEngine.Random.Range(0, generatedCloudObjects.Count));
-        chosenShape = cloudTargetsArray[shapeNum];
+        chosenShape = cloudTargetsList[shapeNum];
         chosenCloud = generatedCloudObjects[cloudNum];
         selectionHistory.Add(chosenShape.name);
+        //cloudsSelectedHistory.Add(chosenShape.name); //cm added 4/15
+
 
         Debug.Log("chosenCloud: " + chosenCloud);
+
 
         //tells cloud that it is not a shape anymore, changes it's shape...
         TurnOffCloud();
@@ -419,7 +586,7 @@ public class CloudManager : MonoBehaviour
         //Because the manager, if it exists at all, should manage. Not respond.
         //i.e. clouds should not be responsible for knowing they are chosen
 
-        EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape
+        EventManager.TriggerEvent("SpawnShape"); //tell a cloud to turn into a shape -- this should not all happen at the same time
 
         StartCoroutine(PauseBeforeTalking());
         //This is where the dialogue manager is activated.
@@ -429,9 +596,10 @@ public class CloudManager : MonoBehaviour
 
     private IEnumerator PauseBeforeTalking()
     {
-        yield return new WaitForSeconds(pauseBetweenText);
 
         EventManager.TriggerEvent("Talk");
+        yield return new WaitForSeconds(pauseBetweenText);
+
     }
 
     private void TurnOffCloud()
@@ -474,7 +642,7 @@ public class CloudManager : MonoBehaviour
 
             }
         }
-    }
-    */
+    }*/
+    
 
 }

@@ -132,6 +132,7 @@ MonoBehaviour:
   incomingShape: {fileID: 0}
   CurrentShapeName: 
   ready: 0
+  timeLeft: 0
   ps: {fileID: 4001077985846674118}
   changeTimeMin: 70
   changeTimeMax: 100
@@ -265,7 +266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar

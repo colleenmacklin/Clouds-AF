@@ -435,7 +435,7 @@ TextureImporter:
       213: 21300286
     second: down_143
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -455,6 +455,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -463,12 +465,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -486,10 +488,14 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 1
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -517,6 +523,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -3564,6 +3582,151 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      down_27: 21300054
+      down_129: 21300258
+      down_10: 21300020
+      down_88: 21300176
+      down_142: 21300284
+      down_63: 21300126
+      down_75: 21300150
+      down_116: 21300232
+      down_35: 21300070
+      down_68: 21300136
+      down_52: 21300104
+      down_102: 21300204
+      down_93: 21300186
+      down_139: 21300278
+      down_11: 21300022
+      down_123: 21300246
+      down_17: 21300034
+      down_85: 21300170
+      down_94: 21300188
+      down_7: 21300014
+      down_42: 21300084
+      down_81: 21300162
+      down_97: 21300194
+      down_6: 21300012
+      down_23: 21300046
+      down_76: 21300152
+      down_109: 21300218
+      down_92: 21300184
+      down_18: 21300036
+      down_101: 21300202
+      down_25: 21300050
+      down_26: 21300052
+      down_4: 21300008
+      down_125: 21300250
+      down_113: 21300226
+      down_114: 21300228
+      down_137: 21300274
+      down_73: 21300146
+      down_133: 21300266
+      down_24: 21300048
+      down_138: 21300276
+      down_37: 21300074
+      down_78: 21300156
+      down_29: 21300058
+      down_15: 21300030
+      down_130: 21300260
+      down_2: 21300004
+      down_51: 21300102
+      down_65: 21300130
+      down_54: 21300108
+      down_47: 21300094
+      down_122: 21300244
+      down_127: 21300254
+      down_19: 21300038
+      down_3: 21300006
+      down_117: 21300234
+      down_131: 21300262
+      down_107: 21300214
+      down_124: 21300248
+      down_33: 21300066
+      down_30: 21300060
+      down_21: 21300042
+      down_72: 21300144
+      down_104: 21300208
+      down_20: 21300040
+      down_110: 21300220
+      down_143: 21300286
+      down_40: 21300080
+      down_9: 21300018
+      down_32: 21300064
+      down_16: 21300032
+      down_82: 21300164
+      down_64: 21300128
+      down_135: 21300270
+      down_31: 21300062
+      down_41: 21300082
+      down_38: 21300076
+      down_44: 21300088
+      down_14: 21300028
+      down_128: 21300256
+      down_67: 21300134
+      down_103: 21300206
+      down_56: 21300112
+      down_134: 21300268
+      down_43: 21300086
+      down_111: 21300222
+      down_112: 21300224
+      down_60: 21300120
+      down_66: 21300132
+      down_98: 21300196
+      down_106: 21300212
+      down_55: 21300110
+      down_12: 21300024
+      down_39: 21300078
+      down_69: 21300138
+      down_57: 21300114
+      down_86: 21300172
+      down_50: 21300100
+      down_53: 21300106
+      down_99: 21300198
+      down_91: 21300182
+      down_28: 21300056
+      down_49: 21300098
+      down_13: 21300026
+      down_95: 21300190
+      down_100: 21300200
+      down_70: 21300140
+      down_22: 21300044
+      down_59: 21300118
+      down_5: 21300010
+      down_140: 21300280
+      down_136: 21300272
+      down_80: 21300160
+      down_79: 21300158
+      down_48: 21300096
+      down_61: 21300122
+      down_1: 21300002
+      down_74: 21300148
+      down_77: 21300154
+      down_36: 21300072
+      down_45: 21300090
+      down_105: 21300210
+      down_108: 21300216
+      down_58: 21300116
+      down_34: 21300068
+      down_46: 21300092
+      down_71: 21300142
+      down_83: 21300166
+      down_118: 21300236
+      down_121: 21300242
+      down_132: 21300264
+      down_62: 21300124
+      down_0: 21300000
+      down_96: 21300192
+      down_120: 21300240
+      down_119: 21300238
+      down_84: 21300168
+      down_115: 21300230
+      down_87: 21300174
+      down_89: 21300178
+      down_8: 21300016
+      down_141: 21300282
+      down_126: 21300252
+      down_90: 21300180
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

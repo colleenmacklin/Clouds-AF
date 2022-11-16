@@ -156,7 +156,7 @@ TextureImporter:
       213: 21300100
     second: heartbeat_50
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -176,6 +176,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -184,12 +186,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -207,10 +209,14 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 1
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -238,6 +244,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -1122,6 +1140,48 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      heartbeat_1: 21300002
+      heartbeat_5: 21300010
+      heartbeat_31: 21300062
+      heartbeat_27: 21300054
+      heartbeat_29: 21300058
+      heartbeat_34: 21300068
+      heartbeat_10: 21300020
+      heartbeat_37: 21300074
+      heartbeat_17: 21300034
+      heartbeat_33: 21300066
+      heartbeat_39: 21300078
+      heartbeat_36: 21300072
+      heartbeat_4: 21300008
+      heartbeat_12: 21300024
+      heartbeat_38: 21300076
+      heartbeat_26: 21300052
+      heartbeat_6: 21300012
+      heartbeat_18: 21300036
+      heartbeat_23: 21300046
+      heartbeat_20: 21300040
+      heartbeat_28: 21300056
+      heartbeat_3: 21300006
+      heartbeat_16: 21300032
+      heartbeat_40: 21300080
+      heartbeat_11: 21300022
+      heartbeat_7: 21300014
+      heartbeat_15: 21300030
+      heartbeat_24: 21300048
+      heartbeat_2: 21300004
+      heartbeat_0: 21300000
+      heartbeat_13: 21300026
+      heartbeat_19: 21300038
+      heartbeat_14: 21300028
+      heartbeat_9: 21300018
+      heartbeat_21: 21300042
+      heartbeat_8: 21300016
+      heartbeat_35: 21300070
+      heartbeat_25: 21300050
+      heartbeat_32: 21300064
+      heartbeat_30: 21300060
+      heartbeat_22: 21300044
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

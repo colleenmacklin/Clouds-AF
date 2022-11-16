@@ -183,7 +183,7 @@ TextureImporter:
       213: 21300118
     second: connecting_59
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -203,6 +203,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -211,12 +213,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -234,10 +236,14 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 1
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -265,6 +271,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -1548,6 +1566,67 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      connecting_56: 21300112
+      connecting_49: 21300098
+      connecting_0: 21300000
+      connecting_58: 21300116
+      connecting_22: 21300044
+      connecting_45: 21300090
+      connecting_48: 21300096
+      connecting_25: 21300050
+      connecting_30: 21300060
+      connecting_16: 21300032
+      connecting_32: 21300064
+      connecting_47: 21300094
+      connecting_21: 21300042
+      connecting_27: 21300054
+      connecting_29: 21300058
+      connecting_38: 21300076
+      connecting_51: 21300102
+      connecting_26: 21300052
+      connecting_31: 21300062
+      connecting_37: 21300074
+      connecting_41: 21300082
+      connecting_57: 21300114
+      connecting_39: 21300078
+      connecting_53: 21300106
+      connecting_17: 21300034
+      connecting_15: 21300030
+      connecting_50: 21300100
+      connecting_9: 21300018
+      connecting_55: 21300110
+      connecting_18: 21300036
+      connecting_20: 21300040
+      connecting_13: 21300026
+      connecting_28: 21300056
+      connecting_24: 21300048
+      connecting_4: 21300008
+      connecting_54: 21300108
+      connecting_6: 21300012
+      connecting_12: 21300024
+      connecting_5: 21300010
+      connecting_10: 21300020
+      connecting_11: 21300022
+      connecting_34: 21300068
+      connecting_3: 21300006
+      connecting_7: 21300014
+      connecting_40: 21300080
+      connecting_23: 21300046
+      connecting_14: 21300028
+      connecting_36: 21300072
+      connecting_59: 21300118
+      connecting_2: 21300004
+      connecting_19: 21300038
+      connecting_35: 21300070
+      connecting_44: 21300088
+      connecting_52: 21300104
+      connecting_33: 21300066
+      connecting_1: 21300002
+      connecting_43: 21300086
+      connecting_42: 21300084
+      connecting_46: 21300092
+      connecting_8: 21300016
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

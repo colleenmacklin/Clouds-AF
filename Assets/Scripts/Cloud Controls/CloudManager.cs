@@ -125,6 +125,9 @@ public class CloudManager : MonoBehaviour
         EventManager.StartListening("DoneReading", SeenCloud);
         Actions.GetClickedCloud += GetClickedCloud;
         Actions.CloudIsReady += ReadyCloud;
+        Actions.FadeInCloud += FadeInCloud;
+        Actions.FadeOutCloud += FadeOutCloud;
+
     }
 
     void OnDisable()
@@ -137,6 +140,10 @@ public class CloudManager : MonoBehaviour
         //EventManager.StopListening("DoneReading", SetNextShapes); //should only apply to the cloud that was being remarked upon - use an Action
         Actions.GetClickedCloud -= GetClickedCloud;
         Actions.CloudIsReady -= ReadyCloud;
+        Actions.FadeInCloud -= FadeInCloud;
+        Actions.FadeOutCloud -= FadeOutCloud;
+
+
 
     }
     void Awake()
@@ -608,6 +615,25 @@ public class CloudManager : MonoBehaviour
     }
     //for prefab instantiation, see: https://docs.unity3d.com/Manual/InstantiatingPrefabs.html
 
+    //Both of these fade methods aren't called from here yet - but could be if we need to choreograph this
+    private void FadeInCloud(GameObject c)
+    {
+        //fadein
+
+        var cloudToFade = c.GetComponent<CloudShape>();
+        cloudToFade.fadeInParticleSystem();
+
+    }
+
+    private void FadeOutCloud(GameObject c)
+    {
+        //fadeout
+        var cloudToFade = c.GetComponent<CloudShape>();
+        cloudToFade.fadeOutParticleSystem();
+
+    }
+
+
 
     //Handy Gizmo draw calls for debugging cloud placement.
     /*
@@ -643,6 +669,6 @@ public class CloudManager : MonoBehaviour
             }
         }
     }*/
-    
+
 
 }

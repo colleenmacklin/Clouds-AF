@@ -11,4 +11,6 @@ public static class Actions
     public static Action BlurCloud;
     public static Action <GameObject> GetClickedCloud;
     public static Action <CloudShape> CloudIsReady;
+    public static Action<GameObject> FadeInCloud;
+    public static Action<GameObject> FadeOutCloud;
 }

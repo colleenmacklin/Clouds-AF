@@ -14,7 +14,6 @@ public class FadeObjectInOut : MonoBehaviour
 
 
 
-
     // store colours
     private Color[] colors;
     private Renderer[] rendererObjects;
@@ -183,13 +182,13 @@ public class FadeObjectInOut : MonoBehaviour
         FadeOut(fadeTime);
     }
 
-    void FadeIn(float newFadeTime)
+    public void FadeIn(float newFadeTime)
     {
         StopAllCoroutines();
         StartCoroutine("FadeSequence", newFadeTime);
     }
 
-    void FadeOut(float newFadeTime)
+    public void FadeOut(float newFadeTime)
     {
         StopAllCoroutines();
         StartCoroutine("FadeSequence", -newFadeTime);

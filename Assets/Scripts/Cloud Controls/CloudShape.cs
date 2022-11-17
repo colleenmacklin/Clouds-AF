@@ -50,6 +50,10 @@ public class CloudShape : MonoBehaviour
     public float currScale;
 
     [SerializeField]
+    [Tooltip("visible sky bounds = ")]
+    public int cloudVisX = -50;
+
+    [SerializeField]
     [Tooltip("Set to Quad renderer")]
     private Renderer shapeRenderer;
 
@@ -147,6 +151,28 @@ public class CloudShape : MonoBehaviour
         psShape.scale = textureScaleAdjustment;
         psShape.texture = incomingShape;
 
+        //modify the StartSize of the particle system so that it scales with the size of the cloud (ensures there's no gaps between parrticles)
+        //StartSize is a range, and the base setting is 3 to 7
+        var psMain = ps.main;
+        psMain.startSizeMultiplier = currScale/2;
+
+        //add a check everytime this function is called to see if the cloud is out of visibility for the player
+        //if it is, move the cloud to the far right of the screen, in its same y position (like a scroll)
+        Vector3 myPosition = this.transform.position;
+        if (myPosition.x < -cloudVisX)
+        {
+            //TODO: Make this a call to cloud manager to remomve and reinstantiate (with a nice fade effect) fadeout and move...
+            //TODO: location can be tracked by thie cloud object, but fading and moving the cloud to the righ should probably be called from the cloudManager so that it can use the poisson function to re-instantiate and then avoid overlapping clouds
+           
+            /*
+            fadeOutParticleSystem();
+            transform.position = new Vector3(myPosition.x*-1, myPosition.y, myPosition.z);
+            fadeInParticleSystem();
+            */
+
+            StartCloud();
+        }
+
         //Set the scale *of the collider* that represents the shape
         //Collider is rotated, so the values are x and y.
         //And the 7f arbbitrarily for "best fit"
@@ -227,7 +253,6 @@ public class CloudShape : MonoBehaviour
         particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(3f, 10f);
     }
 
-
     public void StopCloud()
     {
         var particleSystem = ps;
@@ -241,11 +266,38 @@ public class CloudShape : MonoBehaviour
         //Actions.CloudIsReady(this);
     }
 
-
     public void SlowDownCloud()
     {
         var particleSystemSettings = ps.main;
         particleSystemSettings.simulationSpeed = .08f;
     }
+
+    public void fadeInParticleSystem()
+    {
+        FadeObjectInOut refScript = GetComponent<FadeObjectInOut>();
+        refScript.FadeIn(10);
+        /* ultimately, change the simple fadeinout script to a script that "dissolves" the clouds by removing particles over time
+      
+        var particleSystemSettings = ps.main;
+        particleSystemSettings.maxParticles -= particleSystemSettings.maxParticles * (int)Time.deltaTime;
+        Debug.Log("particles: " + particleSystemSettings.maxParticles);
+        */
+    }
+
+    public void fadeOutParticleSystem()
+    {
+        FadeObjectInOut refScript = GetComponent<FadeObjectInOut>();
+
+        refScript.FadeOut(10);
+
+        /* ultimately, change the simple fadeinout script to a script that "dissolves" the clouds by removing particles over time
+      
+        var particleSystemSettings = ps.main;
+        particleSystemSettings.maxParticles -= particleSystemSettings.maxParticles * (int)Time.deltaTime;
+        Debug.Log("particles: " + particleSystemSettings.maxParticles);
+        */
+    }
+
+
 
 }

@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 20, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -40,23 +41,79 @@ MonoBehaviour:
   m_GameObject: {fileID: 3266097142718313867}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9764513ed427a46169fbda9d706caa7b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b69823a733224c90af455c2f54a3b3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cloud: {fileID: 0}
-  ShapeArray:
-  - {fileID: 21300000, guid: a8653c843b55f4c55a68b17e56160caf, type: 3}
-  - {fileID: 21300000, guid: 627f19b01231948168174f5928f1c2ce, type: 3}
-  - {fileID: 21300000, guid: 6242334c73a1e4128b71d2fa648c3836, type: 3}
-  - {fileID: 21300000, guid: fc6359861fb5847d8b7cbf808885ec61, type: 3}
-  - {fileID: 21300000, guid: efb5c574250e8408b8dfdfd258ee7591, type: 3}
-  isShape: 0
-  timerReset: 0
+  pauseBetweenText: 5
+  clickedCloud: {fileID: 0}
+  numberOfCloudsToGenerate: 0
+  numberOfTargetsToGenerate: 0
+  generatedCloudObjects: []
+  cloudObjectPrefab: {fileID: 4001077985798978744, guid: 47466df784a8446dcb08284b843ca859,
+    type: 3}
+  transitionTime: 0
+  cloudTargetsArray:
+  - {fileID: 2800000, guid: ef36267efb12e4d8494a975d99f43972, type: 3}
+  - {fileID: 2800000, guid: 133697d52ef519c4084504c78e9b4531, type: 3}
+  - {fileID: 2800000, guid: 5a711040f9343bf41a922038e297ef3e, type: 3}
+  - {fileID: 2800000, guid: 435059eec8c51e64ab895ace14d77800, type: 3}
+  - {fileID: 2800000, guid: 6c124dc6180421e428e009df6d7f58e7, type: 3}
+  - {fileID: 2800000, guid: fb894d9f4e26a6b499c7472829d7b7da, type: 3}
+  - {fileID: 2800000, guid: 3c7cede1c5178254cae5c268c1d4944d, type: 3}
+  - {fileID: 2800000, guid: e5053388c0953494286455a6a24e68ad, type: 3}
+  - {fileID: 2800000, guid: 30680ac83c474f9459db2f6a4104b27b, type: 3}
+  - {fileID: 2800000, guid: b61c6503e4cd8484da9984adcc43749b, type: 3}
+  - {fileID: 2800000, guid: bc73598ef49cfe641b3b641fb0d1fd6a, type: 3}
+  - {fileID: 2800000, guid: a7148c824b73feb40ae6662c47e0a7cf, type: 3}
+  - {fileID: 2800000, guid: 9763397d84393514893007fbed70adcb, type: 3}
+  - {fileID: 2800000, guid: 62919e7ad86364f41ad64c1d3f5a86d6, type: 3}
+  - {fileID: 2800000, guid: 6bc132ad791bc154b951d795e6ac3a68, type: 3}
+  - {fileID: 2800000, guid: 3cc738cfb36827440a9c4d27bc0c62a8, type: 3}
+  cloudTargetsList:
+  - {fileID: 2800000, guid: ef36267efb12e4d8494a975d99f43972, type: 3}
+  - {fileID: 2800000, guid: 133697d52ef519c4084504c78e9b4531, type: 3}
+  - {fileID: 2800000, guid: 5a711040f9343bf41a922038e297ef3e, type: 3}
+  - {fileID: 2800000, guid: 435059eec8c51e64ab895ace14d77800, type: 3}
+  - {fileID: 2800000, guid: 6c124dc6180421e428e009df6d7f58e7, type: 3}
+  - {fileID: 2800000, guid: fb894d9f4e26a6b499c7472829d7b7da, type: 3}
+  - {fileID: 2800000, guid: 3c7cede1c5178254cae5c268c1d4944d, type: 3}
+  - {fileID: 2800000, guid: e5053388c0953494286455a6a24e68ad, type: 3}
+  - {fileID: 2800000, guid: 30680ac83c474f9459db2f6a4104b27b, type: 3}
+  - {fileID: 2800000, guid: b61c6503e4cd8484da9984adcc43749b, type: 3}
+  - {fileID: 2800000, guid: bc73598ef49cfe641b3b641fb0d1fd6a, type: 3}
+  - {fileID: 2800000, guid: a7148c824b73feb40ae6662c47e0a7cf, type: 3}
+  - {fileID: 2800000, guid: 9763397d84393514893007fbed70adcb, type: 3}
+  - {fileID: 2800000, guid: 62919e7ad86364f41ad64c1d3f5a86d6, type: 3}
+  - {fileID: 2800000, guid: 6bc132ad791bc154b951d795e6ac3a68, type: 3}
+  - {fileID: 2800000, guid: 3cc738cfb36827440a9c4d27bc0c62a8, type: 3}
+  cloudGenericsArray:
+  - {fileID: 2800000, guid: e55a7c73b4417e24abe04809b9b216b5, type: 3}
+  - {fileID: 2800000, guid: fb5c91bb6fdfab24eae015bd613a1c90, type: 3}
+  - {fileID: 2800000, guid: a2dc27ccf5405294dbfd217740974c71, type: 3}
+  - {fileID: 2800000, guid: a37dfba6458191048a74fa7d35865464, type: 3}
+  - {fileID: 2800000, guid: 420c7807854d46b4e8f9971f13934c20, type: 3}
+  - {fileID: 2800000, guid: 14cab97c7a865d744a94591aa1b94ece, type: 3}
+  - {fileID: 2800000, guid: 7bfb164e0b056784caae37612a5b527f, type: 3}
+  - {fileID: 2800000, guid: fb0896fd8113d2146bf69e08f8017b4a, type: 3}
+  - {fileID: 2800000, guid: fcfdaedb036e5d74984861e10d6f4544, type: 3}
+  - {fileID: 2800000, guid: 8777648ba0c5d194bb2c5b249c2e7408, type: 3}
+  - {fileID: 2800000, guid: c91b42dc127a7624d9c95b06f97e2fa2, type: 3}
+  - {fileID: 2800000, guid: d0aad427c3a063a46ba90fb8c08e976d, type: 3}
+  - {fileID: 2800000, guid: 144e3c3af45688241b59ff36d6cad8ac, type: 3}
+  - {fileID: 2800000, guid: 428bf4d0bb9b4d44b926c223b41681ed, type: 3}
+  - {fileID: 2800000, guid: fc69e3a3529b00945bde81f34ef0bf53, type: 3}
+  - {fileID: 2800000, guid: e5663ed5c547c70448d6e1f38e9346d4, type: 3}
+  cloudsSelectedHistory: []
+  cloudsActiveHistory: []
   chosenCloud: {fileID: 0}
-  cloudNum: 0
-  chosenShape: {fileID: 21300000, guid: a8653c843b55f4c55a68b17e56160caf, type: 3}
-  CloudArray:
-  - {fileID: 0}
-  shapeCount: 0
-  radius: 5
-  _canInstantiate: 0
+  chosenShape: {fileID: 0}
+  shapeCollider: {fileID: 0}
+  shapeBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  cloudSelectionIndex: -1
+  scaleRange: {x: 2, y: 2.75}
+  poissonRadius: 20
+  poissonRegionSize: {x: 150, y: 100}
+  regionTranslation: {x: -75, y: 60, z: -40}
+  poissonRejectionSamples: 30

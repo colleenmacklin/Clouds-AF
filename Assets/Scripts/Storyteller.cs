@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Crosstales.RTVoice;
+using SimpleJSON;
+using MiniJSON;
+using static UnityEditor.Rendering.CameraUI;
+using UnityEngine.Networking;
 
 /*
 
@@ -51,6 +55,13 @@ public class Storyteller : MonoBehaviour
     [SerializeField] int musingsGiven = 0; //how many musings we've done
     [SerializeField] TextBoxController textBoxController;
     [SerializeField] List<string> viewedShapes = new List<string>();//the shapes we've viewed so far
+    [SerializeField] List<string> generativeStory = new List<string>();
+
+    [Header("HuggingFace Model URL")]
+    public string model_url;
+
+    [Header("HuggingFace Key API")]
+    public string hf_api_key;
 
 
     //Story chosenStory;//the active story we will use
@@ -119,32 +130,37 @@ public class Storyteller : MonoBehaviour
 
     void NextMusing(string key)
     {
+        string prompt = "That cloud reminds me of a ";
         //store the shape
         //Debug.Log(key);
         viewedShapes.Add(key);
         //send the musing
-        for (int i = 0; i < muse.CloudData.Count; i++)
-        {
+        //for (int i = 0; i < muse.CloudData.Count; i++)
+        //{
 
-            if (muse.CloudData[i].Name == key)
-            {
-                string[] currentMusing = muse.CloudData[i].Content;
-                for (int j = 0; j < viewedShapes.Count; j++)
-                {
-                    //Debug.Log(viewedShapes[j]);
-                    for (int k = 0; k < muse.CloudData[i].Bindings.Length; k++)
-                    {
-                        Debug.Log(muse.CloudData[i].Bindings[k].Name);
-                        if(viewedShapes[j] == muse.CloudData[i].Bindings[k].Name)
-                        {
-                            currentMusing = muse.CloudData[i].Bindings[k].Content;
-                        }
-                    }
-                }
+        //    if (muse.CloudData[i].Name == key)
+        //    {
+        //        string[] currentMusing = muse.CloudData[i].Content;
+        //        for (int j = 0; j < viewedShapes.Count; j++)
+        //        {
+        //            //Debug.Log(viewedShapes[j]);
+        //            for (int k = 0; k < muse.CloudData[i].Bindings.Length; k++)
+        //            {
+        //                Debug.Log(muse.CloudData[i].Bindings[k].Name);
+        //                if(viewedShapes[j] == muse.CloudData[i].Bindings[k].Name)
+        //                {
+        //                    currentMusing = muse.CloudData[i].Bindings[k].Content;
+        //                }
+        //            }
+        //        }
 
-                SendMusing(currentMusing);
-            }
-        }
+        //        SendMusing(currentMusing);
+        //    }
+        //}
+
+        string keyString = key.Replace("_", " ");
+        StartCoroutine(LiveMusing(prompt + key));
+
         //increase musings
         musingsGiven += 1;
         EventManager.TriggerEvent("Musing");
@@ -225,6 +241,60 @@ public class Storyteller : MonoBehaviour
 
         //create the list of chosen items.
         SendMusing(adjustedLines.ToArray());
+    }
+
+    public IEnumerator LiveMusing(string prompt)
+    {
+        // Form the JSON
+        var form = new Dictionary<string, object>();
+        //var attributes = new Dictionary<string, object>();
+        //attributes["source_sentence"] = prompt;
+        //attributes["sentences"] = sentences;
+        form["inputs"] = prompt;
+
+        var json = Json.Serialize(form);
+        Debug.Log("JSON" + json);
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
+
+        // Make the web request
+        UnityWebRequest request = UnityWebRequest.Put(model_url, bytes);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Authorization", "Bearer " + hf_api_key);
+        request.method = "POST"; // Hack to send POST to server instead of PUT
+
+        yield return request.SendWebRequest();
+
+        // If the request return an error set the error on console.
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.Log(request.error);
+            Debug.Log(request.downloadHandler.data);
+        }
+        else
+        {
+            JSONNode data = request.downloadHandler.text;
+            // Process the result
+            Debug.Log(ProcessResult(data));
+
+            string[] currentMusing = ProcessResult(data).Split("\\n");
+            //Debug.Log(currentMusing[0]);
+            SendMusing(currentMusing);
+            generativeStory.Add(ProcessResult(data));
+        }
+    }
+
+
+    string ProcessResult(string result)
+    {
+        // The data is a score for each possible sentence candidate
+        // But, it looks something like this "[0.7777, 0.19, 0.01]"
+        // First, we need to remove [ and ]
+        string cleanedResult = result.Replace("{", "");
+        cleanedResult = cleanedResult.Replace(":", "");
+        cleanedResult = cleanedResult.Replace("generated_text", "");
+        cleanedResult = cleanedResult.Replace("}", "");
+
+        return cleanedResult;
     }
 
     void Credits()

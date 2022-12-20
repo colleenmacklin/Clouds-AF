@@ -63,3 +63,8 @@ crashlytics-build.properties
 
 .DS_Store
 Assets/.DS_Store
+.DS_Store
+Assets/Other_Assets/Azure\[Sky\] Dynamic Skybox/Materials/Default Rain.mat
+Assets/Other_Assets/Azure\[Sky\] Dynamic Skybox/Materials/Heavy Rain.mat
+Assets/Other_Assets/Azure\[Sky\] Dynamic Skybox/Materials/Ripple.mat
+Assets/Other_Assets/Azure\[Sky\] Dynamic Skybox/Materials/Snow.mat

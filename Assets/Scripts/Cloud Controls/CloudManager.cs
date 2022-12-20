@@ -35,6 +35,7 @@ public class CloudManager : MonoBehaviour
     public float pauseBetweenText = 5f;
 
     public CloudShape clickedCloud;
+    public GameState GameState;
 
     [Header("Cloud Properties")]
     [SerializeField]
@@ -338,7 +339,10 @@ public class CloudManager : MonoBehaviour
     //Set single cloud to a shape
     void SetSingleCloudToShape(CloudShape c)
     {
-        Debug.Log("SetSingleCloudToShape Called on : " + c.name);
+        if (c.name != "") //check if empty
+        {
+            Debug.Log("SetSingleCloudToShape Called on : " + c.name);
+        }
         if (cloudTargetsList.Count>0) { 
             CloudShape cloud = c;
             //pick a random cloud shape from the cloudTargetsList
@@ -352,10 +356,14 @@ public class CloudManager : MonoBehaviour
 
     private void SeenCloud()
     {
+        if (GameState.Intro == false) {
+            CloudShape c = clickedCloud;
+            Debug.Log("Clicked Cloud = " + c.name);
+            SetSingleCloudToGenericShape(c); //turns the most recently discussed cloud to a generic shape
+                                             //should change another generic cloud to a shape 
+        }
+        else {return;}
 
-        CloudShape c = clickedCloud;
-        SetSingleCloudToGenericShape(c); //turns the most recently discussed cloud to a generic shape
-        //should change another generic cloud to a shape 
     }
 
     //inactive

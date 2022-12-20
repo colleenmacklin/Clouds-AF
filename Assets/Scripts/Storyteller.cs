@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+//using UnityEngine.UI;
 using Crosstales.RTVoice;
 using SimpleJSON;
 using MiniJSON;
-using static UnityEditor.Rendering.CameraUI;
+//using static UnityEditor.Rendering.CameraUI;
 using UnityEngine.Networking;
 
 /*
@@ -40,7 +40,7 @@ public class Storyteller : MonoBehaviour
     //[SerializeField]
     //NarratorSO narrator;
     public Speaker speaker;
-    public bool Intro;
+    public GameState GameState; //3 states: Intro, GameLoop, Ending
 
     [SerializeField]
     CloudMusingSO muse;
@@ -111,7 +111,7 @@ public class Storyteller : MonoBehaviour
 
         //Send the story opening to the dialogue manager
         SendMusing(muse.CloudData[0].Content);
-        Intro = true;
+        GameState.Intro = true;
 
         //string speakText = "Hi how are you";
         //speaker.Speak(speakText);
@@ -159,7 +159,7 @@ public class Storyteller : MonoBehaviour
         //}
 
         string keyString = key.Replace("_", " ");
-        StartCoroutine(LiveMusing(prompt + key));
+        StartCoroutine(LiveMusing(prompt + keyString));
 
         //increase musings
         musingsGiven += 1;
@@ -194,13 +194,17 @@ public class Storyteller : MonoBehaviour
             EventManager.TriggerEvent("sunset");
             EndStory();
             gameover = true;
+            GameState.Ending = true;
+            GameState.Gameloop = false;
+
             //Credits();
         }
-        if (Intro)
+        if (GameState.Intro)
         {
             Debug.Log("introDone");
             EventManager.TriggerEvent("IntroDone");
-            Intro = false;
+            GameState.Intro = false;
+            GameState.Gameloop = true;
         }
 
     }

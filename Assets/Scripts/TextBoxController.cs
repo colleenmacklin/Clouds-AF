@@ -115,6 +115,7 @@ public class TextBoxController : MonoBehaviour
 
         if (textField.text == activeLine)
         {
+            Debug.Log("nextline called");
             NextLine();
             return;
         }
@@ -161,6 +162,7 @@ public class TextBoxController : MonoBehaviour
         else
         {
             complete = true;
+            Debug.Log("complete is true");
             textField.text = ""; //clear text because it's the end
                                  //potentially trigger an event for ending the dialogue 
             EventManager.TriggerEvent("DoneReading");

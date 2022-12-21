@@ -247,6 +247,9 @@ public class Storyteller : MonoBehaviour
         SendMusing(adjustedLines.ToArray());
     }
 
+    //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.
+    //need to release the camera when this gets stuck. --Colleen
+    //
     public IEnumerator LiveMusing(string prompt)
     {
         // Form the JSON
@@ -271,8 +274,15 @@ public class Storyteller : MonoBehaviour
         // If the request return an error set the error on console.
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.Log(request.error);
-            Debug.Log(request.downloadHandler.data);
+            Debug.Log("failed request error: "+request.error);
+            Debug.Log("failed downloadHandler.data: "+request.downloadHandler.data);
+            //TODO: Figure out what throws these request errors - we might want to load up responses when the game is starting for all shapes, and also check to make sure POST is successful 
+            //for now, we can have the narrator read back the error
+            JSONNode data = request.downloadHandler.text;
+            string[] currentMusing = ProcessResult(data).Split("\\n");
+            //Debug.Log(currentMusing[0]);
+            SendMusing(currentMusing);
+            generativeStory.Add(ProcessResult(data));
         }
         else
         {
@@ -285,6 +295,9 @@ public class Storyteller : MonoBehaviour
             SendMusing(currentMusing);
             generativeStory.Add(ProcessResult(data));
         }
+
+        request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html
+
     }
 
 

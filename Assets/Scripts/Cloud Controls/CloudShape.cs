@@ -25,8 +25,8 @@ public class CloudShape : MonoBehaviour
     public Texture2D currentShape;
     public Texture2D incomingShape;
     public string CurrentShapeName;
-    //public string CurrentShapeName { get => currentShape.name; } //not showing...
     public bool ready;
+    public bool isTarget; //cloudManager checks this to see if the cloud is a target shape, i.e. a shape of something, not just a generic cloud
     public float timeLeft;
     [SerializeField]
     private ParticleSystem ps;
@@ -51,7 +51,7 @@ public class CloudShape : MonoBehaviour
 
     [SerializeField]
     [Tooltip("visible sky bounds = ")]
-    public int cloudVisX = -50;
+    public int cloudVisX = -80; // TODO: Adjust
 
     [SerializeField]
     [Tooltip("Set to Quad renderer")]
@@ -154,24 +154,7 @@ public class CloudShape : MonoBehaviour
         //modify the StartSize of the particle system so that it scales with the size of the cloud (ensures there's no gaps between parrticles)
         //StartSize is a range, and the base setting is 3 to 7
         var psMain = ps.main;
-        psMain.startSizeMultiplier = currScale/2;
-
-        //add a check everytime this function is called to see if the cloud is out of visibility for the player
-        //if it is, move the cloud to the far right of the screen, in its same y position (like a scroll)
-        Vector3 myPosition = this.transform.position;
-        if (myPosition.x < -cloudVisX)
-        {
-            //TODO: Make this a call to cloud manager to remomve and reinstantiate (with a nice fade effect) fadeout and move...
-            //TODO: location can be tracked by thie cloud object, but fading and moving the cloud to the righ should probably be called from the cloudManager so that it can use the poisson function to re-instantiate and then avoid overlapping clouds
-           
-            /*
-            fadeOutParticleSystem();
-            transform.position = new Vector3(myPosition.x*-1, myPosition.y, myPosition.z);
-            fadeInParticleSystem();
-            */
-
-            StartCloud();
-        }
+        psMain.startSizeMultiplier = currScale/2;        
 
         //Set the scale *of the collider* that represents the shape
         //Collider is rotated, so the values are x and y.
@@ -186,7 +169,6 @@ public class CloudShape : MonoBehaviour
         CurrentShapeName = currentShape.name;
         StartCoroutine(TimeToChange());
 
-        //add an action to trigger on Cloudmanager, with a reference to this cloud when the timer is done
     }
 
     IEnumerator TimeToChange()

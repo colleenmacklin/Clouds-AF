@@ -136,7 +136,8 @@ MonoBehaviour:
   currentShape: {fileID: 0}
   incomingShape: {fileID: 0}
   CurrentShapeName: 
-  ready: 0
+  ready: 1
+  isTarget: 0
   timeLeft: 0
   ps: {fileID: 4001077985846674118}
   changeTimeMin: 70
@@ -144,7 +145,7 @@ MonoBehaviour:
   minScale: 15
   maxScale: 25
   currScale: 0
-  cloudVisX: -50
+  cloudVisX: -80
   shapeRenderer: {fileID: 1364893356364409663}
 --- !u!65 &3025029212260664773
 BoxCollider:

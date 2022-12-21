@@ -101,7 +101,7 @@ public class DialogueManager : MonoBehaviour
     void ConversationalPauseTransition()
     {
         Debug.Log("---ending dialogue, conversational pause---");
-
+        if ()
         StartCoroutine(TransitionToNextCloud());
     }
     IEnumerator TransitionToNextCloud()

@@ -159,7 +159,8 @@ public class Storyteller : MonoBehaviour
         //}
 
         string keyString = key.Replace("_", " ");
-        StartCoroutine(LiveMusing(prompt + keyString));
+        int num_sentences = 5; //TODO replace with variable, attached to prompt
+        StartCoroutine(LiveMusing(prompt + keyString, num_sentences));
 
         //increase musings
         musingsGiven += 1;
@@ -250,7 +251,7 @@ public class Storyteller : MonoBehaviour
     //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.
     //need to release the camera when this gets stuck. --Colleen
     //
-    public IEnumerator LiveMusing(string prompt)
+    public IEnumerator LiveMusing(string prompt, int num_sentences)
     {
         // Form the JSON
         var form = new Dictionary<string, object>();
@@ -258,6 +259,9 @@ public class Storyteller : MonoBehaviour
         //attributes["source_sentence"] = prompt;
         //attributes["sentences"] = sentences;
         form["inputs"] = prompt;
+        form ["num_return_sequences"] = num_sentences; //set the number of senteces to be returned
+        form["wait_for_model"] = false; //(Default: false) Boolean. If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done. It is advised to only set this flag to true after receiving a 503 error as it will limit hanging in your application to known places.
+
 
         var json = Json.Serialize(form);
         Debug.Log("JSON" + json);
@@ -271,13 +275,12 @@ public class Storyteller : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        // If the request return an error set the error on console.
+        // If the request return an error set the error on console. - we should set parameters on the api to request again
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.Log("failed request error: "+request.error);
             Debug.Log("failed downloadHandler.data: "+request.downloadHandler.data);
-            //TODO: Figure out what throws these request errors - we might want to load up responses when the game is starting for all shapes, and also check to make sure POST is successful 
-            //for now, we can have the narrator read back the error
+            //TODO: when a 503 error is thrown (model is not ready) set "wait_for_model" = true; remake the request
             JSONNode data = request.downloadHandler.text;
             string[] currentMusing = ProcessResult(data).Split("\\n");
             //Debug.Log(currentMusing[0]);

@@ -159,7 +159,7 @@ public class Storyteller : MonoBehaviour
         //}
 
         string keyString = key.Replace("_", " ");
-        int num_sentences = 5; //TODO replace with variable, attached to prompt
+        int num_sentences = 2; //TODO replace with variable, attached to prompt
         StartCoroutine(LiveMusing(prompt + keyString, num_sentences));
 
         //increase musings
@@ -258,9 +258,16 @@ public class Storyteller : MonoBehaviour
         //var attributes = new Dictionary<string, object>();
         //attributes["source_sentence"] = prompt;
         //attributes["sentences"] = sentences;
+        form["n"] = 3; //the number of generated texts - TODO: randomly select one
         form["inputs"] = prompt;
-        form ["num_return_sequences"] = num_sentences; //set the number of senteces to be returned
+        form ["num_return_sequences"] = num_sentences; //set the number of sentences to be returned
         form["wait_for_model"] = false; //(Default: false) Boolean. If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done. It is advised to only set this flag to true after receiving a 503 error as it will limit hanging in your application to known places.
+        form["temperature"] = 0.7;
+        form["top_k"] = 50;
+        form["top_p"] = 0.95;
+        form["do_sample"] = true;
+        form["min_length"] = 20;
+        form["max_length"] = 100; //TODO: check to see if all of these parameters actually do anything!
 
 
         var json = Json.Serialize(form);
@@ -293,7 +300,7 @@ public class Storyteller : MonoBehaviour
             // Process the result
             Debug.Log(ProcessResult(data));
 
-            string[] currentMusing = ProcessResult(data).Split("\\n");
+            string[] currentMusing = ProcessResult(data).Split("\\n"); //TODO: need to post process this data into sentences
             //Debug.Log(currentMusing[0]);
             SendMusing(currentMusing);
             generativeStory.Add(ProcessResult(data));
@@ -313,7 +320,14 @@ public class Storyteller : MonoBehaviour
         cleanedResult = cleanedResult.Replace(":", "");
         cleanedResult = cleanedResult.Replace("generated_text", "");
         cleanedResult = cleanedResult.Replace("}", "");
-
+        cleanedResult = cleanedResult.Replace("[", "");
+        cleanedResult = cleanedResult.Replace("]", "");
+        cleanedResult = cleanedResult.Replace("\"", "");
+        cleanedResult = cleanedResult.Replace("\' ", " ");
+        //List<string> sentences = new List<string>(); //TODO: put this into its own function, finish parsing into sentences
+        //sentences.Add(cleanedResult.Split(".")); 
+        //int s_num = num_sentences;
+        //while (s_num)
         return cleanedResult;
     }
 

@@ -258,9 +258,9 @@ public class Storyteller : MonoBehaviour
         //var attributes = new Dictionary<string, object>();
         //attributes["source_sentence"] = prompt;
         //attributes["sentences"] = sentences;
-        form["n"] = 3; //the number of generated texts - TODO: randomly select one
+        form["n"] = 1; //the number of generated texts
         form["inputs"] = prompt;
-        form ["num_return_sequences"] = num_sentences; //set the number of sentences to be returned
+        form ["num_return_sequences"] = num_sentences; //set the number of sentences to be returned - I don;t think this actually works!
         form["wait_for_model"] = false; //(Default: false) Boolean. If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done. It is advised to only set this flag to true after receiving a 503 error as it will limit hanging in your application to known places.
         form["temperature"] = 0.7;
         form["top_k"] = 50;
@@ -324,11 +324,23 @@ public class Storyteller : MonoBehaviour
         cleanedResult = cleanedResult.Replace("]", "");
         cleanedResult = cleanedResult.Replace("\"", "");
         cleanedResult = cleanedResult.Replace("\' ", " ");
-        //List<string> sentences = new List<string>(); //TODO: put this into its own function, finish parsing into sentences
-        //sentences.Add(cleanedResult.Split(".")); 
+        string paragraph = cleanedResult;
+
+        // Split the paragraph into sentences
+        string[] sentences = paragraph.Split('.'); //TODO: we're going to need to check for titles, such as Mr., etc,
+
+        // Create a new list to store the sentences
+        List<string> sentenceList = new List<string>();
+
+        // Iterate through the sentences and add each one to the list
+        foreach (string sentence in sentences)
+        {
+            sentenceList.Add(sentence);
+        }
+        Debug.Log("sentence 1: " + sentenceList[0] + " sentence2: " + sentenceList[1]);
         //int s_num = num_sentences;
         //while (s_num)
-        return cleanedResult;
+        return cleanedResult; //TODO - should return the sentence list!
     }
 
     void Credits()

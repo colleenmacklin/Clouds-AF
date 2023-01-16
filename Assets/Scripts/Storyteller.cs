@@ -246,6 +246,7 @@ public class Storyteller : MonoBehaviour
 
         //create the list of chosen items.
         SendMusing(adjustedLines.ToArray());
+        textBoxController.PlayingEnding = true;
     }
 
     //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.

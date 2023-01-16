@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Crosstales.RTVoice;
-
+using System;
 
 [RequireComponent(typeof(AudioSource))]
 public class TextBoxController : MonoBehaviour
@@ -44,6 +44,9 @@ public class TextBoxController : MonoBehaviour
     float fadeSpeed = 1;
     public GameObject textCanvas;
 
+    public bool PlayingEnding = false;
+
+    public static event Action OnEndingDialogueComplete;
 
     // Start is called before the first frame update
     void Start()
@@ -88,6 +91,8 @@ public class TextBoxController : MonoBehaviour
             // wait
             //yield return new WaitForSeconds(fadePause);
         }
+
+       
     }
 
     IEnumerator Fade(CanvasGroup text, float targetAlpha)
@@ -166,6 +171,11 @@ public class TextBoxController : MonoBehaviour
             textField.text = ""; //clear text because it's the end
                                  //potentially trigger an event for ending the dialogue 
             EventManager.TriggerEvent("DoneReading");
+
+            if (PlayingEnding == true)
+            {
+                OnEndingDialogueComplete?.Invoke();
+            }
         }
     }
 
@@ -187,6 +197,9 @@ public class TextBoxController : MonoBehaviour
         speaker.Speak(activeLine);
         if (typeLines) {
             typingCoroutine = StartCoroutine(TypeString()); //begin typing
+
+          
+            
         }
         else
         {

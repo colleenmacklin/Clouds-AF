@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 857159031385798982}
   - component: {fileID: -6267938805638723363}
   m_Layer: 9
-  m_Name: Cloud
+  m_Name: Cloud - Copy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

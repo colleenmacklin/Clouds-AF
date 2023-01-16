@@ -51,12 +51,20 @@ public class CloudShape : MonoBehaviour
 
     [SerializeField]
     [Tooltip("visible sky bounds = ")]
-    public int cloudVisX = -80; // TODO: Adjust
+    public int cloudVisX = -70; // TODO: Adjust
 
     [SerializeField]
     [Tooltip("Set to Quad renderer")]
     private Renderer shapeRenderer;
 
+
+    private FadeObjectInOut _fadeObject;
+
+    //bool to be set to true when cloud is nearing edge of screen and moved to the other side
+    private bool _cloudIsBusy;
+
+    //to be set by the fadeobject in/out object (not very elegant)
+    public bool IsFading;
 
     private void OnEnable()
     {
@@ -81,6 +89,8 @@ public class CloudShape : MonoBehaviour
     {
         psShape = ps.shape; // do not forget to set this first! will throw null reference exception
         cloudCollider = GetComponent<BoxCollider>();
+
+        _fadeObject = GetComponent<FadeObjectInOut>();
     }
 
     //In start we look at the camera and
@@ -91,6 +101,52 @@ public class CloudShape : MonoBehaviour
         var camera = Camera.main.transform;
         transform.LookAt(camera, Vector3.back);
 
+        //create some randomness in length delay of fading in and duration of fade
+        _fadeObject.fadeDelay = Random.Range(3, 10);
+        _fadeObject.fadeTime = Random.Range(6, 12);
+
+
+    }
+
+    private void Update()
+    {
+        if (!_cloudIsBusy)
+        {
+            CheckCloudVis();
+        }
+        else
+        {
+            if(_fadeObject.IsFading)
+            { 
+                //in progress 
+            }
+        }
+    }
+
+    private void CheckCloudVis()
+    {
+        if (transform.position.x <= cloudVisX)
+        {
+            _cloudIsBusy = true;
+
+
+            fadeOutParticleSystem();
+
+            ResetCloudPos();
+        }
+    }
+
+    private void ResetCloudPos()
+    {
+        Vector3 cloudPos = transform.position;
+
+        cloudPos.x = 110;
+
+        fadeInParticleSystem();
+
+        transform.position = cloudPos;
+
+        _cloudIsBusy = false;
     }
 
     // checks the number of particles to see if this cloud is visible...//can be removed
@@ -256,8 +312,8 @@ public class CloudShape : MonoBehaviour
 
     public void fadeInParticleSystem()
     {
-        FadeObjectInOut refScript = GetComponent<FadeObjectInOut>();
-        refScript.FadeIn(10);
+        
+        _fadeObject.FadeIn(_fadeObject.fadeTime);
         /* ultimately, change the simple fadeinout script to a script that "dissolves" the clouds by removing particles over time
       
         var particleSystemSettings = ps.main;
@@ -268,9 +324,8 @@ public class CloudShape : MonoBehaviour
 
     public void fadeOutParticleSystem()
     {
-        FadeObjectInOut refScript = GetComponent<FadeObjectInOut>();
 
-        refScript.FadeOut(10);
+        _fadeObject.FadeOut(_fadeObject.fadeTime);
 
         /* ultimately, change the simple fadeinout script to a script that "dissolves" the clouds by removing particles over time
       

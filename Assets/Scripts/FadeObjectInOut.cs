@@ -19,10 +19,13 @@ public class FadeObjectInOut : MonoBehaviour
     private Renderer[] rendererObjects;
 
 
+    public bool IsFading;
+
     void OnEnable()
     {
         EventManager.StartListening("FadeIn", FadeIn);
         EventManager.StartListening("FadeOut", FadeOut);
+        
     }
 
     void OnDisable()
@@ -30,7 +33,6 @@ public class FadeObjectInOut : MonoBehaviour
         EventManager.StopListening("FadeIn", FadeIn);
         EventManager.StopListening("FadeOut", FadeOut);
     }
-
    
     // allow automatic fading on the start of the scene
     private void Start()
@@ -97,6 +99,8 @@ public class FadeObjectInOut : MonoBehaviour
     // fade sequence
     IEnumerator FadeSequence(float fadingOutTime)
     {
+        IsFading = true;
+
         yield return new WaitForSeconds(fadeDelay);
 
         // log fading direction, then precalculate fading speed as a multiplier
@@ -164,9 +168,7 @@ public class FadeObjectInOut : MonoBehaviour
             }
         }
 
-
-        //Debug.Log("fade sequence end : " + fadingOut);
-
+        IsFading = false;
     }
 
 
@@ -193,20 +195,5 @@ public class FadeObjectInOut : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine("FadeSequence", -newFadeTime);
     }
-
-
-    // These are for testing only. 
-   		void Update()
-   		{
-    			if (Input.GetKeyDown (KeyCode.Alpha0) )
-   			{
-   				FadeIn();
-  			}
-    			if (Input.GetKeyDown (KeyCode.Alpha9) )
-   			{
-    				FadeOut(); 
-    			}
-    		}
-
 
 }

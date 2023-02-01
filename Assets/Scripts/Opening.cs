@@ -11,6 +11,7 @@ public class Opening : MonoBehaviour
     [Tooltip("The base cloud prefab")]
     private GameObject cloudObjectPrefab;
 
+
     void OnEnable()
     {
         EventManager.StartListening("Intro", Intro);
@@ -33,9 +34,18 @@ public class Opening : MonoBehaviour
         //EventManager.TriggerEvent("sunset");
         Vector3 cloudposition = theoryPos.position;
         GameObject temp = Instantiate(cloudObjectPrefab, cloudposition, Quaternion.Euler(0f, 0f, 0f), transform);
+      
         CloudShape cloud = temp.GetComponent<CloudShape>();
         cloud.SetShape(cloudTheory);
         cloud.ClarifyCloud();
+        //set the amount of time to fade in TODO: make it werk!
+        FadeObjectInOut fadeFunction = cloudObjectPrefab.GetComponent<FadeObjectInOut>();
+        fadeFunction.fadeDelay = 0;
+        fadeFunction.fadeTime = 0;
+        fadeFunction.FadeIn(fadeFunction.fadeTime);
+
+        EventManager.TriggerEvent("sunrise"); //listened to from the skyController
+
         //cloud.SlowDownClouds();
 
         //cloud.StopClouds();

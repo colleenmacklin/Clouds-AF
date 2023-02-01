@@ -51,6 +51,7 @@ namespace UnityEngine.AzureSky
 
         private void sunrise()
         {
+            Debug.Log("Starting Sunrise");
             azureTimeController.SetTimeline(sunrise_start_time);
             azureTimeController.StartTimelineTransition(sunrise_end_time, 0, 1.5f, AzureTimeDirection.Forward);
 
@@ -68,6 +69,7 @@ namespace UnityEngine.AzureSky
 
         private void sunset()
         {
+            Debug.Log("Starting Sunset");
             var current_hour = azureTimeController.GetTimeOfDay().x;
             var current_minute = azureTimeController.GetTimeOfDay().y;
             azureTimeController.SetTimeline(current_hour);

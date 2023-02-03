@@ -5,7 +5,8 @@ using UnityEngine;
 public class GameState : MonoBehaviour
 {
     // Start is called before the first frame update
-    public bool Intro;
+    public bool Opening; //opening scene
+    public bool Intro; //main scene, introductory dialogue
     public bool Gameloop;
     public bool Ending;
 }

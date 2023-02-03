@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using PoissonDisc;
 using System.Linq;
+ 
 
 /*
 
@@ -216,6 +217,10 @@ public class CloudManager : MonoBehaviour
             //get a random scale for the transform
             go.transform.localScale = scaleVector; //CM: Need to change to scale the underlying shape - which will unify the fluffiness of the clouds, but differentiate their shapes.
             go.name = $"Cloud {i}";
+
+            var _fadeObject = go.GetComponent<FadeObjectInOut>();
+            _fadeObject.fadeDelay = UnityEngine.Random.Range(3, 10);
+            _fadeObject.fadeTime = UnityEngine.Random.Range(6, 12);
 
             generatedCloudObjects.Add(go);
         }

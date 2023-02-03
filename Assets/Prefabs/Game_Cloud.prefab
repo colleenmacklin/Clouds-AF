@@ -147,6 +147,7 @@ MonoBehaviour:
   currScale: 0
   cloudVisX: -80
   shapeRenderer: {fileID: 1364893356364409663}
+  IsFading: 0
 --- !u!65 &3025029212260664773
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -200,10 +201,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3c39ea5ea824fd5a128ed906b818bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeDelay: 7
-  fadeTime: 5
+  fadeDelay: 0
+  fadeTime: 0
   fadeInOnStart: 1
   fadeOutOnStart: 0
+  IsFading: 0
 --- !u!1001 &4001077985832131846
 PrefabInstance:
   m_ObjectHideFlags: 0

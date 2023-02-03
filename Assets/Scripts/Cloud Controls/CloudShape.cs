@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.Events;
 /*
 
@@ -47,6 +48,7 @@ public class CloudShape : MonoBehaviour
     [Tooltip("default was 10.0f")]
     public float minScale;
     public float maxScale;
+    public float scale;
     public float currScale;
 
     [SerializeField]
@@ -57,7 +59,7 @@ public class CloudShape : MonoBehaviour
     [Tooltip("Set to Quad renderer")]
     private Renderer shapeRenderer;
 
-
+    public bool isGameLoop = true;
     private FadeObjectInOut _fadeObject;
 
     //bool to be set to true when cloud is nearing edge of screen and moved to the other side
@@ -89,7 +91,6 @@ public class CloudShape : MonoBehaviour
     {
         psShape = ps.shape; // do not forget to set this first! will throw null reference exception
         cloudCollider = GetComponent<BoxCollider>();
-
         _fadeObject = GetComponent<FadeObjectInOut>();
     }
 
@@ -102,9 +103,10 @@ public class CloudShape : MonoBehaviour
         transform.LookAt(camera, Vector3.back);
 
         //create some randomness in length delay of fading in and duration of fade
-        _fadeObject.fadeDelay = Random.Range(3, 10);
-        _fadeObject.fadeTime = Random.Range(6, 12);
+        //TODO: move this functionality to CloudManager so we can control fading from there. this is interfering with the opening scene fade sequence -CM
 
+        // _fadeObject.fadeDelay = Random.Range(3, 10);
+        // _fadeObject.fadeTime = Random.Range(6, 12);
 
     }
 
@@ -191,10 +193,13 @@ public class CloudShape : MonoBehaviour
         //Set the object's shape reference to the shapeTexture for easy reference
 
         //save shapeTexture to incomingShape
+        Debug.Log("My Shape is: " + shapeTexture);
         incomingShape = shapeTexture;
 
 
         //adjust the shape of the cloud and its collider based on the aspect ratio of the shape
+        //TODO: we might need to move this into cloudManager for greater control, and also for different contexts like the Opening
+        //for now, I have a check to see if we're in the Gameloop, and if not, the scale is set elsewhere.
         var srcWidth = incomingShape.width;
         var srcHeight = incomingShape.height;
         Vector3 textureScaleAdjustment = CalculateSquareScaleRatio(srcWidth, srcHeight);
@@ -210,7 +215,9 @@ public class CloudShape : MonoBehaviour
         //modify the StartSize of the particle system so that it scales with the size of the cloud (ensures there's no gaps between parrticles)
         //StartSize is a range, and the base setting is 3 to 7
         var psMain = ps.main;
-        psMain.startSizeMultiplier = currScale/2;        
+        //psMain.startSizeMultiplier = currScale/2;
+        psMain.startSizeMultiplier = scale / 2;
+
 
         //Set the scale *of the collider* that represents the shape
         //Collider is rotated, so the values are x and y.
@@ -255,10 +262,20 @@ public class CloudShape : MonoBehaviour
     private Vector3 CalculateSquareScaleRatio(float srcWidth, float srcHeight)
 
     {
-        //adding a randomizer here for variable sizes
-        float scale = UnityEngine.Random.Range(minScale, maxScale);
-        currScale = scale; //just surfacing to the interface for debugging
+        //TODO: we might need to move this into cloudManager for greater control, and also for different contexts like the Opening
+        //for now, I have a check to see if we're in the Gameloop, and if not, the scale is set by the manager (such as in the opening.)
+        if (isGameLoop)
+        {
+            //adding a randomizer here for variable sizes
+            Debug.Log("gameState = GameLoop");
+            scale = UnityEngine.Random.Range(minScale, maxScale);
+            currScale = scale; //just surfacing to the interface for debugging
+        }
 
+        if (!isGameLoop)
+        {
+            currScale = scale; //just surfacing to the interface for debugging
+        }
         var ratio = Mathf.Max(scale / srcWidth, scale / srcHeight);
 
         var newsize = new Vector3(srcWidth * ratio, srcHeight * ratio, 1f);

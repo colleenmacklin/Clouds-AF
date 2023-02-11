@@ -59,9 +59,5 @@ public class Opening : MonoBehaviour
         //cloud.StopClouds();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

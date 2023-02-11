@@ -17,6 +17,7 @@ public class TextBoxController : MonoBehaviour
     [SerializeField]
     string activeLine;
     public Speaker speaker;
+    public Crosstales.RTVoice.Model.Voice voice;
 
     [SerializeField]
     string currentLine = "";
@@ -79,7 +80,7 @@ public class TextBoxController : MonoBehaviour
         //forever
         while (true)
         {
-//            dialogueAudio?.Play(); //play audio event
+            //            dialogueAudio?.Play(); //play audio event
 
 
             // fade in
@@ -92,7 +93,7 @@ public class TextBoxController : MonoBehaviour
             //yield return new WaitForSeconds(fadePause);
         }
 
-       
+
     }
 
     IEnumerator Fade(CanvasGroup text, float targetAlpha)
@@ -145,7 +146,8 @@ public class TextBoxController : MonoBehaviour
             textLineIndex++;//increment sentence
             //set the next active line
             activeLine = linesList[textLineIndex];
-            speaker.Speak(activeLine);
+
+            speaker.Speak(activeLine, null, voice);
             //textField.text = "";
             //show line
             if (typeLines)
@@ -194,12 +196,13 @@ public class TextBoxController : MonoBehaviour
         Reset(); //reset first and then ingest lines
         CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
-        speaker.Speak(activeLine);
-        if (typeLines) {
+        speaker.Speak(activeLine, null, voice);
+        if (typeLines)
+        {
             typingCoroutine = StartCoroutine(TypeString()); //begin typing
 
-          
-            
+
+
         }
         else
         {

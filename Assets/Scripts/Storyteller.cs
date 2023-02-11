@@ -289,7 +289,7 @@ public class Storyteller : MonoBehaviour
             Debug.Log("failed request error: "+request.error);
             Debug.Log("failed downloadHandler.data: "+request.downloadHandler.data);
             //TODO: when a 503 error is thrown (model is not ready) set "wait_for_model" = true; remake the request
-            JSONNode data = request.downloadHandler.text;
+            string data = request.downloadHandler.text;
             string[] currentMusing = ProcessResult(data).Split("\\n");
             //Debug.Log(currentMusing[0]);
             SendMusing(currentMusing);
@@ -297,7 +297,7 @@ public class Storyteller : MonoBehaviour
         }
         else
         {
-            JSONNode data = request.downloadHandler.text;
+            string data = request.downloadHandler.text;
             // Process the result
             Debug.Log(ProcessResult(data));
 

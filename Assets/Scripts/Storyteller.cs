@@ -56,7 +56,7 @@ public class Storyteller : MonoBehaviour
 
     [SerializeField] int numberOfMusings = 3; //total musings for our story
     [SerializeField] int musingsGiven = 0; //how many musings we've done
-    [SerializeField] int numberOfSentences = 3;
+    public int numberOfSentences = 3;
     [SerializeField] List<string> prompts = new List<string>();
     [SerializeField] float bindingProbablility = 0.3f;
     [SerializeField] List<string> bindingPrompts = new List<string>();
@@ -358,6 +358,7 @@ public class Storyteller : MonoBehaviour
         else
         {
             JSONNode data = request.downloadHandler.text;
+            
             // Process the result
 
             if (begin == 1)
@@ -391,8 +392,13 @@ public class Storyteller : MonoBehaviour
         cleanedResult = cleanedResult.Replace("\' ", " ");
         string paragraph = cleanedResult;
 
+        Debug.Log(paragraph);
+
         // Split the paragraph into sentences
-        string[] sentences = Regex.Split(paragraph, @"(?<=[\.!\?])\s+"); ; //TODO: we're going to need to check for titles, such as Mr., etc,
+        //string[] sentences = Regex.Split(paragraph, @"(?<=[\.!\?])\s+"); ; //TODO: we're going to need to check for titles, such as Mr., etc,
+        string[] sentences = paragraph.Split("\\n");
+
+        //Debug.Log(sentences.Length);
 
         // Create a new list to store the sentences
         List<string> sentenceList = new List<string>();

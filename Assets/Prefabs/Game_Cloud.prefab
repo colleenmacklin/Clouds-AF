@@ -144,9 +144,11 @@ MonoBehaviour:
   changeTimeMax: 100
   minScale: 15
   maxScale: 25
+  scale: 0
   currScale: 0
   cloudVisX: -80
   shapeRenderer: {fileID: 1364893356364409663}
+  isGameLoop: 1
   IsFading: 0
 --- !u!65 &3025029212260664773
 BoxCollider:
@@ -320,6 +322,10 @@ PrefabInstance:
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: RotationModule.enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
+      propertyPath: InitialModule.rotation3D
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: ShapeModule.m_Rotation.y

@@ -17,9 +17,14 @@ public class ModelBuffer : MonoBehaviour
 
     public static event Action OnStartedLoadingModel;
 
+    private void Awake()
+    {
+       
+    }
     private void Start()
     {
         StartCoroutine(LoadModel());
+
     }
 
 

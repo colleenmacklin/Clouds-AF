@@ -414,20 +414,15 @@ public class Storyteller : MonoBehaviour
         return sentenceList.ToArray(); //TODO - should return the sentence list!
     }
 
-    void Credits()
+
+    public int GetNumberOfMusings()
     {
-        if (credits.position.y < 1000.0f)
-        {
-            credits.position += new Vector3(0, 2.0f, 0);
-        }
+        return numberOfMusings;
     }
 
-    // Update is called once per frame
-    void Update()
+    public int GetMusingsGiven()
     {
-        //if(gameover)
-        //{
-        //    Credits();
-        //}
+        return musingsGiven;
     }
+   
 }

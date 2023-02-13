@@ -29,11 +29,14 @@ namespace UnityEngine.AzureSky
 
         private float _startTime;
 
+        private bool _timeLineIsPaused;
+
         // Start is called before the first frame update
         void OnEnable()
         {
             EventManager.StartListening("sunrise", sunrise);
             EventManager.StartListening("sunset", sunset);
+            EventManager.StartListening("Musing", CatchUpToTimeAtMusing);
 
         }
 
@@ -41,6 +44,7 @@ namespace UnityEngine.AzureSky
         {
             EventManager.StopListening("sunrise", sunrise);
             EventManager.StopListening("sunset", sunset);
+            EventManager.StopListening("Musing", CatchUpToTimeAtMusing);
 
         }
         private void Awake()
@@ -49,8 +53,6 @@ namespace UnityEngine.AzureSky
         }
         void Start()
         {
-            //azureTimeController.PauseTime;
-            //sunrise();
 
             if (_storyteller != null)
             {
@@ -58,24 +60,20 @@ namespace UnityEngine.AzureSky
             }
         }
 
-        // Update is called once per frame
+
         void Update()
         {
-            /*
-            if (azureTimeController.GetTimeOfDay().x > 13)
+            //check if timeline has reached each value, if not pause; 
+            //after musing, unpause or catch up
+            if (_storyteller != null)
             {
-                weatherController.SetNewWeatherProfile(1);
-                Debug.Log("weather changed to: " + weatherController.GetCurrentWeatherProfile().name);
-                return;
+                CheckTimeLineAgainstTimes();
             }
-            */
+          
 
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                sunset();
-            }
+
         }
-        
+
         private void sunrise() //consider converting to an action with the timeScale set by gameManager/cloudManager
         {
             //TODO: Slow the sunrise speed to conform to loading the GPT model
@@ -100,80 +98,84 @@ namespace UnityEngine.AzureSky
             Debug.Log("Starting Sunset");
             var current_hour = azureTimeController.GetTimeOfDay().x;
             var current_minute = azureTimeController.GetTimeOfDay().y;
-          //  azureTimeController.SetTimeline(current_hour);
+            //  azureTimeController.SetTimeline(current_hour);
             azureTimeController.StartTimelineTransition(sunset_end_time_hour, sunset_end_time_minute, timeScale, AzureTimeDirection.Forward);
         }
 
         /// <summary>
         ///  setting up the array for each point in the timeline to hold at until each musing is reached
         /// </summary>
-        private void  CaculateTimeLineTimes()
+        private void CaculateTimeLineTimes()
         {
             //consider making the array one size bigger and adding end goal point, i.e. taking it out of the 'sunset' method
             int arrayLength = _storyteller.GetNumberOfMusings();
 
-            
+
             _timeLineTimes = new float[arrayLength];
 
             //set the last two to be goldenish colors 
             //hardcoding these values for now but could consider exposing them
-            _timeLineTimes[arrayLength-1] = 17.5f;
+            _timeLineTimes[arrayLength - 1] = 17.5f;
             _timeLineTimes[arrayLength - 2] = 16.7f;
 
             //also hardcoding start time, again, could expose 
             // second last time - start time is the time frame we're working with 
 
-           
+
             //caluate the difference between the remaining values
             float diff = (16.7f - _startTime) / (arrayLength - 1);
 
-            for (int i = 1; i < arrayLength - 1 ; i++)
+            for (int i = 1; i < arrayLength - 1; i++)
             {
-                _timeLineTimes[i-1] = _startTime + i * diff;
+                _timeLineTimes[i - 1] = _startTime + i * diff;
             }
         }
 
+       
+        /// <summary>
+        /// checks if the timeline has gone past the value of the array set for that particular musing, and pauses time if so
+        /// </summary>
 
+        private void CheckTimeLineAgainstTimes()
+        {
 
-        ///logic to change light during game, without ending the day before the game is over 
-        ///
+            if (!_timeLineIsPaused)
+            {
+                if (azureTimeController.GetTimeline() >= _timeLineTimes[_storyteller.GetMusingsGiven()])
+                {
+                    azureTimeController.PauseTime();
+                    _timeLineIsPaused = true;
+                }
+            }
+           
+        }
 
-        //number of musings
-        //sunset end time// target time
-        //different light times to make sure we hit those 
-        //start at 11
+        private void CatchUpToTimeAtMusing()
+        {
+            if (_timeLineIsPaused)
+            {
+                azureTimeController.PlayTimeAgain();
+                _timeLineIsPaused = false;
+            }
 
-        
+            //this value is gona be wrong possibly - check musings given value at these points
+            //also check that the conversion in the transition can use this number
 
-        /*
-         5 musings
+            
 
-        11 12 13 14 15 16 
+            if (azureTimeController.GetTimeline() <= _timeLineTimes[_storyteller.GetMusingsGiven()] )
+            {
 
+                string timelineStringTime = _timeLineTimes[_storyteller.GetMusingsGiven()].ToString();
 
-        total number of musings 
+                string[] times = timelineStringTime.Split(".");
+                int hour = int.Parse((times[0]));
+                int minute = int.Parse((times[1])) / 100 * 60;
 
+                azureTimeController.StartTimelineTransition(hour, minute, 1f, AzureTimeDirection.Forward); 
+            }
 
-        16.7 - 11 / musings = 2
-
-        //array 
-        each next timeline point 
-        size is total of musings
-        last two values we know 
-
-        1
-
-
-        */
-
-        // second last at 16:45?
-        //last musing at 17.5
-
-
-        //end at 19
-
-
-        //
+        }
 
     }
 

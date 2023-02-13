@@ -11,7 +11,7 @@ public class Opening : MonoBehaviour
     [Tooltip("The base cloud prefab")]
     private GameObject cloudObjectPrefab;
     public GameState gameState; //TODO: we'll need to reference GameState in each scene in the cloudManager or any other object containing an instantiated cloud. The GameCloud prefab references it. 
-
+    private GameObject _cloud;
 
     void OnEnable()
     {
@@ -24,6 +24,20 @@ public class Opening : MonoBehaviour
         EventManager.StartListening("Intro", Title);
     }
 
+    private void Awake()
+    {
+
+        Vector3 cloudposition = theoryPos.position;
+        _cloud = Instantiate(cloudObjectPrefab, cloudposition, Quaternion.Euler(0f, 0f, 0f), transform);
+        _cloud.SetActive(true);
+        if (!_cloud.activeInHierarchy)
+        {
+            
+
+        }
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,32 +46,31 @@ public class Opening : MonoBehaviour
 
     public void Title()
     {
-        //EventManager.TriggerEvent("sunset");
-        Vector3 cloudposition = theoryPos.position;
 
-        GameObject temp = Instantiate(cloudObjectPrefab, cloudposition, Quaternion.Euler(0f, 0f, 0f), transform);
-      
-        CloudShape cloud = temp.GetComponent<CloudShape>();
-        cloud.isGameLoop = false;
-        cloud.scale = 20;
-        cloud.SetShape(cloudTheory);
-        cloud.ClarifyCloud();
+        CloudShape cloudShape = _cloud.GetComponent<CloudShape>();
+        cloudShape.isGameLoop = false;
+        cloudShape.scale = 20;
+        cloudShape.SetShape(cloudTheory);
+        cloudShape.ClarifyCloud();
 
-        //set the amount of time to fade in TODO: make it werk!
+        ConstantForce wind = _cloud.GetComponent<ConstantForce>();
+        Vector3 f = Vector3.zero;
+
+        wind.force = f;
+        
+
         FadeObjectInOut fadeFunction = cloudObjectPrefab.GetComponent<FadeObjectInOut>();
-        fadeFunction.fadeDelay = 2;
-        fadeFunction.fadeTime = 2;
-        if (cloudObjectPrefab.active) //are we loaded?
-        {
-            fadeFunction.FadeIn(fadeFunction.fadeTime);
+        fadeFunction.fadeInOnStart = false;
+        fadeFunction.fadeDelay = 3;
+        fadeFunction.fadeTime = 10;
 
-        }
+        fadeFunction.FadeIn(fadeFunction.fadeTime);
+
+
         EventManager.TriggerEvent("sunrise"); //listened to from the skyController
 
-        //cloud.SlowDownClouds();
 
-        //cloud.StopClouds();
     }
 
-    
+
 }

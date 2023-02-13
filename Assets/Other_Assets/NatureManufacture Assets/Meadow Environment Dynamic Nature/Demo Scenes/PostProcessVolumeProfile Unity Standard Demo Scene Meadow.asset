@@ -161,7 +161,7 @@ MonoBehaviour:
     value: 100
   lift:
     overrideState: 1
-    value: {x: 1, y: 1, z: 1, w: 0.025434509}
+    value: {x: 0.9358607, y: 1, z: 0.8828948, w: 0.025434509}
   gamma:
     overrideState: 1
     value: {x: 1, y: 1, z: 1, w: -0.009589606}
@@ -1513,10 +1513,10 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 1.27
+    value: 1.93
   color:
     overrideState: 1
-    value: {r: 0, g: 0, b: 0, a: 1}
+    value: {r: 0.084905684, g: 0.041384842, b: 0.041384842, a: 1}
   ambientOnly:
     overrideState: 1
     value: 1

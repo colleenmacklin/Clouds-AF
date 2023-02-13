@@ -285,7 +285,7 @@ namespace UnityEngine.AzureSky
         {
             m_timelineTransitionTargetHour = Mathf.Min(hour, 23);
             m_timelineTransitionTargetMinute = Mathf.Min(minute, 59);
-            m_timelineTransitionTargetSpeed = Mathf.Max(1.0f, m_timeProgressionStep * speedMultiplier);
+            m_timelineTransitionTargetSpeed = m_timeProgressionStep * speedMultiplier;
             m_timelineTransitionTargetDay = day;
             m_timelineTransitionTargetMonth = month;
             m_timelineTransitionTargetYear = year;

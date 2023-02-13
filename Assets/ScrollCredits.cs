@@ -48,11 +48,6 @@ public class ScrollCredits : MonoBehaviour
 
     private void Update()
     {
-        //just for now for testing
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            StartCredits();
-        }
 
         //add a delay??
 

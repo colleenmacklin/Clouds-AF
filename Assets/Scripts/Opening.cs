@@ -39,25 +39,27 @@ public class Opening : MonoBehaviour
       
         CloudShape cloud = temp.GetComponent<CloudShape>();
         cloud.isGameLoop = false;
-        cloud.scale = 20;
+        cloud.scale = 17;
         cloud.SetShape(cloudTheory);
-        cloud.ClarifyCloud();
 
-        //set the amount of time to fade in TODO: make it werk!
-        FadeObjectInOut fadeFunction = cloudObjectPrefab.GetComponent<FadeObjectInOut>();
-        fadeFunction.fadeDelay = 2;
-        fadeFunction.fadeTime = 2;
-        if (cloudObjectPrefab.active) //are we loaded?
-        {
-            fadeFunction.FadeIn(fadeFunction.fadeTime);
-
-        }
         EventManager.TriggerEvent("sunrise"); //listened to from the skyController
+                                              //set the amount of time to fade in TODO: make it werk!
+        FadeObjectInOut fadeFunction = cloudObjectPrefab.GetComponent<FadeObjectInOut>();
+        fadeFunction.fadeDelay = 5;
+        fadeFunction.fadeTime = 5;
+        //if (cloudObjectPrefab.active) //are we loaded?
+        //{
+            //Debug.Log("-----------cloud_is_Active");
+            fadeFunction.FadeIn(fadeFunction.fadeTime);
+            cloud.SharpenOpeningCloud(); //TODO: we will need to modify all of the cloud functions to be able to pass values relevant to different scenes --CM
+            cloud.SlowDownCloud(); //has no effect
+        //}
+
 
         //cloud.SlowDownClouds();
 
         //cloud.StopClouds();
     }
 
-    
+
 }

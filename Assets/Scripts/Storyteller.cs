@@ -395,7 +395,6 @@ public class Storyteller : MonoBehaviour
         Debug.Log(paragraph);
 
         // Split the paragraph into sentences
-        //string[] sentences = Regex.Split(paragraph, @"(?<=[\.!\?])\s+"); ; //TODO: we're going to need to check for titles, such as Mr., etc,
         string[] sentences = paragraph.Split("\\n");
 
         //Debug.Log(sentences.Length);
@@ -408,7 +407,7 @@ public class Storyteller : MonoBehaviour
         //{
         //    sentenceList.Add(sentence);
         //}
-        for (int i = 0; i < numberOfSentences; i++)
+        for (int i = 0; i < numberOfSentences; i++) //TODO: Returns an out of index error --cm
         {
             sentenceList.Add(sentences[i]);
         }

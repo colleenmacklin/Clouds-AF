@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Title.unity
-    guid: 448a066506c202046a1ddf046b7e6655
+    path: Assets/Scenes/Opening.unity
+    guid: 03753c93880df4ba68dad490850549a9
   - enabled: 1
     path: Assets/Scenes/Main_CloudScrolling.unity
     guid: 494a6ba2a9f57410aa614260e47190cb

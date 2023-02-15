@@ -7,6 +7,9 @@ using SimpleJSON;
 using MiniJSON;
 //using static UnityEditor.Rendering.CameraUI;
 using UnityEngine.Networking;
+using System.Text.RegularExpressions;
+using UnityEngine.Windows;
+using Crosstales.RTVoice.Model;
 
 /*
 
@@ -39,7 +42,7 @@ public class Storyteller : MonoBehaviour
 {
     //[SerializeField]
     //NarratorSO narrator;
-    public Speaker speaker;
+    //public Speaker speaker;
     public GameState GameState; //3 states: Intro, GameLoop, Ending
 
     [SerializeField]
@@ -53,9 +56,12 @@ public class Storyteller : MonoBehaviour
 
     [SerializeField] int numberOfMusings = 3; //total musings for our story
     [SerializeField] int musingsGiven = 0; //how many musings we've done
+    public int numberOfSentences = 3;
+    [SerializeField] List<string> prompts = new List<string>();
+    [SerializeField] float bindingProbablility = 0.3f;
+    [SerializeField] List<string> bindingPrompts = new List<string>();
     [SerializeField] TextBoxController textBoxController;
     [SerializeField] List<string> viewedShapes = new List<string>();//the shapes we've viewed so far
-    [SerializeField] List<string> generativeStory = new List<string>();
 
     [Header("HuggingFace Model URL")]
     public string model_url;
@@ -83,6 +89,17 @@ public class Storyteller : MonoBehaviour
     void Start()
     {
         //speaker.SpeakNative("RT Voice is speaking");
+        prompts.Add("That cloud reminds me of a __.");
+        prompts.Add("Clouds often take the form of a __. I think this is because");
+        prompts.Add("I see the __, too, which makes me wonder if they are trying to tell us that");
+        prompts.Add("That cloud reminds me of a __ I once had.");
+        prompts.Add("The __ symbolizes");
+
+        bindingPrompts.Add("I was thinking about the __ and the --’s relationship, and");
+        bindingPrompts.Add("Do you know why the __ and the --");
+        bindingPrompts.Add("Do you think we saw a __ shaped cloud and a -- shaped cloud because");
+        bindingPrompts.Add("A __ and a -- in the same day predicts");
+        bindingPrompts.Add("I’ve never seen a __ with a --, but now I see they are connected by");
 
         //.ProcessNarratorFile();
         muse.ProcessNarratorFile();
@@ -115,7 +132,7 @@ public class Storyteller : MonoBehaviour
 
         //string speakText = "Hi how are you";
         //speaker.Speak(speakText);
-        Debug.Log(speaker.VoiceForCulture("en"));
+        //Debug.Log(speaker.VoiceForCulture("en"));
     }
 
     //Send a musing to the text controller
@@ -130,7 +147,45 @@ public class Storyteller : MonoBehaviour
 
     void NextMusing(string key)
     {
-        string prompt = "That cloud reminds me of a ";
+
+        string keyString = key.Replace("_", " ");
+        string fullPrompt = " ";
+
+        if (viewedShapes.Count < 1)
+        {
+            int promptIndex = Random.Range(0, prompts.Count);
+            //string prompt = "That cloud reminds me of a ";
+            string prompt = prompts[promptIndex];
+
+            fullPrompt = prompt.Replace("__", keyString);
+        }
+        else
+        {
+            float bindingChance = Random.Range(0, 1f);
+            if (bindingChance > bindingProbablility)
+            {
+                int promptIndex = Random.Range(0, prompts.Count);
+                //string prompt = "That cloud reminds me of a ";
+                string prompt = prompts[promptIndex];
+
+                fullPrompt = prompt.Replace("__", keyString);
+            }
+            else
+            {
+
+                int promptIndex = Random.Range(0, bindingPrompts.Count);
+                int viewedShapeIndex = Random.Range(0, viewedShapes.Count);
+                string viewedShapeString = viewedShapes[viewedShapeIndex].Replace("_", " ");
+                string prompt = bindingPrompts[promptIndex];
+
+                fullPrompt = prompt.Replace("__", keyString);
+                fullPrompt = fullPrompt.Replace("--", viewedShapeString);
+            }
+        }
+
+
+
+
         //store the shape
         //Debug.Log(key);
         viewedShapes.Add(key);
@@ -158,9 +213,8 @@ public class Storyteller : MonoBehaviour
         //    }
         //}
 
-        string keyString = key.Replace("_", " ");
-        int num_sentences = 2; //TODO replace with variable, attached to prompt
-        StartCoroutine(LiveMusing(prompt + keyString, num_sentences));
+
+        StartCoroutine(LiveMusing(fullPrompt, 1));
 
         //increase musings
         musingsGiven += 1;
@@ -252,7 +306,7 @@ public class Storyteller : MonoBehaviour
     //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.
     //need to release the camera when this gets stuck. --Colleen
     //
-    public IEnumerator LiveMusing(string prompt, int num_sentences)
+    public IEnumerator LiveMusing(string prompt, int begin)
     {
         // Form the JSON
         var form = new Dictionary<string, object>();
@@ -261,7 +315,7 @@ public class Storyteller : MonoBehaviour
         //attributes["sentences"] = sentences;
         form["n"] = 1; //the number of generated texts
         form["inputs"] = prompt;
-        form ["num_return_sequences"] = num_sentences; //set the number of sentences to be returned - I don;t think this actually works!
+        form["num_return_sequences"] = 3; //set the number of sentences to be returned - I don;t think this actually works!
         form["wait_for_model"] = false; //(Default: false) Boolean. If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done. It is advised to only set this flag to true after receiving a 503 error as it will limit hanging in your application to known places.
         form["temperature"] = 0.7;
         form["top_k"] = 50;
@@ -286,25 +340,36 @@ public class Storyteller : MonoBehaviour
         // If the request return an error set the error on console. - we should set parameters on the api to request again
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.Log("failed request error: "+request.error);
-            Debug.Log("failed downloadHandler.data: "+request.downloadHandler.data);
+            Debug.Log("failed request error: " + request.error);
+            Debug.Log("failed downloadHandler.data: " + request.downloadHandler.data);
             //TODO: when a 503 error is thrown (model is not ready) set "wait_for_model" = true; remake the request
             JSONNode data = request.downloadHandler.text;
-            string[] currentMusing = ProcessResult(data).Split("\\n");
-            //Debug.Log(currentMusing[0]);
-            SendMusing(currentMusing);
-            generativeStory.Add(ProcessResult(data));
+
+
+            if (begin == 1)
+            {
+                string[] currentMusing = ProcessResult(data);
+                //Debug.Log(currentMusing[0]);
+                SendMusing(currentMusing);
+                //generativeStory.Add(ProcessResult(data));
+            }
+
         }
         else
         {
             JSONNode data = request.downloadHandler.text;
+            
             // Process the result
-            Debug.Log(ProcessResult(data));
 
-            string[] currentMusing = ProcessResult(data).Split("\\n"); //TODO: need to post process this data into sentences
-            //Debug.Log(currentMusing[0]);
-            SendMusing(currentMusing);
-            generativeStory.Add(ProcessResult(data));
+            if (begin == 1)
+            {
+                Debug.Log(ProcessResult(data));
+
+                string[] currentMusing = ProcessResult(data); //TODO: need to post process this data into sentences
+                                                              //Debug.Log(currentMusing[0]);
+                SendMusing(currentMusing);
+                //generativeStory.Add(ProcessResult(data));
+            }
         }
 
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html
@@ -312,7 +377,7 @@ public class Storyteller : MonoBehaviour
     }
 
 
-    string ProcessResult(string result)
+    string[] ProcessResult(string result)
     {
         // The data is a score for each possible sentence candidate
         // But, it looks something like this "[0.7777, 0.19, 0.01]"
@@ -327,26 +392,37 @@ public class Storyteller : MonoBehaviour
         cleanedResult = cleanedResult.Replace("\' ", " ");
         string paragraph = cleanedResult;
 
+        Debug.Log(paragraph);
+
         // Split the paragraph into sentences
-        string[] sentences = paragraph.Split('.'); //TODO: we're going to need to check for titles, such as Mr., etc,
+        //string[] sentences = Regex.Split(paragraph, @"(?<=[\.!\?])\s+"); ; //TODO: we're going to need to check for titles, such as Mr., etc,
+        string[] sentences = paragraph.Split("\\n");
+
+        //Debug.Log(sentences.Length);
 
         // Create a new list to store the sentences
         List<string> sentenceList = new List<string>();
 
         // Iterate through the sentences and add each one to the list
-        foreach (string sentence in sentences)
+        //foreach (string sentence in sentences)
+        //{
+        //    sentenceList.Add(sentence);
+        //}
+        for (int i = 0; i < numberOfSentences; i++)
         {
-            sentenceList.Add(sentence);
+            sentenceList.Add(sentences[i]);
         }
-        Debug.Log("sentence 1: " + sentenceList[0] + " sentence2: " + sentenceList[1]);
+
+        //sentenceList.RemoveAt(sentenceList.Count - 1);
+        //Debug.Log("sentence 1: " + sentenceList[0] + " sentence2: " + sentenceList[1]);
         //int s_num = num_sentences;
         //while (s_num)
-        return cleanedResult; //TODO - should return the sentence list!
+        return sentenceList.ToArray(); //TODO - should return the sentence list!
     }
 
     void Credits()
     {
-        if(credits.position.y < 1000.0f)
+        if (credits.position.y < 1000.0f)
         {
             credits.position += new Vector3(0, 2.0f, 0);
         }

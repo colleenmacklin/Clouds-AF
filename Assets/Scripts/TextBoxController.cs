@@ -17,6 +17,7 @@ public class TextBoxController : MonoBehaviour
     [SerializeField]
     string activeLine;
     public Speaker speaker;
+    public Crosstales.RTVoice.Model.Voice voice;
 
     [SerializeField]
     string currentLine = "";
@@ -33,6 +34,9 @@ public class TextBoxController : MonoBehaviour
     [Range(1f, 240f)]
     float charactersPerSecond;
     bool complete;
+    int voiceState;
+    public Storyteller teller;
+    [SerializeField] List<bool> lineBools = new List<bool>();
 
     [SerializeField]
     AudioClip typeSound;
@@ -53,6 +57,10 @@ public class TextBoxController : MonoBehaviour
     {
         dialogueAudio = GetComponent<AudioSource>();
         dialogueAudio.clip = typeSound;
+        for (int i = 0; i < teller.numberOfSentences; i++)
+        {
+            lineBools.Add(false);
+        }
     }
 
     //Print out the string over time and play audio
@@ -79,7 +87,7 @@ public class TextBoxController : MonoBehaviour
         //forever
         while (true)
         {
-//            dialogueAudio?.Play(); //play audio event
+            //            dialogueAudio?.Play(); //play audio event
 
 
             // fade in
@@ -92,7 +100,7 @@ public class TextBoxController : MonoBehaviour
             //yield return new WaitForSeconds(fadePause);
         }
 
-       
+
     }
 
     IEnumerator Fade(CanvasGroup text, float targetAlpha)
@@ -108,7 +116,11 @@ public class TextBoxController : MonoBehaviour
         }
     }
 
-
+    public void VoiceComplete()
+    {
+        voiceState++;
+        Debug.Log("voice complete");
+    }
 
     //This function first checks if the line is done.
     //If not done, sets it to be done and ends the coroutine.
@@ -116,22 +128,23 @@ public class TextBoxController : MonoBehaviour
     //This is the public function.
     public void Check()
     {
+
         if (complete) return;
 
-        if (textField.text == activeLine)
+        if (textField.text == activeLine && voiceState == 0)
         {
             Debug.Log("nextline called");
             NextLine();
             return;
         }
 
-        if (textField.text != activeLine)
-        {
-            textField.text = activeLine;
-            StopCoroutine(typingCoroutine);//stop the coroutine so it doesn't type on us.
-            //StopAllCoroutines();
-            return;
-        }
+        //if (textField.text != activeLine)
+        //{
+        //    textField.text = activeLine;
+        //    StopCoroutine(typingCoroutine);//stop the coroutine so it doesn't type on us.
+        //    //StopAllCoroutines();
+        //    return;
+        //}
 
     }
 
@@ -145,7 +158,8 @@ public class TextBoxController : MonoBehaviour
             textLineIndex++;//increment sentence
             //set the next active line
             activeLine = linesList[textLineIndex];
-            speaker.Speak(activeLine);
+
+            speaker.Speak(activeLine, null, voice);
             //textField.text = "";
             //show line
             if (typeLines)
@@ -185,6 +199,11 @@ public class TextBoxController : MonoBehaviour
         textLineIndex = 0;
         textField.text = "";
         activeLine = "";
+        voiceState = -1;
+        for (int i = 0; i < lineBools.Count; i++)
+        {
+            lineBools[i] = false;
+        }
     }
 
     //Take list from any source and create array of lines
@@ -194,12 +213,13 @@ public class TextBoxController : MonoBehaviour
         Reset(); //reset first and then ingest lines
         CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
-        speaker.Speak(activeLine);
-        if (typeLines) {
+        speaker.Speak(activeLine, null, voice);
+        if (typeLines)
+        {
             typingCoroutine = StartCoroutine(TypeString()); //begin typing
 
-          
-            
+
+
         }
         else
         {
@@ -214,6 +234,18 @@ public class TextBoxController : MonoBehaviour
     void CopyLines(string[] newLines)
     {
         linesList = newLines;
+    }
+
+    void Update()
+    {
+        for (int i = 0; i < lineBools.Count; i++)
+        {
+            if(voiceState == i && !lineBools[i])
+            {
+                NextLine();
+                lineBools[i] = true;
+            }
+        }
     }
 
 }

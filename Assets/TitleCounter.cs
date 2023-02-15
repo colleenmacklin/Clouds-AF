@@ -12,18 +12,38 @@ public class TitleCounter : MonoBehaviour
 
     private bool _finishedCount = false;
 
+    private bool _modelIsLoading = false;
+
+    private void OnEnable()
+    {
+        ModelBuffer.OnStartedLoadingModel += OnLoadingModel;
+    }
+
+    private void OnLoadingModel()
+    {
+        _modelIsLoading = true;
+    }
+
+    private void OnDisable()
+    {
+        ModelBuffer.OnStartedLoadingModel -= OnLoadingModel;
+    }
+
     private void Update()
     {
-        if (!_finishedCount)
+        if (_modelIsLoading)
         {
-            if (_timeCount > 0)
+            if (!_finishedCount)
             {
-                _timeCount -= Time.deltaTime;
-            }
-            else
-            {
-                OnTitleOver?.Invoke(1);
-                _finishedCount = true;
+                if (_timeCount > 0)
+                {
+                    _timeCount -= Time.deltaTime;
+                }
+                else
+                {
+                    OnTitleOver?.Invoke(1);
+                    _finishedCount = true;
+                }
             }
         }
     }

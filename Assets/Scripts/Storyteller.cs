@@ -89,17 +89,17 @@ public class Storyteller : MonoBehaviour
     void Start()
     {
         //speaker.SpeakNative("RT Voice is speaking");
-        prompts.Add("That cloud reminds me of a __.");
-        prompts.Add("Clouds often take the form of a __. I think this is because");
-        prompts.Add("I see the __, too, which makes me wonder if they are trying to tell us that");
-        prompts.Add("That cloud reminds me of a __ I once had.");
-        prompts.Add("The __ symbolizes");
+        prompts.Add("That cloud reminds me of __");
+        prompts.Add("Clouds often take the form of __. I think this is because");
+        prompts.Add("I see __, too, which makes me wonder what a cloud is");
+        prompts.Add("That cloud reminds me of __, a");
+        prompts.Add("A cloud shaped like __ symbolizes");
 
-        bindingPrompts.Add("I was thinking about the __ and the --’s relationship, and");
-        bindingPrompts.Add("Do you know why the __ and the --");
-        bindingPrompts.Add("Do you think we saw a __ shaped cloud and a -- shaped cloud because");
-        bindingPrompts.Add("A __ and a -- in the same day predicts");
-        bindingPrompts.Add("I’ve never seen a __ with a --, but now I see they are connected by");
+        bindingPrompts.Add("I was thinking about __ and --’s relationship, and");
+        bindingPrompts.Add("Do you know why __ and --");
+        bindingPrompts.Add("Do you think we saw __-shaped cloud and __-shaped cloud because");
+        bindingPrompts.Add("__ and -- in the same day predicts");
+        bindingPrompts.Add("I’ve never seen __ with --, but now I see they are connected by");
 
         //.ProcessNarratorFile();
         muse.ProcessNarratorFile();
@@ -148,7 +148,7 @@ public class Storyteller : MonoBehaviour
     void NextMusing(string key)
     {
 
-        string keyString = key.Replace("_", " ");
+        string keyString = key.Replace("_", " "); //TODO: add correct article ("a", "an", or none (in the case of proper names)
         string fullPrompt = " ";
 
         if (viewedShapes.Count < 1)

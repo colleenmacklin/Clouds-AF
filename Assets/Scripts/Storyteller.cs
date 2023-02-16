@@ -214,7 +214,7 @@ public class Storyteller : MonoBehaviour
         //}
 
 
-        StartCoroutine(LiveMusing(fullPrompt, 1));
+        StartCoroutine(LiveMusing(fullPrompt, key));
 
         //increase musings
         musingsGiven += 1;
@@ -306,7 +306,7 @@ public class Storyteller : MonoBehaviour
     //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.
     //need to release the camera when this gets stuck. --Colleen
     //
-    public IEnumerator LiveMusing(string prompt, int begin)
+    public IEnumerator LiveMusing(string prompt, string key)
     {
         // Form the JSON
         var form = new Dictionary<string, object>();
@@ -345,13 +345,28 @@ public class Storyteller : MonoBehaviour
             //TODO: when a 503 error is thrown (model is not ready) set "wait_for_model" = true; remake the request
             JSONNode data = request.downloadHandler.text;
 
-
-            if (begin == 1)
+            //on error code here
+            for (int i = 0; i < muse.CloudData.Count; i++)
             {
-                string[] currentMusing = ProcessResult(data, prompt);
-                //Debug.Log(currentMusing[0]);
-                SendMusing(currentMusing);
-                //generativeStory.Add(ProcessResult(data));
+
+                if (muse.CloudData[i].Name == key)
+                {
+                    string[] currentMusing = muse.CloudData[i].Content;
+                    for (int j = 0; j < viewedShapes.Count; j++)
+                    {
+                        //Debug.Log(viewedShapes[j]);
+                        for (int k = 0; k < muse.CloudData[i].Bindings.Length; k++)
+                        {
+                            Debug.Log(muse.CloudData[i].Bindings[k].Name);
+                            if (viewedShapes[j] == muse.CloudData[i].Bindings[k].Name)
+                            {
+                                currentMusing = muse.CloudData[i].Bindings[k].Content;
+                            }
+                        }
+                    }
+
+                    SendMusing(currentMusing);
+                }
             }
 
         }
@@ -360,16 +375,13 @@ public class Storyteller : MonoBehaviour
             JSONNode data = request.downloadHandler.text;
             
             // Process the result
+            Debug.Log(ProcessResult(data, prompt));
 
-            if (begin == 1)
-            {
-                Debug.Log(ProcessResult(data, prompt));
-
-                string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
-                                                              //Debug.Log(currentMusing[0]);
-                SendMusing(currentMusing);
-                //generativeStory.Add(ProcessResult(data));
-            }
+            string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
+                                                            //Debug.Log(currentMusing[0]);
+            SendMusing(currentMusing);
+            //generativeStory.Add(ProcessResult(data));
+            
         }
 
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html

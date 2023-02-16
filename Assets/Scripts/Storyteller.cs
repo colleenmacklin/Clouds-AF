@@ -348,7 +348,7 @@ public class Storyteller : MonoBehaviour
 
             if (begin == 1)
             {
-                string[] currentMusing = ProcessResult(data);
+                string[] currentMusing = ProcessResult(data, prompt);
                 //Debug.Log(currentMusing[0]);
                 SendMusing(currentMusing);
                 //generativeStory.Add(ProcessResult(data));
@@ -363,9 +363,9 @@ public class Storyteller : MonoBehaviour
 
             if (begin == 1)
             {
-                Debug.Log(ProcessResult(data));
+                Debug.Log(ProcessResult(data, prompt));
 
-                string[] currentMusing = ProcessResult(data); //TODO: need to post process this data into sentences
+                string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
                                                               //Debug.Log(currentMusing[0]);
                 SendMusing(currentMusing);
                 //generativeStory.Add(ProcessResult(data));
@@ -377,7 +377,7 @@ public class Storyteller : MonoBehaviour
     }
 
 
-    string[] ProcessResult(string result)
+    string[] ProcessResult(string result, string prompt)
     {
         // The data is a score for each possible sentence candidate
         // But, it looks something like this "[0.7777, 0.19, 0.01]"
@@ -412,11 +412,53 @@ public class Storyteller : MonoBehaviour
             sentenceList.Add(sentences[i]);
         }
 
+        return ChooseSentences(sentenceList, prompt).ToArray();
+
         //sentenceList.RemoveAt(sentenceList.Count - 1);
         //Debug.Log("sentence 1: " + sentenceList[0] + " sentence2: " + sentenceList[1]);
         //int s_num = num_sentences;
         //while (s_num)
-        return sentenceList.ToArray(); //TODO - should return the sentence list!
+        //return sentenceList.ToArray();
+    }
+
+    List<string> ChooseSentences(List<string> sentenceList, string prompt)
+    {
+        if (sentenceList.Count <= 1) return sentenceList;
+
+        List<string> tempSentenceList = new List<string>();
+
+        if (sentenceList.Count > 1)
+        {
+            if (sentenceList[0].Length > prompt.Length + 50)
+            {
+                tempSentenceList.Add(sentenceList[0]);
+            }
+            else
+            {
+                if (sentenceList[1].Length > 100)
+                {
+                    tempSentenceList.Add(sentenceList[0]);
+                    tempSentenceList.Add(sentenceList[1]);
+                }
+                else
+                {
+                    if (sentenceList[2].Length < 100)
+                    {
+                        tempSentenceList.Add(sentenceList[0]);
+                        tempSentenceList.Add(sentenceList[1]);
+                        tempSentenceList.Add(sentenceList[2]);
+                    }
+                    else
+                    {
+                        tempSentenceList.Add(sentenceList[0]);
+                        tempSentenceList.Add(sentenceList[1]);
+                    }
+                }
+            }
+        }
+
+
+        return tempSentenceList;
     }
 
 

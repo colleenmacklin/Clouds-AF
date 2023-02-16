@@ -36,7 +36,7 @@ namespace UnityEngine.AzureSky
         {
             EventManager.StartListening("sunrise", sunrise);
             EventManager.StartListening("sunset", sunset);
-            EventManager.StartListening("Musing", CatchUpToTimeAtMusing);
+           // EventManager.StartListening("Musing", CatchUpToTimeAtMusing);
 
         }
 
@@ -44,7 +44,7 @@ namespace UnityEngine.AzureSky
         {
             EventManager.StopListening("sunrise", sunrise);
             EventManager.StopListening("sunset", sunset);
-            EventManager.StopListening("Musing", CatchUpToTimeAtMusing);
+         //   EventManager.StopListening("Musing", CatchUpToTimeAtMusing);
 
         }
         private void Awake()

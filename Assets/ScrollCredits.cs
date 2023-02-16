@@ -8,14 +8,11 @@ public class ScrollCredits : MonoBehaviour
     [SerializeField]
     private RectTransform _rt;
 
-    private Vector2 _pos;
-   
     private float _startY;
 
     [SerializeField]
     private float _scrollSpeed;
 
-    [SerializeField]
     private float _endY;
 
     private bool _creditsAreScrolling = false;
@@ -34,23 +31,18 @@ public class ScrollCredits : MonoBehaviour
 
     private void Awake()
     {
-
-        _pos = _rt.anchoredPosition;
-        _startY = -_rt.sizeDelta.y;
+        _startY = -Screen.currentResolution.height - 200;
+        _endY = Screen.currentResolution.height;
     }
 
     private void Start()
     {
-        _pos = new Vector2(_pos.x, _startY);
-        _rt.anchoredPosition = _pos;
+        _rt.anchoredPosition =new Vector2(_rt.anchoredPosition.x, _startY);
     }
 
 
     private void Update()
     {
-
-        //add a delay??
-
         if (_creditsAreScrolling)
         {
             if (_rt.anchoredPosition.y < _endY)

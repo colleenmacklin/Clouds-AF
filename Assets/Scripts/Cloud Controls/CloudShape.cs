@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.Events;
+using static UnityEngine.ParticleSystem;
 /*
 
     The CloudShape contains all the controlling behavior for all the particle system
@@ -288,20 +289,28 @@ public class CloudShape : MonoBehaviour
     //    Mutation functions
     //       consider adding some state transitions in the future
     /////////////////
-    public void ClarifyCloud()
+    public void ClarifyCloud() //speeds up the cloud so it takes shape faster
     {
         var particleSystemSettings = ps.main;
         particleSystemSettings.simulationSpeed = 0.30f;
         //particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3f);
     }
 
-    public void SharpenCloud()
+    public void SharpenCloud() //makes the particles smaller, sharper around the underlying shape
+    {
+        var particleSystemSettings = ps.main;
+        //particleSystemSettings.simulationSpeed = 0.30f;
+        particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3f);
+    }
+
+    public void SharpenOpeningCloud() //TODO: this is a hack for the opening...change all cloud functions to allow passed in values
     {
         var particleSystemSettings = ps.main;
         particleSystemSettings.simulationSpeed = 0.30f;
-        particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3f);
+        particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(3f, 7f);
     }
-    public void BlurCloud()
+
+    public void BlurCloud() //makes the particles more diffuse around the underlying shape
     {
         var particleSystemSettings = ps.main;
         particleSystemSettings.simulationSpeed = 0.30f;

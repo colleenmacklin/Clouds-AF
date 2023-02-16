@@ -11,7 +11,7 @@ public class Opening : MonoBehaviour
     [Tooltip("The base cloud prefab")]
     private GameObject cloudObjectPrefab;
     public GameState gameState; //TODO: we'll need to reference GameState in each scene in the cloudManager or any other object containing an instantiated cloud. The GameCloud prefab references it. 
-    private GameObject _cloud;
+
 
     void OnEnable()
     {
@@ -24,20 +24,6 @@ public class Opening : MonoBehaviour
         EventManager.StartListening("Intro", Title);
     }
 
-    private void Awake()
-    {
-
-        Vector3 cloudposition = theoryPos.position;
-        _cloud = Instantiate(cloudObjectPrefab, cloudposition, Quaternion.Euler(0f, 0f, 0f), transform);
-        _cloud.SetActive(true);
-        if (!_cloud.activeInHierarchy)
-        {
-            
-
-        }
-
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -46,30 +32,33 @@ public class Opening : MonoBehaviour
 
     public void Title()
     {
+        //EventManager.TriggerEvent("sunset");
+        Vector3 cloudposition = theoryPos.position;
 
-        CloudShape cloudShape = _cloud.GetComponent<CloudShape>();
-        cloudShape.isGameLoop = false;
-        cloudShape.scale = 20;
-        cloudShape.SetShape(cloudTheory);
-        cloudShape.ClarifyCloud();
-
-        ConstantForce wind = _cloud.GetComponent<ConstantForce>();
-        Vector3 f = Vector3.zero;
-
-        wind.force = f;
-        
-
-        FadeObjectInOut fadeFunction = cloudObjectPrefab.GetComponent<FadeObjectInOut>();
-        fadeFunction.fadeInOnStart = false;
-        fadeFunction.fadeDelay = 3;
-        fadeFunction.fadeTime = 10;
-
-        fadeFunction.FadeIn(fadeFunction.fadeTime);
-
+        GameObject temp = Instantiate(cloudObjectPrefab, cloudposition, Quaternion.Euler(0f, 0f, 0f), transform);
+      
+        CloudShape cloud = temp.GetComponent<CloudShape>();
+        cloud.isGameLoop = false;
+        cloud.scale = 17;
+        cloud.SetShape(cloudTheory);
 
         EventManager.TriggerEvent("sunrise"); //listened to from the skyController
+                                              //set the amount of time to fade in TODO: make it werk!
+        FadeObjectInOut fadeFunction = cloudObjectPrefab.GetComponent<FadeObjectInOut>();
+        fadeFunction.fadeDelay = 5;
+        fadeFunction.fadeTime = 5;
+        //if (cloudObjectPrefab.active) //are we loaded?
+        //{
+            //Debug.Log("-----------cloud_is_Active");
+            fadeFunction.FadeIn(fadeFunction.fadeTime);
+            cloud.SharpenOpeningCloud(); //TODO: we will need to modify all of the cloud functions to be able to pass values relevant to different scenes --CM
+            cloud.SlowDownCloud(); //has no effect
+        //}
 
 
+        //cloud.SlowDownClouds();
+
+        //cloud.StopClouds();
     }
 
 

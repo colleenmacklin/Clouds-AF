@@ -56,7 +56,7 @@ public class Storyteller : MonoBehaviour
 
     [SerializeField] int numberOfMusings = 3; //total musings for our story
     [SerializeField] int musingsGiven = 0; //how many musings we've done
-    [SerializeField] int numberOfSentences = 3;
+    public int numberOfSentences = 3;
     [SerializeField] List<string> prompts = new List<string>();
     [SerializeField] float bindingProbablility = 0.3f;
     [SerializeField] List<string> bindingPrompts = new List<string>();
@@ -89,17 +89,17 @@ public class Storyteller : MonoBehaviour
     void Start()
     {
         //speaker.SpeakNative("RT Voice is speaking");
-        prompts.Add("That cloud reminds me of a __.");
-        prompts.Add("Clouds often take the form of a __. I think this is because");
-        prompts.Add("I see the __, too, which makes me wonder if they are trying to tell us that");
-        prompts.Add("That cloud reminds me of a __ I once had.");
-        prompts.Add("The __ symbolizes");
+        prompts.Add("That cloud reminds me of __");
+        prompts.Add("Clouds often take the form of __. I think this is because");
+        prompts.Add("I see __, too, which makes me wonder what a cloud is");
+        prompts.Add("That cloud reminds me of __, a");
+        prompts.Add("A cloud shaped like __ symbolizes");
 
-        bindingPrompts.Add("I was thinking about the __ and the --’s relationship, and");
-        bindingPrompts.Add("Do you know why the __ and the --");
-        bindingPrompts.Add("Do you think we saw a __ shaped cloud and a -- shaped cloud because");
-        bindingPrompts.Add("A __ and a -- in the same day predicts");
-        bindingPrompts.Add("I’ve never seen a __ with a --, but now I see they are connected by");
+        bindingPrompts.Add("I was thinking about __ and --’s relationship, and");
+        bindingPrompts.Add("Do you know why __ and --");
+        bindingPrompts.Add("Do you think we saw __-shaped cloud and __-shaped cloud because");
+        bindingPrompts.Add("__ and -- in the same day predicts");
+        bindingPrompts.Add("I’ve never seen __ with --, but now I see they are connected by");
 
         //.ProcessNarratorFile();
         muse.ProcessNarratorFile();
@@ -148,7 +148,7 @@ public class Storyteller : MonoBehaviour
     void NextMusing(string key)
     {
 
-        string keyString = key.Replace("_", " ");
+        string keyString = key.Replace("_", " "); //TODO: add correct article ("a", "an", or none (in the case of proper names)
         string fullPrompt = " ";
 
         if (viewedShapes.Count < 1)
@@ -358,6 +358,7 @@ public class Storyteller : MonoBehaviour
         else
         {
             JSONNode data = request.downloadHandler.text;
+            
             // Process the result
 
             if (begin == 1)
@@ -391,8 +392,12 @@ public class Storyteller : MonoBehaviour
         cleanedResult = cleanedResult.Replace("\' ", " ");
         string paragraph = cleanedResult;
 
+        Debug.Log(paragraph);
+
         // Split the paragraph into sentences
-        string[] sentences = Regex.Split(paragraph, @"(?<=[\.!\?])\s+"); ; //TODO: we're going to need to check for titles, such as Mr., etc,
+        string[] sentences = paragraph.Split("\\n");
+
+        //Debug.Log(sentences.Length);
 
         // Create a new list to store the sentences
         List<string> sentenceList = new List<string>();
@@ -402,7 +407,7 @@ public class Storyteller : MonoBehaviour
         //{
         //    sentenceList.Add(sentence);
         //}
-        for (int i = 0; i < numberOfSentences; i++)
+        for (int i = 0; i < numberOfSentences; i++) //TODO: Returns an out of index error --cm
         {
             sentenceList.Add(sentences[i]);
         }

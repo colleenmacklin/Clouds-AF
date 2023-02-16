@@ -16,7 +16,7 @@ namespace UnityEngine.AzureSky
         public int sunrise_end_time_minute = 0;
         public int sunset_start_time;
         public float sunset_end_time = 24;
-        
+
         public float timeScale = 0.005f;
         //TODO: tweak the AzureSky materials stuff to make better colaration for sunrise and sunset
 
@@ -36,7 +36,7 @@ namespace UnityEngine.AzureSky
         {
             EventManager.StartListening("sunrise", sunrise);
             EventManager.StartListening("sunset", sunset);
-           EventManager.StartListening("Musing", CatchUpToTimeAtMusing);
+            EventManager.StartListening("Musing", CatchUpToTimeAtMusing);
 
         }
 
@@ -44,13 +44,13 @@ namespace UnityEngine.AzureSky
         {
             EventManager.StopListening("sunrise", sunrise);
             EventManager.StopListening("sunset", sunset);
-           EventManager.StopListening("Musing", CatchUpToTimeAtMusing);
+            EventManager.StopListening("Musing", CatchUpToTimeAtMusing);
 
         }
         private void Awake()
         {
             _startTime = azureTimeController.GetTimeline();
-           
+
         }
         void Start()
         {
@@ -58,7 +58,7 @@ namespace UnityEngine.AzureSky
             if (_storyteller != null)
             {
                 CaculateTimeLineTimes();
-              
+
             }
         }
 
@@ -71,7 +71,7 @@ namespace UnityEngine.AzureSky
             {
                 CheckTimeLineAgainstTimes();
             }
-          
+
         }
 
         private void sunrise() //consider converting to an action with the timeScale set by gameManager/cloudManager
@@ -137,29 +137,30 @@ namespace UnityEngine.AzureSky
 
         }
 
-       
+
         /// <summary>
         /// checks if the timeline has gone past the value of the array set for that particular musing, and pauses time if so
         /// </summary>
 
         private void CheckTimeLineAgainstTimes()
         {
-
-           if (!_timeLineIsPaused)
+            if (!_timeLineIsPaused)
             {
-                if (azureTimeController.GetTimeline() >= _timeLineTimes[_storyteller.GetMusingsGiven() ])
+                if (_storyteller.GetMusingsGiven() < _storyteller.GetNumberOfMusings())
                 {
-                    azureTimeController.PauseTime();
-                    _timeLineIsPaused = true;
+                    if (azureTimeController.GetTimeline() >= _timeLineTimes[_storyteller.GetMusingsGiven()])
+                    {
+                        azureTimeController.PauseTime();
+                        _timeLineIsPaused = true;
+                    }
                 }
-           }
-         
+            }
         }
 
         private void CatchUpToTimeAtMusing()
         {
             StopAllCoroutines();
-          if (_timeLineIsPaused)
+            if (_timeLineIsPaused)
             {
                 azureTimeController.PlayTimeAgain();
                 _timeLineIsPaused = false;
@@ -171,13 +172,13 @@ namespace UnityEngine.AzureSky
             if (_storyteller.GetMusingsGiven() < _storyteller.GetNumberOfMusings())
             {
 
-                if (azureTimeController.GetTimeline() <= _timeLineTimes[_storyteller.GetMusingsGiven() -1])
+                if (azureTimeController.GetTimeline() <= _timeLineTimes[_storyteller.GetMusingsGiven() - 1])
                 {
 
                     StartCoroutine(StartTimeLineTransition(_timeLineTimes[_storyteller.GetMusingsGiven() - 1], 8000));
                 }
             }
-           
+
 
 
         }
@@ -193,7 +194,7 @@ namespace UnityEngine.AzureSky
             float timeElapsed = 0;
             while (timeElapsed < speedDivider)
             {
-                azureTimeController.SetTimeline(Mathf.Lerp(azureTimeController.GetTimeline(), targetTime, timeElapsed / speedDivider)); 
+                azureTimeController.SetTimeline(Mathf.Lerp(azureTimeController.GetTimeline(), targetTime, timeElapsed / speedDivider));
                 timeElapsed += Time.deltaTime;
                 yield return null;
             }

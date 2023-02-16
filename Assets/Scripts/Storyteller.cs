@@ -91,7 +91,7 @@ public class Storyteller : MonoBehaviour
         //speaker.SpeakNative("RT Voice is speaking");
         prompts.Add("That cloud reminds me of __");
         prompts.Add("Clouds often take the form of __. I think this is because");
-        prompts.Add("I see __, too, which makes me wonder what a cloud is");
+        prompts.Add("I see __, which makes me wonder what a cloud is");
         prompts.Add("That cloud reminds me of __, a");
         prompts.Add("A cloud shaped like __ symbolizes");
 

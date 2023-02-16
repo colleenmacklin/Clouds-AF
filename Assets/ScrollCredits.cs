@@ -44,10 +44,6 @@ public class ScrollCredits : MonoBehaviour
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            StartCredits();
-        }
         if (_creditsAreScrolling)
         {
             if (_rt.anchoredPosition.y < _endY)
@@ -65,5 +61,6 @@ public class ScrollCredits : MonoBehaviour
     private void StartCredits()
     {
         _creditsAreScrolling = true;
+        EventManager.TriggerEvent("sunset");
     }
 }

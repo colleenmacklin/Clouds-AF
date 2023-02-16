@@ -246,7 +246,7 @@ public class Storyteller : MonoBehaviour
         {
             EventManager.TriggerEvent("Musing");
             EventManager.TriggerEvent("Cutscene");
-            EventManager.TriggerEvent("sunset");
+           // EventManager.TriggerEvent("sunset"); moved this to credits
             EndStory();
             gameover = true;
             GameState.Ending = true;

@@ -15,8 +15,8 @@ namespace UnityEngine.AzureSky
         public int sunrise_end_time_hour = 12;
         public int sunrise_end_time_minute = 0;
         public int sunset_start_time;
-        public int sunset_end_time_hour = 24;
-        public int sunset_end_time_minute = 0;
+        public float sunset_end_time = 24;
+        
         public float timeScale = 0.005f;
         //TODO: tweak the AzureSky materials stuff to make better colaration for sunrise and sunset
 
@@ -36,7 +36,7 @@ namespace UnityEngine.AzureSky
         {
             EventManager.StartListening("sunrise", sunrise);
             EventManager.StartListening("sunset", sunset);
-           // EventManager.StartListening("Musing", CatchUpToTimeAtMusing);
+           EventManager.StartListening("Musing", CatchUpToTimeAtMusing);
 
         }
 
@@ -44,12 +44,13 @@ namespace UnityEngine.AzureSky
         {
             EventManager.StopListening("sunrise", sunrise);
             EventManager.StopListening("sunset", sunset);
-         //   EventManager.StopListening("Musing", CatchUpToTimeAtMusing);
+           EventManager.StopListening("Musing", CatchUpToTimeAtMusing);
 
         }
         private void Awake()
         {
             _startTime = azureTimeController.GetTimeline();
+           
         }
         void Start()
         {
@@ -57,6 +58,7 @@ namespace UnityEngine.AzureSky
             if (_storyteller != null)
             {
                 CaculateTimeLineTimes();
+              
             }
         }
 
@@ -70,12 +72,12 @@ namespace UnityEngine.AzureSky
                 CheckTimeLineAgainstTimes();
             }
           
-
-
         }
 
         private void sunrise() //consider converting to an action with the timeScale set by gameManager/cloudManager
         {
+
+            StopAllCoroutines();
             //TODO: Slow the sunrise speed to conform to loading the GPT model
             Debug.Log("Starting Sunrise");
             azureTimeController.SetTimeline(sunrise_start_time);
@@ -96,10 +98,13 @@ namespace UnityEngine.AzureSky
         private void sunset()
         {
             Debug.Log("Starting Sunset");
-            var current_hour = azureTimeController.GetTimeOfDay().x;
-            var current_minute = azureTimeController.GetTimeOfDay().y;
+            //var current_hour = azureTimeController.GetTimeOfDay().x;
+            // var current_minute = azureTimeController.GetTimeOfDay().y;
             //  azureTimeController.SetTimeline(current_hour);
-            azureTimeController.StartTimelineTransition(sunset_end_time_hour, sunset_end_time_minute, timeScale, AzureTimeDirection.Forward);
+            // azureTimeController.StartTimelineTransition(sunset_end_time_hour, sunset_end_time_minute, timeScale, AzureTimeDirection.Forward);
+
+            StopAllCoroutines();
+            StartCoroutine(StartTimeLineTransition(sunset_end_time, 8000));
         }
 
         /// <summary>
@@ -115,20 +120,21 @@ namespace UnityEngine.AzureSky
 
             //set the last two to be goldenish colors 
             //hardcoding these values for now but could consider exposing them
-            _timeLineTimes[arrayLength - 1] = 17.5f;
-            _timeLineTimes[arrayLength - 2] = 16.7f;
+            _timeLineTimes[arrayLength - 1] = 17.3f;
+            _timeLineTimes[arrayLength - 2] = 16.9f;
 
             //also hardcoding start time, again, could expose 
             // second last time - start time is the time frame we're working with 
 
 
             //caluate the difference between the remaining values
-            float diff = (16.7f - _startTime) / (arrayLength - 1);
+            float diff = (16.9f - _startTime) / (arrayLength - 1);
 
             for (int i = 1; i < arrayLength - 1; i++)
             {
                 _timeLineTimes[i - 1] = _startTime + i * diff;
             }
+
         }
 
        
@@ -139,20 +145,21 @@ namespace UnityEngine.AzureSky
         private void CheckTimeLineAgainstTimes()
         {
 
-            if (!_timeLineIsPaused)
+           if (!_timeLineIsPaused)
             {
-                if (azureTimeController.GetTimeline() >= _timeLineTimes[_storyteller.GetMusingsGiven()])
+                if (azureTimeController.GetTimeline() >= _timeLineTimes[_storyteller.GetMusingsGiven() ])
                 {
                     azureTimeController.PauseTime();
                     _timeLineIsPaused = true;
                 }
-            }
-           
+           }
+         
         }
 
         private void CatchUpToTimeAtMusing()
         {
-            if (_timeLineIsPaused)
+            StopAllCoroutines();
+          if (_timeLineIsPaused)
             {
                 azureTimeController.PlayTimeAgain();
                 _timeLineIsPaused = false;
@@ -161,22 +168,40 @@ namespace UnityEngine.AzureSky
             //this value is gona be wrong possibly - check musings given value at these points
             //also check that the conversion in the transition can use this number
 
-            
-
-            if (azureTimeController.GetTimeline() <= _timeLineTimes[_storyteller.GetMusingsGiven()] )
+            if (_storyteller.GetMusingsGiven() < _storyteller.GetNumberOfMusings())
             {
 
-                string timelineStringTime = _timeLineTimes[_storyteller.GetMusingsGiven()].ToString();
+                if (azureTimeController.GetTimeline() <= _timeLineTimes[_storyteller.GetMusingsGiven() -1])
+                {
 
-                string[] times = timelineStringTime.Split(".");
-                int hour = int.Parse((times[0]));
-                int minute = int.Parse((times[1])) / 100 * 60;
-
-                azureTimeController.StartTimelineTransition(hour, minute, 1f, AzureTimeDirection.Forward); 
+                    StartCoroutine(StartTimeLineTransition(_timeLineTimes[_storyteller.GetMusingsGiven() - 1], 8000));
+                }
             }
+           
+
 
         }
 
+
+        /// <summary>
+        /// writing a function to avoid using the azure StartTimelineTransition function because it's giving problems
+        /// </summary>
+
+        IEnumerator StartTimeLineTransition(float targetTime, float speedDivider) //todo: make the speeddivider actually represent an understandable duration 
+        {
+
+            float timeElapsed = 0;
+            while (timeElapsed < speedDivider)
+            {
+                azureTimeController.SetTimeline(Mathf.Lerp(azureTimeController.GetTimeline(), targetTime, timeElapsed / speedDivider)); 
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            azureTimeController.SetTimeline(targetTime);
+
+            azureTimeController.PlayTimeAgain();
+        }
     }
 
 }

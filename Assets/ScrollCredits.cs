@@ -31,7 +31,7 @@ public class ScrollCredits : MonoBehaviour
 
     private void Awake()
     {
-        _startY = -Screen.currentResolution.height - 200;
+        _startY = -Screen.currentResolution.height;
         _endY = Screen.currentResolution.height;
     }
 
@@ -43,6 +43,11 @@ public class ScrollCredits : MonoBehaviour
 
     private void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            StartCredits();
+        }
         if (_creditsAreScrolling)
         {
             if (_rt.anchoredPosition.y < _endY)

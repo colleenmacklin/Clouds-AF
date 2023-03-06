@@ -789,7 +789,13 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Build: 0
+    Collab: 0
+    Game Performance: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -804,10 +810,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 23ebb0ad-7fff-4df2-871b-47dde7cb89a5
+  cloudProjectId: 65182161-676f-4c18-bb6b-2db64ac79d4c
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: New Unity Project (1)
+  projectName: Cloud Theory
   organizationId: colleen-macklin
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

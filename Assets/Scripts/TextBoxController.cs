@@ -18,6 +18,7 @@ public class TextBoxController : MonoBehaviour
     string activeLine;
     public Speaker speaker;
     public Crosstales.RTVoice.Model.Voice voice;
+    public bool isPC = false;
 
     [SerializeField]
     string currentLine = "";
@@ -159,7 +160,15 @@ public class TextBoxController : MonoBehaviour
             //set the next active line
             activeLine = linesList[textLineIndex];
 
-            speaker.Speak(activeLine, null, voice);
+            if (isPC) {
+                speaker.Speak(activeLine, null);
+            }
+            else
+            {
+                speaker.Speak(activeLine, null, voice);
+            }
+
+            
             //textField.text = "";
             //show line
             if (typeLines)
@@ -213,7 +222,17 @@ public class TextBoxController : MonoBehaviour
         Reset(); //reset first and then ingest lines
         CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
-        speaker.Speak(activeLine, null, voice);
+
+        if (isPC)
+        {
+            speaker.Speak(activeLine, null);
+        }
+        else
+        {
+            speaker.Speak(activeLine, null, voice);
+        }
+
+
         if (typeLines)
         {
             typingCoroutine = StartCoroutine(TypeString()); //begin typing

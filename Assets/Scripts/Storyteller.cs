@@ -443,7 +443,16 @@ public class Storyteller : MonoBehaviour
         {
             if (sentenceList[0].Length > prompt.Length + 50)
             {
-                tempSentenceList.Add(sentenceList[0]);
+                if (sentenceList[0].Length > prompt.Length + 150)
+                {
+                    tempSentenceList.Add(sentenceList[1]);
+                    tempSentenceList.Add(sentenceList[2]);
+                }
+                else
+                {
+                    tempSentenceList.Add(sentenceList[0]);
+                }
+                
             }
             else
             {

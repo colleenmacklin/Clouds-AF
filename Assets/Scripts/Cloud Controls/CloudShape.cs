@@ -64,10 +64,11 @@ public class CloudShape : MonoBehaviour
     private FadeObjectInOut _fadeObject;
 
     //bool to be set to true when cloud is nearing edge of screen and moved to the other side
-    private bool _cloudIsBusy;
+    private bool _cloudIsBusyResetting = false;
 
     //to be set by the fadeobject in/out object (not very elegant)
     public bool IsFading;
+
 
     private void OnEnable()
     {
@@ -76,6 +77,8 @@ public class CloudShape : MonoBehaviour
         EventManager.StartListening("SlowDownClouds", SlowDownCloud);
         Actions.SharpenCloud += SharpenCloud;
         Actions.BlurCloud += BlurCloud;
+
+        _fadeObject.ResetCloudPos += ResetCloudPos;
     }
 
     private void OnDisable()
@@ -86,13 +89,17 @@ public class CloudShape : MonoBehaviour
         Actions.SharpenCloud -= SharpenCloud;
         Actions.BlurCloud += BlurCloud;
 
+        _fadeObject.ResetCloudPos -= ResetCloudPos; 
     }
 
+    Transform _camTransform;
     private void Awake()
     {
         psShape = ps.shape; // do not forget to set this first! will throw null reference exception
         cloudCollider = GetComponent<BoxCollider>();
         _fadeObject = GetComponent<FadeObjectInOut>();
+
+        //_fadeObject.OnHasFadedInOut += 
     }
 
     //In start we look at the camera and
@@ -100,8 +107,10 @@ public class CloudShape : MonoBehaviour
     private void Start()
     {
         //rotate to look at the camera 
-        var camera = Camera.main.transform;
-        transform.LookAt(camera, Vector3.back);
+       _camTransform = Camera.main.transform;
+     //   transform.LookAt(camera, Vector3.back);
+
+    
 
         //create some randomness in length delay of fading in and duration of fade
         //TODO: move this functionality to CloudManager so we can control fading from there. this is interfering with the opening scene fade sequence -CM
@@ -113,58 +122,53 @@ public class CloudShape : MonoBehaviour
 
     private void Update()
     {
-        if (!_cloudIsBusy)
+
+        transform.LookAt(_camTransform, Vector3.back);
+
+        if (!_cloudIsBusyResetting)
         {
             CheckCloudVis();
         }
         else
         {
-            if(_fadeObject.IsFading)
-            { 
+          //  if(_fadeObject.IsFading)
+        //    { 
                 //in progress 
-            }
+           // }
+        }
+        
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            fadeOutParticleSystem();
         }
     }
 
+
+    //checks to see if cloud is close to being offscreeen, and if it is, starts fade out and reposition sequence
+    //bool to prevent it from calling once sequence has started
     private void CheckCloudVis()
     {
         if (transform.position.x <= cloudVisX)
         {
-            _cloudIsBusy = true;
-
-
-            fadeOutParticleSystem();
-
-            ResetCloudPos();
+            _cloudIsBusyResetting = true;
+            _fadeObject.StopAllCoroutines();
+            StartCoroutine(_fadeObject.FadeCloudInOut());
         }
     }
 
+    //moves cloud to other side of screen 
+    //sets flag to false so it starts checking for being offscreen again
     private void ResetCloudPos()
     {
         Vector3 cloudPos = transform.position;
-
-        cloudPos.x = 110;
-
-        fadeInParticleSystem();
-
+        //todo: should probs think abt wind changing exponentially 
+        //like stronger when on sides of screen etc
+        //also to stop while u r watching cloud
+        cloudPos.x = 210;
         transform.position = cloudPos;
-
-        _cloudIsBusy = false;
+        _cloudIsBusyResetting = false;
     }
 
-    // checks the number of particles to see if this cloud is visible...//can be removed
-    /*
-    private void LateUpdate()
-    {
-        numParticles = ps.particleCount;
-        if (numParticles > 1000)
-        {
-            ready = true;
-        }
-        else
-            ready = false;
-    }
-    */
 
     public void TurnOnCollider()
     {

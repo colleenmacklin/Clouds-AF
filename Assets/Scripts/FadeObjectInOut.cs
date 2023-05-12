@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 using System.Collections;
-
+using System;
 public class FadeObjectInOut : MonoBehaviour
 {
 
@@ -19,21 +19,31 @@ public class FadeObjectInOut : MonoBehaviour
     private Renderer[] rendererObjects;
 
 
-    public bool IsFading;
 
+    public event Action ResetCloudPos;
+
+    private float _resetCloudPosFadeModifier = 0.08f;
+
+
+    private ParticleSystemRenderer _psRenderer;
     void OnEnable()
     {
         EventManager.StartListening("FadeIn", FadeIn);
         EventManager.StartListening("FadeOut", FadeOut);
-        
+
     }
 
     void OnDisable()
-    { 
+    {
         EventManager.StopListening("FadeIn", FadeIn);
         EventManager.StopListening("FadeOut", FadeOut);
     }
-   
+
+    private void Awake()
+    {
+        _psRenderer = GetComponentInChildren<ParticleSystemRenderer>();
+    }
+
     // allow automatic fading on the start of the scene
     private void Start()
     {
@@ -79,11 +89,9 @@ public class FadeObjectInOut : MonoBehaviour
         }
     }
 
-
-
-
     // check the alpha value of most opaque object
-    float MaxAlpha()
+
+    public float MaxAlpha()
     {
         float maxAlpha = 0.0f;
         Renderer[] rendererObjects = GetComponentsInChildren<Renderer>();
@@ -97,9 +105,11 @@ public class FadeObjectInOut : MonoBehaviour
     }
 
     // fade sequence
+
+    bool isFading = false;
     IEnumerator FadeSequence(float fadingOutTime)
     {
-        IsFading = true;
+        isFading = true;
 
         yield return new WaitForSeconds(fadeDelay);
 
@@ -107,22 +117,6 @@ public class FadeObjectInOut : MonoBehaviour
         bool fadingOut = (fadingOutTime < 0.0f);
         float fadingOutSpeed = 1.0f / fadingOutTime;
 
-        // grab all child objects
-        /*
-        Renderer[] rendererObjects = GetComponentsInChildren<Renderer>();
-        if (colors == null)
-        {
-            //create a cache of colors if necessary
-            colors = new Color[rendererObjects.Length];
-            Debug.Log("colors" + colors);
-
-            // store the original colours for all child objects
-            for (int i = 0; i < rendererObjects.Length; i++)
-            {
-                colors[i] = rendererObjects[i].material.color;
-            }
-        }
-        */
         // make all objects visible
         for (int i = 0; i < rendererObjects.Length; i++)
         {
@@ -159,6 +153,9 @@ public class FadeObjectInOut : MonoBehaviour
             yield return null;
         }
 
+
+
+
         // turn objects off after fading out
         if (fadingOut)
         {
@@ -168,13 +165,68 @@ public class FadeObjectInOut : MonoBehaviour
             }
         }
 
-        IsFading = false;
+
+
+        isFading = false;
     }
 
 
+
+    //a wrapper coroutine specifically for managing resetting the clouds when they're about to go offscreen
+    public IEnumerator FadeCloudInOut()
+    {
+
+        //call fade out 
+        yield return StartCoroutine(FadeCloudOut());
+
+        //invoke reset pos once fade out is finished
+        ResetCloudPos?.Invoke();
+
+        //call fade in 
+        yield return StartCoroutine(FadeCloudIn());
+
+
+        yield return null;
+    }
+
+
+    //make these generic?
+    //things to ask:
+    //do they need to take in fade values or use the existing ones
+    //i think ideally they should just take use the public values, which should be reset if they are changed
+
+    public IEnumerator FadeCloudOut()
+    {
+        float alphaValue = _psRenderer.material.color.a;
+
+        while (alphaValue >= 0.0f)
+        {
+            alphaValue -= Time.deltaTime * _resetCloudPosFadeModifier;
+            Color color = _psRenderer.material.color;
+            Color newColor = new Color(color.r, color.g, color.b, alphaValue);
+            _psRenderer.material.SetColor("_Color", newColor);
+            yield return null;
+        }
+        yield return null;
+    }
+
+    public IEnumerator FadeCloudIn()
+    {
+        float alphaValue = _psRenderer.material.color.a;
+        while (alphaValue <= 1f)
+        {
+            alphaValue += Time.deltaTime * _resetCloudPosFadeModifier;
+            Color color = _psRenderer.material.color;
+            Color newColor = new Color(color.r, color.g, color.b, alphaValue);
+            _psRenderer.material.SetColor("_Color", newColor);
+            yield return null;
+        }
+        yield return null;
+    }
+
     void FadeIn()
     {
-        Debug.Log("fading in, time: "+ fadeTime + " delay: " + fadeDelay);
+        Debug.Log("fading in, time: " + fadeTime + " delay: " + fadeDelay);
         FadeIn(fadeTime);
     }
 

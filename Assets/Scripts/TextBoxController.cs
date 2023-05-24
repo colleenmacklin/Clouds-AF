@@ -52,6 +52,7 @@ public class TextBoxController : MonoBehaviour
     public bool PlayingEnding = false;
 
     public static event Action OnEndingDialogueComplete;
+    public static event Action OnDialogueComplete;
 
     // Start is called before the first frame update
     void Start()
@@ -195,9 +196,15 @@ public class TextBoxController : MonoBehaviour
                                  //potentially trigger an event for ending the dialogue 
             EventManager.TriggerEvent("DoneReading");
 
-            if (PlayingEnding == true)
+            
+
+            if (PlayingEnding)
             {
                 OnEndingDialogueComplete?.Invoke();
+            }
+            else
+            {
+                OnDialogueComplete?.Invoke();
             }
         }
     }

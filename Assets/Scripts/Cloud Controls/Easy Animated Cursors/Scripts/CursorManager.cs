@@ -33,18 +33,18 @@ public class CursorManager : MonoBehaviour
 
     void OnEnable()
     {
-        EventManager.StartListening("openEye", openEyes);
-        EventManager.StartListening("closeEye", closeEyes);
-        EventManager.StartListening("glowEye", glowEyes);
-        EventManager.StartListening("shapeEye", shapeEyes);
+       // EventManager.StartListening("openEye", openEyes);
+       // EventManager.StartListening("closeEye", closeEyes);
+       // EventManager.StartListening("glowEye", glowEyes);
+       // EventManager.StartListening("shapeEye", shapeEyes);
     }
 
     void OnDisable()
     {
-        EventManager.StopListening("openEye", openEyes);
-        EventManager.StopListening("closeEye", closeEyes);
-        EventManager.StopListening("glowEye", glowEyes);
-        EventManager.StopListening("shapeEye", shapeEyes);
+       // EventManager.StopListening("openEye", openEyes);
+       // EventManager.StopListening("closeEye", closeEyes);
+       // EventManager.StopListening("glowEye", glowEyes);
+       // EventManager.StopListening("shapeEye", shapeEyes);
 
     }
 

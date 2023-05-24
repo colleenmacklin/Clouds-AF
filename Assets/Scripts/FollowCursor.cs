@@ -6,17 +6,18 @@ public class FollowCursor : MonoBehaviour
 {
     private Vector3 _mousePos;
 
-    [SerializeField]
+   
     private Camera _camera;
 
     private void Awake()
     {
+        _camera = Camera.main;
        Cursor.visible = false;
     }
 
     private void Update()
     {
-
+        Cursor.visible = false;
         _mousePos = Input.mousePosition;
         // Debug.Log(_mousePos);
 
@@ -24,7 +25,7 @@ public class FollowCursor : MonoBehaviour
         Vector3 newPos = _camera.ScreenToWorldPoint(_mousePos);
         transform.position = _camera.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 10)) ;
 
-        Debug.Log(newPos);
+      //  Debug.Log(newPos);
     }
 
 

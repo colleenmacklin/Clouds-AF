@@ -10,6 +10,8 @@ using UnityEngine.Networking;
 using System.Text.RegularExpressions;
 using UnityEngine.Windows;
 using Crosstales.RTVoice.Model;
+using System;
+using Random = UnityEngine.Random;
 
 /*
 
@@ -45,6 +47,8 @@ public class Storyteller : MonoBehaviour
     //public Speaker speaker;
     public GameState GameState; //3 states: Intro, GameLoop, Ending
 
+
+    public event Action OnIntroComplete;
     [SerializeField]
     CloudMusingSO muse;
     [SerializeField]
@@ -260,6 +264,9 @@ public class Storyteller : MonoBehaviour
             EventManager.TriggerEvent("IntroDone");
             GameState.Intro = false;
             GameState.Gameloop = true;
+
+            //TODO TERRY ENTER BUTTERFLY
+            OnIntroComplete?.Invoke();
         }
 
     }

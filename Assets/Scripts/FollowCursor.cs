@@ -11,7 +11,15 @@ public class FollowCursor : MonoBehaviour
 
     private void Awake()
     {
-        _camera = Camera.main;
+        //_camera = Camera.main;
+        foreach(Camera c in Camera.allCameras)
+        {
+            if (c.gameObject.name == "ButterflyCam")
+            {
+                _camera = c;
+            }
+        }
+       
        Cursor.visible = false;
     }
 
@@ -23,7 +31,7 @@ public class FollowCursor : MonoBehaviour
 
 
         Vector3 newPos = _camera.ScreenToWorldPoint(_mousePos);
-        transform.position = _camera.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 10)) ;
+        transform.position = _camera.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 100)) ;
 
       //  Debug.Log(newPos);
     }

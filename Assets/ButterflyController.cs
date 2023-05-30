@@ -18,6 +18,8 @@ public class ButterflyController : MonoBehaviour
     }
 
 
+
+
     private void NewButterfly()
     {
         //instantiate butterfly (offscreen)
@@ -34,6 +36,10 @@ public class ButterflyController : MonoBehaviour
         }
         //set array 
         _glowButterfly.SetButteflyMatArray();
+
+
         
     }
+
+ 
 }

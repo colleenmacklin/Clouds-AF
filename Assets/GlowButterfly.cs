@@ -10,6 +10,8 @@ public class GlowButterfly : MonoBehaviour
 
     private MeshRenderer[] _mats;
 
+    private Animator _animator;
+
     private Color _glowCol;
     private Color _startCol;
     private Color _currentCol;
@@ -32,6 +34,7 @@ public class GlowButterfly : MonoBehaviour
     {
         _mats = GetComponentsInChildren<MeshRenderer>();
         _startCol = _mats[1].material.GetColor("_Color");
+        _animator = GetComponentInChildren<Animator>();
     }
     private void Update()
     {
@@ -74,6 +77,8 @@ public class GlowButterfly : MonoBehaviour
         float j = 0;
         Debug.Log("doing it");
 
+
+        SetButterflySpeed(2);
         while (j < 1)
         {
 
@@ -100,6 +105,15 @@ public class GlowButterfly : MonoBehaviour
         GameObject g = this.gameObject;
         Object.Destroy(g.transform.GetChild(0).gameObject);
         yield return null;
+    }
+
+    private void SetButterflySpeed(float speed)
+    {
+
+        //TODO lerp 
+       
+
+        _animator.speed = speed;
     }
 
 

@@ -13,6 +13,9 @@ public class SceneCtrl : MonoBehaviour
         _currentScene = SceneManager.GetActiveScene().buildIndex;
     }
 
+    //TODO: add function for choosing model
+
+
     private void Start()
     {
         switch (_currentScene)

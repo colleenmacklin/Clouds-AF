@@ -9,13 +9,21 @@ using UnityEngine.Networking;
 public class ModelBuffer : MonoBehaviour
 {
 
-    [Header("HuggingFace Model URL")]
-    public string model_url;
+    [Header("Philosopher Model URL")]
+    public string philosopher_model_url;
+    [Header("Comedian Model URL")]
+    public string comedian_model_url;
+    [Header("Primordial Earth Model URL")]
+    public string primordial_earth_model_url;
+
 
     [Header("HuggingFace Key API")]
     public string hf_api_key;
 
+    //TODO: Dictionary
+
     public static event Action OnStartedLoadingModel;
+
 
     private void Awake()
     {
@@ -41,6 +49,8 @@ public class ModelBuffer : MonoBehaviour
         byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
 
         // Make the web request
+        //TODO: requests for each model?
+
         UnityWebRequest request = UnityWebRequest.Put(model_url, bytes);
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("Authorization", "Bearer " + hf_api_key);

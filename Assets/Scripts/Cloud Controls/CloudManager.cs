@@ -130,6 +130,7 @@ public class CloudManager : MonoBehaviour
         Actions.FadeInCloud += FadeInCloud;
         Actions.FadeOutCloud += FadeOutCloud;
 
+     
     }
 
     void OnDisable()
@@ -151,6 +152,10 @@ public class CloudManager : MonoBehaviour
     void Awake()
     {
         SetTextureArrays(); //more intensive(?), so we do this in awake
+
+
+
+        Cursor.visible = false;
     }
 
     void Start()
@@ -248,6 +253,8 @@ public class CloudManager : MonoBehaviour
             cloud.SetShape(cloudGenericsArray[i % cloudGenericsArray.Length]);
             cloud.TurnOffCollider();
             cloud.isTarget = false; //mark this cloud as a non-targetable cloud
+
+
         }
     }
 

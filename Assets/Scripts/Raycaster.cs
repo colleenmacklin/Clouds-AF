@@ -36,7 +36,7 @@ public class Raycaster : MonoBehaviour
     MouseState state = MouseState.EMPTY;
     Vector3 lookAtSelected = new Vector3();
     //Get the camera mover so we can turn it on and off during dialogue
-    public SimpleCameraController gazeMover; //attached to the camera *it probably shouldn't be
+  //  public SimpleCameraController gazeMover; //attached to the camera *it probably shouldn't be
     public TextBoxController textBoxControl;
 
 
@@ -57,8 +57,9 @@ public class Raycaster : MonoBehaviour
     Coroutine activeCoroutine;
     void Start()
     {
+        Cursor.visible = false;
         mask = LayerMask.GetMask("Clouds");
-        gazeMover.enabled = false;
+      //  gazeMover.enabled = false;
        // initialCameraRot = Camera.main.transform.localRotation;
     }
 
@@ -95,7 +96,7 @@ public class Raycaster : MonoBehaviour
         }
        // activeCoroutine = StartCoroutine(ReturnToDefaultView());
 
-        gazeMover.enabled = true;
+      //  gazeMover.enabled = true;
         state = MouseState.EMPTY;
 
     }
@@ -116,7 +117,7 @@ public class Raycaster : MonoBehaviour
         {
             StopCoroutine(activeCoroutine);
         }
-        gazeMover.enabled = false;
+      //  gazeMover.enabled = false;
        // activeCoroutine = StartCoroutine(LookAtSelection());
         //EventManager.TriggerEvent("closeEye");
     }
@@ -155,6 +156,10 @@ public class Raycaster : MonoBehaviour
                     //callback to start butterfly glow - when entering cloud over hover
                     OnHoverOverTargetCloud?.Invoke();
                 }
+                else
+                {
+                    OnHoverExit?.Invoke();
+                }
                 break;
             case MouseState.HOVERING:
                 //if hovering and no hit, then switch to empty
@@ -167,22 +172,13 @@ public class Raycaster : MonoBehaviour
                     //if exit cloud then stop glow 
                     OnHoverExit?.Invoke();
                 }
+                else
+                {
+                    OnHoverOverTargetCloud?.Invoke();
+                }
+
 
                
-                //need to move this definitely not good to have the back and forth but for now 
-              //  if (Input.GetMouseButtonDown(0))
-               // {
-
-                //when the glow is finished 
-                   // Selected = hit.transform.gameObject;
-
-                   // GameObject c = Selected;
-                // / /  
-                  //  Actions.GetClickedCloud(c); //lets cloudmanager know which cloud has been clicked
-
-                 //   lookAtSelected = Selected.transform.position - Camera.main.transform.position;
-                  //  EventManager.TriggerEvent("Respond");
-               // }
                 break;
             case MouseState.READING:
 

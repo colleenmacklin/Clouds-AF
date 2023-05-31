@@ -23,10 +23,9 @@ public class ButterflyController : MonoBehaviour
     private void NewButterfly()
     {
         //instantiate butterfly (offscreen)
-        //animate position in 
+        //TODO animate position in 
         
-        Debug.Log("terry butterfly fly in");
-
+        
 
         //for now just instantiate
         if (this.transform.childCount <1)

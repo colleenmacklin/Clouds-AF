@@ -29,7 +29,7 @@ public class GlowButterfly : MonoBehaviour
     private void Start()
     {
         
-        _glowCol = new Color(45f, 45f, 45f, 45f);
+        _glowCol = new Color(60f, 60f, 60f, 60f);
         
     }
 
@@ -40,13 +40,7 @@ public class GlowButterfly : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         SetButterflySpeed(_butterflyIdleSpeed);
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            StartGlow();
-        }
-    }
+  
 
 
     //call this when hovering over cloud
@@ -123,17 +117,6 @@ public class GlowButterfly : MonoBehaviour
     }
 
 
-    //todo 
-    //spawn butterfly on start fly in
-    //hook into when hovering over object
-    //turn off current weird mouse stuff
-    //animate butterfly flapping
-    //separate camera?
-    //fly in from side 
-    //hook into when dialogue is done, fly in from side 
-    //start dialogue when glow is done
-    // decrease glow when move away from cloud
-    //flap as move w speed as fast as mouse moves?
-    //also the camera stuff?
+   
 
 }

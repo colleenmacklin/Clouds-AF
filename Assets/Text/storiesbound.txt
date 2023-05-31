@@ -1,4 +1,4 @@
-[  
+lin[  
     {"name":"opening", "dialog":"When I look up at the clouds, I like to imagine they are the work of some master sculptor.", "bindings": []},  
     {"name":"a_telephone", "dialog":"That cloud looks like a telephone, doesn't it?==Unfortunately, it appears the telephonist is off duty.", "bindings": [{"name":"banana", "dialog":"Clouds looking like bananas and clouds looking like telephones are all different shapes,==and therefore different things."}]},  
     {"name":"a_turtle_on_turtle", "dialog":"Look! A turtle on a turtle found in the sky represents the passage of time.==Could this be a sign of good things?==The turtle on a turtle can be used to measure the passage of hours.", "bindings": []},

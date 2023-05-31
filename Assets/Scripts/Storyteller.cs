@@ -112,7 +112,7 @@ public class Storyteller : MonoBehaviour
         EventManager.TriggerEvent("Setup"); //tell clouds to get ready
                                             //access pattern for the narrator story content
                                             //internally the data is kept in a Story structure that has a Name and Content (dictionary of string to string[])
-                                            //        Debug.Log(narrator.StoryData[0].Name);
+                                            //Debug.Log(narrator.StoryData[0].Name);
                                             //Debug.Log(narrator.StoryData[0].Content["entertainer"][0]);
 
     }

@@ -63,6 +63,7 @@ public class OpeningCloudShape : MonoBehaviour
     //to be set by the fadeobject in/out object (not very elegant)
     public bool IsFading;
 
+    Transform _camTransform;
 
     private void OnEnable()
     {
@@ -102,7 +103,7 @@ public class OpeningCloudShape : MonoBehaviour
     private void Start()
     {
         //rotate to look at the camera 
-       //_camTransform = Camera.main.transform;
+       _camTransform = Camera.main.transform;
      //   transform.LookAt(camera, Vector3.back);
 
     
@@ -112,6 +113,20 @@ public class OpeningCloudShape : MonoBehaviour
         // _fadeObject.fadeDelay = Random.Range(3, 10);
         // _fadeObject.fadeTime = Random.Range(6, 12);
 
+    }
+
+
+    private void Update()
+    {
+
+        transform.LookAt(_camTransform, Vector3.back);
+
+        //--------------------------TESTING NEW FADE EFFECT
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+            StartCloud();
+            }
+            //---------------
     }
 
 
@@ -315,10 +330,25 @@ public class OpeningCloudShape : MonoBehaviour
         particleSystemSettings.simulationSpeed = .08f;
     }
 
-    public void fadeInParticleSystem()
+    public void FadeInPS(int _delay)
     {
-        
-        _fadeObject.FadeIn(_fadeObject.fadeTime);
+        StartCoroutine("fadeInParticleSystem", _delay);
+    }
+
+    public void FadeOutPS(int _delay)
+    {
+        StartCoroutine("fadeOutParticleSystem", _delay);
+    }
+
+
+    IEnumerator fadeInParticleSystem(int _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        var particleSystem = ps;
+        particleSystem.Play();
+
+
+        //_fadeObject.FadeIn(_fadeObject.fadeTime);
         /* ultimately, change the simple fadeinout script to a script that "dissolves" the clouds by removing particles over time
       
         var particleSystemSettings = ps.main;
@@ -327,10 +357,13 @@ public class OpeningCloudShape : MonoBehaviour
         */
     }
 
-    public void fadeOutParticleSystem()
+    IEnumerator fadeOutParticleSystem(int _delay)
     {
+        yield return new WaitForSeconds(_delay);
+        var particleSystem = ps;
+        particleSystem.Stop();
 
-        _fadeObject.FadeOut(_fadeObject.fadeTime);
+       // _fadeObject.FadeOut(_fadeObject.fadeTime);
 
         /* ultimately, change the simple fadeinout script to a script that "dissolves" the clouds by removing particles over time
       

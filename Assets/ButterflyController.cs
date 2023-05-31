@@ -37,6 +37,7 @@ public class ButterflyController : MonoBehaviour
         //set array 
         _glowButterfly.SetButteflyMatArray();
 
+        
 
         
     }

@@ -16,6 +16,8 @@ public class GlowButterfly : MonoBehaviour
     private Color _startCol;
     private Color _currentCol;
 
+
+    private float _butterflyIdleSpeed = 1.3f;
     private bool _isGlowing = false;
     private void Awake()
     {
@@ -28,6 +30,7 @@ public class GlowButterfly : MonoBehaviour
     {
         
         _glowCol = new Color(45f, 45f, 45f, 45f);
+        
     }
 
     public void SetButteflyMatArray()
@@ -35,6 +38,7 @@ public class GlowButterfly : MonoBehaviour
         _mats = GetComponentsInChildren<MeshRenderer>();
         _startCol = _mats[1].material.GetColor("_Color");
         _animator = GetComponentInChildren<Animator>();
+        SetButterflySpeed(_butterflyIdleSpeed);
     }
     private void Update()
     {
@@ -68,6 +72,8 @@ public class GlowButterfly : MonoBehaviour
             m.material.SetFloat("_Amount", 0);
 
         }
+
+        SetButterflySpeed(_butterflyIdleSpeed);
     }
 
     private IEnumerator glowBut()
@@ -78,11 +84,12 @@ public class GlowButterfly : MonoBehaviour
         Debug.Log("doing it");
 
 
-        SetButterflySpeed(2);
+        float speed = _butterflyIdleSpeed;
         while (j < 1)
         {
-
+            
             _currentCol = Vector4.Lerp(_startCol, _glowCol, i);
+            
             foreach (MeshRenderer m in _mats)
             {
                 m.material.SetColor("_Color", _currentCol);
@@ -93,8 +100,10 @@ public class GlowButterfly : MonoBehaviour
                 }
 
             }
+            SetButterflySpeed(speed);
             yield return new WaitForSeconds(.05f);
             i += 0.005f;
+            speed += 0.05f;
 
         }
         //invoke glow is finished
@@ -109,9 +118,6 @@ public class GlowButterfly : MonoBehaviour
 
     private void SetButterflySpeed(float speed)
     {
-
-        //TODO lerp 
-       
 
         _animator.speed = speed;
     }

@@ -94,7 +94,7 @@ public class OpeningCloudShape : MonoBehaviour
         psShape = ps.shape; // do not forget to set this first! will throw null reference exception
         cloudCollider = GetComponent<BoxCollider>();
         _fadeObject = GetComponent<FadeObjectInOut>();
-
+        StopCloud();
         //_fadeObject.OnHasFadedInOut += 
     }
 

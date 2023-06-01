@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.XR;
 using static System.Net.WebRequestMethods;
 
 public class ModelBuffer : MonoBehaviour
@@ -25,6 +26,8 @@ public class ModelBuffer : MonoBehaviour
         {"primordial_earth", "https://api-inference.huggingface.co/models/Triangles/primordial_earth_gpt_content_only"}
     };
 
+    [Header("HuggingFace Model URL")]
+    public string modelURL;
 
     [Header("HuggingFace Key API")]
     public string hf_api_key;
@@ -39,14 +42,26 @@ private void Awake()
     }
     private void Start()
     {
-        StartCoroutine(LoadModel());
+        StartCoroutine(LoadModel()); //comment out and add to GetModel
 
     }
+
+    private void OnEnable()
+    {
+        Actions.GetModel += GetModel;
+    }
+
+    private void Disable()
+    {
+        Actions.GetModel -= GetModel;
+    }
+
 
 
     private IEnumerator LoadModel()
     {
         string prompt = "when I look up at the clouds";
+
         // Form the JSON
         var form = new Dictionary<string, object>();
         form["n"] = 1; //the number of generated texts
@@ -58,8 +73,9 @@ private void Awake()
 
         // Make the web request
 
+        //TODO: add an error check, or a update loop until modelURL !NULL
         //UnityWebRequest request = UnityWebRequest.Put(model_url, bytes);
-        UnityWebRequest request = UnityWebRequest.Put(model_urls["philosopher"], bytes); //TODO: Pass on the selected model
+        UnityWebRequest request = UnityWebRequest.Put(modelURL, bytes); //TODO: Pass on the selected model
         Debug.Log("URL = " + model_urls["philosopher"]);
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("Authorization", "Bearer " + hf_api_key);
@@ -95,6 +111,28 @@ private void Awake()
         OnStartedLoadingModel?.Invoke();
 
         }
+
+    public void GetModel(String _name)
+    {
+        //check name+URL pair in Dictionary
+        switch (_name)
+        {
+            case "philosopher":
+                modelURL = model_urls["philosopher"]; 
+                break;
+            case "comedian":
+                modelURL = model_urls["comedian"]; 
+                break;
+            case "primordial_earth":
+                modelURL = model_urls["primordial_earth"];
+                break;
+            default:
+                modelURL = model_urls["philosopher"]; //Pass on the philosopher model as a failsafe
+                Debug.LogWarning("There is no valid model");
+                break;
+        }
+
+    }
 
 
     private void OnDisable()

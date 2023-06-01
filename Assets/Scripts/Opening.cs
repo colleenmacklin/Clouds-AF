@@ -5,6 +5,14 @@ using System.IO.Ports;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+/*
+ * this class is specific to the opening, but becoming more like the CloudManager in the main game loop. Consider merging scenes?
+ * TODO: 
+ * --start model clouds off as generic cloud shapes, and then add their name textures
+ * --when the model is selected, fade or transition the other model clouds back into generic clouds.
+ * --there's a pretty long pause before the model loads, so perhaps as the model is loading, we could pull from a set of introductory texts
+ */
+
 public class Opening : MonoBehaviour
 {
     public Transform theoryPos;
@@ -81,17 +89,17 @@ public class Opening : MonoBehaviour
         titleCloud.SetShape(cloudTheory);
 
         OpeningCloudShape philosopherCloud = tempPhilosopher.GetComponent<OpeningCloudShape>();
-        philosopherCloud.scale = 10;
+        philosopherCloud.scale = 6;
         philosopherCloud.SetShape(philosopher);
         cloudModels.Add(philosopherCloud);
 
         OpeningCloudShape comedianCloud = tempComedian.GetComponent<OpeningCloudShape>();
-        comedianCloud.scale = 10;
+        comedianCloud.scale = 6;
         comedianCloud.SetShape(comedian);
         cloudModels.Add(comedianCloud);
 
         OpeningCloudShape primordial_earth_Cloud = tempPrimordialEarth.GetComponent<OpeningCloudShape>();
-        primordial_earth_Cloud.scale = 12;
+        primordial_earth_Cloud.scale = 10;
         primordial_earth_Cloud.SetShape(primordialEarth);
         cloudModels.Add(primordial_earth_Cloud);
 

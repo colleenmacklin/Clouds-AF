@@ -103,17 +103,18 @@ public class Storyteller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
-        if (ModelInfo.modelURL !=null) {
             model_url = ModelInfo.modelURL;
             hf_api_key = ModelInfo.hf_api_key;
             model_name = ModelInfo.ModelName;
-        }
-        else
+
+        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
+        if (string.IsNullOrEmpty(ModelInfo.modelURL)) 
         {
+            Debug.Log("No model URL, defaulting to Philosopher");
             model_name = "philosopher";
             model_url = "https://api-inference.huggingface.co/models/Triangles/fantastic_philosopher_124_4000"; //default to philosopher
-            hf_api_key = "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";
+            //hf_api_key = "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";
+            hf_api_key = "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";
         }
 
         //speaker.SpeakNative("RT Voice is speaking");

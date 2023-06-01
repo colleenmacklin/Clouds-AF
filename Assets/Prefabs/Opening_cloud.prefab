@@ -199,10 +199,10 @@ MonoBehaviour:
   ps: {fileID: 4001077985846674118}
   changeTimeMin: 0
   changeTimeMax: 1
-  minScale: 10
-  maxScale: 10
-  scale: 10
-  currScale: 10
+  minScale: 1
+  maxScale: 50
+  scale: 0
+  currScale: 0
   cloudVisX: -70
   shapeRenderer: {fileID: 0}
   isGameLoop: 1

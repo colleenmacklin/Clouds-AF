@@ -140,12 +140,25 @@ public class RaycasterOpening : MonoBehaviour
         {
             case MouseState.EMPTY:
                 //if empty and hit, then switch to hovering
+                //if (hit.transform)
+               
                 if (hit.transform)
+
                 {
-                    state = MouseState.HOVERING;
-                    EventManager.TriggerEvent("openEye");
+                    Selected = hit.transform.gameObject;
+
+                    GameObject c = Selected;
+                    OpeningCloudShape select_c = c.GetComponent<OpeningCloudShape>();
+
+                    if (select_c.isTarget)
+                    {
+                        state = MouseState.HOVERING;
+                        EventManager.TriggerEvent("openEye");
+                    }
+
                 }
                 break;
+
             case MouseState.HOVERING:
                 //if hovering and no hit, then switch to empty
                 if (!hit.transform)

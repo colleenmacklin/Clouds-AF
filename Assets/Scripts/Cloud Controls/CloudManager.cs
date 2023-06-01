@@ -288,11 +288,11 @@ public class CloudManager : MonoBehaviour
 
             //compare current texture with existing selections
             //if it's already been used, then we skip forward in the deck
-            Debug.Log("Cloud CurrentShapeName: " + cloud.CurrentShapeName);
+            //Debug.Log("Cloud CurrentShapeName: " + cloud.CurrentShapeName);
 
                 while (cloudsActiveHistory.Contains(nextShape.name) || cloudsSelectedHistory.Contains(nextShape.name) || nextShape.name == cloud.CurrentShapeName)
                 {
-                Debug.Log("shape was previously seen");
+                //Debug.Log("shape was previously seen");
                 cloudTargetsList.Remove(nextShape);
                 
                 indexOffset++;

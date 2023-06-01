@@ -26,23 +26,24 @@ public class ModelBuffer : MonoBehaviour
         {"primordial_earth", "https://api-inference.huggingface.co/models/Triangles/primordial_earth_gpt_content_only"}
     };
 
-    [Header("HuggingFace Model URL")]
-    public string modelURL;
 
-    [Header("HuggingFace Key API")]
-    public string hf_api_key;
+    //[Header("HuggingFace Key API")]
+    //public string hf_api_key; //make static so that it can move to next scene
 
+    private float _waitForCount = 30; //seconds
+    private bool _finishedCount = false;
 
     public static event Action OnStartedLoadingModel;
+    public string modelURL; //model that has been selected, passed to next Scene
+    private string hf_api_key = "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";
 
-
-private void Awake()
+    private void Awake()
     {
-       
+        ModelInfo.hf_api_key = hf_api_key; //setting static variable so it can be shared across scenes
     }
     private void Start()
     {
-        StartCoroutine(LoadModel()); //comment out and add to GetModel
+        //StartCoroutine(LoadModel()); //comment out and add to GetModel
 
     }
 
@@ -56,6 +57,28 @@ private void Awake()
         Actions.GetModel -= GetModel;
     }
 
+    private void Update()
+    {
+        if (ModelInfo.modelURL == null)
+            Debug.Log("no model selected yet...");
+        {
+            if (!_finishedCount)
+            {
+                if (_waitForCount > 0)
+                {
+                    _waitForCount -= Time.deltaTime;
+                }
+                else
+                {
+                    _finishedCount = true;
+                    ModelInfo.modelURL = model_urls["philosopher"]; //use as default if player does not make a selection within 30seconds
+                    modelURL = ModelInfo.modelURL; //just doing this to show the URL in the inspector, can remove once built
+                    StartCoroutine(LoadModel());
+                    Debug.Log("Loading MOdel");
+                }
+            }
+        }
+    }
 
 
     private IEnumerator LoadModel()
@@ -73,12 +96,10 @@ private void Awake()
 
         // Make the web request
 
-        //TODO: add an error check, or a update loop until modelURL !NULL
-        //UnityWebRequest request = UnityWebRequest.Put(model_url, bytes);
-        UnityWebRequest request = UnityWebRequest.Put(modelURL, bytes); //TODO: Pass on the selected model
-        Debug.Log("URL = " + model_urls["philosopher"]);
+        //UnityWebRequest request = UnityWebRequest.Put(model_url, bytes); //old
+        UnityWebRequest request = UnityWebRequest.Put(ModelInfo.modelURL, bytes); 
         request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("Authorization", "Bearer " + hf_api_key);
+        request.SetRequestHeader("Authorization", "Bearer " + ModelInfo.hf_api_key);
         request.method = "POST"; // Hack to send POST to server instead of PUT
 
         yield return request.SendWebRequest();
@@ -100,15 +121,10 @@ private void Awake()
 
         }
 
-
         Debug.Log("progress" + request.downloadProgress);
-
-
-
-
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html
 
-        OnStartedLoadingModel?.Invoke();
+        OnStartedLoadingModel?.Invoke(); //speaks to TitleCounter
 
         }
 
@@ -118,19 +134,32 @@ private void Awake()
         switch (_name)
         {
             case "philosopher":
-                modelURL = model_urls["philosopher"]; 
+                ModelInfo.ModelName = "philosopher";
+                ModelInfo.modelURL = model_urls["philosopher"];
+                modelURL = ModelInfo.modelURL; //just doing this to show the URL in the inspector, can remove once built
+
                 break;
             case "comedian":
-                modelURL = model_urls["comedian"]; 
+                ModelInfo.ModelName = "comedian";
+                ModelInfo.modelURL = model_urls["comedian"];
+                modelURL = ModelInfo.modelURL; //just doing this to show the URL in the inspector, can remove once built
+
                 break;
             case "primordial_earth":
-                modelURL = model_urls["primordial_earth"];
+                ModelInfo.ModelName = "primordial_earth";
+                ModelInfo.modelURL = model_urls["primordial_earth"];
+                modelURL = ModelInfo.modelURL; //just doing this to show the URL in the inspector, can remove once built
+
                 break;
             default:
-                modelURL = model_urls["philosopher"]; //Pass on the philosopher model as a failsafe
+                ModelInfo.ModelName = "philosopher";
+                ModelInfo.modelURL = model_urls["philosopher"]; //Pass on the philosopher model as a failsafe
+                modelURL = ModelInfo.modelURL; //just doing this to show the URL in the inspector, can remove once built
+
                 Debug.LogWarning("There is no valid model");
                 break;
         }
+        Debug.Log("model selected: "+_name);
 
     }
 

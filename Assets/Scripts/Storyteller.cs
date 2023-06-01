@@ -34,6 +34,15 @@ After some number of loops of this happening, trigger the ending. *needs to be p
 Major changes from Dialogue Manager:
 * No selection validation
 * More control over flow sequence
+* 
+* current model/name dict:
+*     Dictionary<String, String> model_urls = new Dictionary<String, String>()
+    {
+        {"philosopher", "https://api-inference.huggingface.co/models/Triangles/fantastic_philosopher_124_4000"},
+        {"comedian", "https://api-inference.huggingface.co/models/Triangles/comedian_4000_gpt_only"},
+        {"primordial_earth", "https://api-inference.huggingface.co/models/Triangles/primordial_earth_gpt_content_only"}
+    };
+
 
 */
 
@@ -63,6 +72,9 @@ public class Storyteller : MonoBehaviour
     [SerializeField] TextBoxController textBoxController;
     [SerializeField] List<string> viewedShapes = new List<string>();//the shapes we've viewed so far
 
+    [Header("Model Name")]
+    public string model_name;
+
     [Header("HuggingFace Model URL")]
     public string model_url;
 
@@ -76,7 +88,8 @@ public class Storyteller : MonoBehaviour
     private void OnEnable()
     {
         EventManager.StartListening("ConversationEnded", CheckForCompletion);
-        //    EventManager.StopListening("Conclusion", ShowConclusion);        
+        //    EventManager.StopListening("Conclusion", ShowConclusion);
+        
     }
     private void OnDisable()
     {
@@ -90,6 +103,19 @@ public class Storyteller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
+        if (ModelInfo.modelURL !=null) {
+            model_url = ModelInfo.modelURL;
+            hf_api_key = ModelInfo.hf_api_key;
+            model_name = ModelInfo.ModelName;
+        }
+        else
+        {
+            model_name = "philosopher";
+            model_url = "https://api-inference.huggingface.co/models/Triangles/fantastic_philosopher_124_4000"; //default to philosopher
+            hf_api_key = "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";
+        }
+
         //speaker.SpeakNative("RT Voice is speaking");
         prompts.Add("That cloud reminds me of __");
         prompts.Add("Clouds often take the form of __. I think this is because");
@@ -374,7 +400,7 @@ public class Storyteller : MonoBehaviour
         }
         else
         {
-            Debug.Log("hi");
+            //Debug.Log("hi");
             JSONNode data = request.downloadHandler.text;
             // Process the result
             Debug.Log(ProcessResult(data, prompt));

@@ -239,13 +239,13 @@ public class FadeObjectInOut : MonoBehaviour
 
     void FadeIn()
     {
-        Debug.Log("fading in, time: " + fadeTime + " delay: " + fadeDelay);
+        //Debug.Log("fading in, time: " + fadeTime + " delay: " + fadeDelay);
         FadeIn(fadeTime);
     }
 
     void FadeOut()
     {
-        Debug.Log("fading out");
+        //Debug.Log("fading out");
         FadeOut(fadeTime);
     }
 

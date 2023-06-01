@@ -175,16 +175,9 @@ public class OpeningCloudShape : MonoBehaviour
     //this also sets the collider size to update with it
     public void SetShape(Texture2D shapeTexture)
     {
-        //var srcWidth = shapeTexture.width;
-        //var srcHeight = shapeTexture.height;
-
-        //Calculate texture adjustment factor - no longer needed
-        //Vector3 textureScaleAdjustment = CalculateSquareScaleRatio(srcWidth, srcHeight);
-
-        //Set the object's shape reference to the shapeTexture for easy reference
 
         //save shapeTexture to incomingShape
-        Debug.Log("My Shape is: " + shapeTexture);
+        //Debug.Log("My Shape is: " + shapeTexture);
         incomingShape = shapeTexture;
 
 
@@ -260,7 +253,7 @@ public class OpeningCloudShape : MonoBehaviour
         if (isGameLoop)
         {
             //adding a randomizer here for variable sizes
-            Debug.Log("gameState = GameLoop");
+            //Debug.Log("gameState = GameLoop");
             scale = UnityEngine.Random.Range(minScale, maxScale);
             currScale = scale; //just surfacing to the interface for debugging
         }

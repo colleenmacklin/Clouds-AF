@@ -198,7 +198,7 @@ public class CloudShape : MonoBehaviour
         //Set the object's shape reference to the shapeTexture for easy reference
 
         //save shapeTexture to incomingShape
-        Debug.Log("My Shape is: " + shapeTexture);
+        //Debug.Log("My Shape is: " + shapeTexture);
         incomingShape = shapeTexture;
 
 
@@ -272,7 +272,7 @@ public class CloudShape : MonoBehaviour
         if (isGameLoop)
         {
             //adding a randomizer here for variable sizes
-            Debug.Log("gameState = GameLoop");
+            //Debug.Log("gameState = GameLoop");
             scale = UnityEngine.Random.Range(minScale, maxScale);
             currScale = scale; //just surfacing to the interface for debugging
         }

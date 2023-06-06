@@ -73,6 +73,7 @@ public class Storyteller : MonoBehaviour
     [Header("HuggingFace Key API")]
     public string hf_api_key;
 
+    int timer = 20;
 
     //Story chosenStory;//the active story we will use
     private void OnEnable()
@@ -178,7 +179,9 @@ public class Storyteller : MonoBehaviour
             {
 
                 int promptIndex = Random.Range(0, bindingPrompts.Count);
-                int viewedShapeIndex = Random.Range(0, viewedShapes.Count);
+                //int viewedShapeIndex = Random.Range(0, viewedShapes.Count);
+                int viewedShapeIndex = Random.Range(0, viewedShapes.Count - 1);
+
                 string viewedShapeString = viewedShapes[viewedShapeIndex].Replace("_", " ");
                 string prompt = bindingPrompts[promptIndex];
 
@@ -217,6 +220,8 @@ public class Storyteller : MonoBehaviour
         //    }
         //}
 
+        //added
+        timer = 20;
 
         StartCoroutine(LiveMusing(fullPrompt, key));
 
@@ -481,9 +486,25 @@ public class Storyteller : MonoBehaviour
                         tempSentenceList.Add(sentenceList[0]);
                         tempSentenceList.Add(sentenceList[1]);
                     }
+                    //lookahead
+
+                    string[] lookAhead = { "teapot" }; //put words we don't want to show up from old dialogue here
+
+                    for (int i = 0; i < tempSentenceList.Count; i++)
+                    {
+                        foreach (string look in lookAhead)
+                        {
+                            if (tempSentenceList[i].Contains(look))
+                            {
+                                tempSentenceList.RemoveAt(i);
+                            }
+                        }
+                    }
+
                 }
             }
         }
+
 
 
         return tempSentenceList;

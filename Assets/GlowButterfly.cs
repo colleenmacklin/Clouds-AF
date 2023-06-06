@@ -73,6 +73,7 @@ public class GlowButterfly : MonoBehaviour
     private IEnumerator glowBut()
     {
         _isGlowing = true;
+        //TODO: Don't change underlying cloud while glowing
         float i = 0;
         float j = 0;
         Debug.Log("doing it");
@@ -97,7 +98,7 @@ public class GlowButterfly : MonoBehaviour
             SetButterflySpeed(speed);
             yield return new WaitForSeconds(.05f);
             i += 0.005f;
-            speed += 0.05f;
+            speed += 0.1f;
 
         }
         //invoke glow is finished

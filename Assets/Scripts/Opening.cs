@@ -21,7 +21,7 @@ public class Opening : MonoBehaviour
 
     void OnDisable()
     {
-        EventManager.StartListening("Intro", Title);
+        EventManager.StopListening("Intro", Title);
     }
 
     // Start is called before the first frame update
@@ -39,8 +39,9 @@ public class Opening : MonoBehaviour
       
         CloudShape cloud = temp.GetComponent<CloudShape>();
         cloud.isGameLoop = false;
-        cloud.scale = 17;
+        cloud.scale = 7;
         cloud.SetShape(cloudTheory);
+        cloud.SharpenOpeningCloud(); //TODO: we will need to modify all of the cloud functions to be able to pass values relevant to different scenes --CM
 
         EventManager.TriggerEvent("sunrise"); //listened to from the skyController
                                               //set the amount of time to fade in TODO: make it werk!
@@ -51,7 +52,7 @@ public class Opening : MonoBehaviour
         //{
             //Debug.Log("-----------cloud_is_Active");
             fadeFunction.FadeIn(fadeFunction.fadeTime);
-            cloud.SharpenOpeningCloud(); //TODO: we will need to modify all of the cloud functions to be able to pass values relevant to different scenes --CM
+            //cloud.SharpenOpeningCloud(); //TODO: we will need to modify all of the cloud functions to be able to pass values relevant to different scenes --CM
             cloud.SlowDownCloud(); //has no effect
         //}
 

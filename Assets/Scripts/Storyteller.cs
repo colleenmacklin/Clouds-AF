@@ -255,7 +255,7 @@ public class Storyteller : MonoBehaviour
         {
             EventManager.TriggerEvent("Musing");
             EventManager.TriggerEvent("Cutscene");
-           // EventManager.TriggerEvent("sunset"); moved this to credits
+            // EventManager.TriggerEvent("sunset"); moved this to credits
             EndStory();
             gameover = true;
             GameState.Ending = true;
@@ -385,15 +385,15 @@ public class Storyteller : MonoBehaviour
         else
         {
             JSONNode data = request.downloadHandler.text;
-            
+
             // Process the result
             Debug.Log(ProcessResult(data, prompt));
 
             string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
-                                                            //Debug.Log(currentMusing[0]);
+                                                                  //Debug.Log(currentMusing[0]);
             SendMusing(currentMusing);
             //generativeStory.Add(ProcessResult(data));
-            
+
         }
 
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html
@@ -464,7 +464,7 @@ public class Storyteller : MonoBehaviour
                 {
                     tempSentenceList.Add(sentenceList[0]);
                 }
-                
+
             }
             else
             {
@@ -520,5 +520,5 @@ public class Storyteller : MonoBehaviour
     {
         return musingsGiven;
     }
-   
+
 }

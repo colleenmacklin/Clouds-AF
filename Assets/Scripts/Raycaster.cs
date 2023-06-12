@@ -36,7 +36,7 @@ public class Raycaster : MonoBehaviour
     MouseState state = MouseState.EMPTY;
     Vector3 lookAtSelected = new Vector3();
     //Get the camera mover so we can turn it on and off during dialogue
-  //  public SimpleCameraController gazeMover; //attached to the camera *it probably shouldn't be
+    public SimpleCameraController gazeMover; //attached to the camera *it probably shouldn't be
     public TextBoxController textBoxControl;
 
 
@@ -59,7 +59,7 @@ public class Raycaster : MonoBehaviour
     {
         Cursor.visible = false;
         mask = LayerMask.GetMask("Clouds");
-      //  gazeMover.enabled = false;
+       gazeMover.enabled = false;
        // initialCameraRot = Camera.main.transform.localRotation;
     }
 
@@ -96,7 +96,7 @@ public class Raycaster : MonoBehaviour
         }
        // activeCoroutine = StartCoroutine(ReturnToDefaultView());
 
-      //  gazeMover.enabled = true;
+        gazeMover.enabled = true;
         state = MouseState.EMPTY;
 
     }
@@ -117,7 +117,7 @@ public class Raycaster : MonoBehaviour
         {
             StopCoroutine(activeCoroutine);
         }
-      //  gazeMover.enabled = false;
+        gazeMover.enabled = false;
        // activeCoroutine = StartCoroutine(LookAtSelection());
         //EventManager.TriggerEvent("closeEye");
     }

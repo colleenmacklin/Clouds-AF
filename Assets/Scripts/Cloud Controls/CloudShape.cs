@@ -311,8 +311,9 @@ public class CloudShape : MonoBehaviour
     {
         var particleSystemSettings = ps.main;
         particleSystemSettings.simulationSpeed = 0.30f;
-        particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(3f, 7f);
-    }
+        particleSystemSettings.startSize = new ParticleSystem.MinMaxCurve(2f, 3f);
+        //particleSystemSettings.maxParticles = 4000;
+     }
 
     public void BlurCloud() //makes the particles more diffuse around the underlying shape
     {

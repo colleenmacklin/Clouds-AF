@@ -30,7 +30,7 @@ public class ModelBuffer : MonoBehaviour
 
     private IEnumerator LoadModel()
     {
-        string prompt = "some dummy text here";
+        string prompt = "when I look up at the clouds";
         // Form the JSON
         var form = new Dictionary<string, object>();
         form["n"] = 1; //the number of generated texts

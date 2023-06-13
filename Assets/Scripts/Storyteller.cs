@@ -75,6 +75,7 @@ public class Storyteller : MonoBehaviour
     [Header("HuggingFace Key API")]
     public string hf_api_key;
 
+    int timer = 20;
 
     [SerializeField]
     private GlowButterfly _butterfly;
@@ -183,7 +184,9 @@ public class Storyteller : MonoBehaviour
             {
 
                 int promptIndex = Random.Range(0, bindingPrompts.Count);
-                int viewedShapeIndex = Random.Range(0, viewedShapes.Count);
+                //int viewedShapeIndex = Random.Range(0, viewedShapes.Count);
+                int viewedShapeIndex = Random.Range(0, viewedShapes.Count - 1);
+
                 string viewedShapeString = viewedShapes[viewedShapeIndex].Replace("_", " ");
                 string prompt = bindingPrompts[promptIndex];
 
@@ -222,6 +225,8 @@ public class Storyteller : MonoBehaviour
         //    }
         //}
 
+        //added
+        timer = 20;
 
         StartCoroutine(LiveMusing(fullPrompt, key));
 
@@ -255,7 +260,7 @@ public class Storyteller : MonoBehaviour
         {
             EventManager.TriggerEvent("Musing");
             EventManager.TriggerEvent("Cutscene");
-           // EventManager.TriggerEvent("sunset"); moved this to credits
+            // EventManager.TriggerEvent("sunset"); moved this to credits
             EndStory();
             gameover = true;
             GameState.Ending = true;
@@ -388,15 +393,15 @@ public class Storyteller : MonoBehaviour
         else
         {
             JSONNode data = request.downloadHandler.text;
-            
+
             // Process the result
             Debug.Log(ProcessResult(data, prompt));
 
             string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
-                                                            //Debug.Log(currentMusing[0]);
+                                                                  //Debug.Log(currentMusing[0]);
             SendMusing(currentMusing);
             //generativeStory.Add(ProcessResult(data));
-            
+
         }
 
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html
@@ -467,7 +472,7 @@ public class Storyteller : MonoBehaviour
                 {
                     tempSentenceList.Add(sentenceList[0]);
                 }
-                
+
             }
             else
             {
@@ -489,9 +494,25 @@ public class Storyteller : MonoBehaviour
                         tempSentenceList.Add(sentenceList[0]);
                         tempSentenceList.Add(sentenceList[1]);
                     }
+                    //lookahead
+
+                    string[] lookAhead = { "teapot" }; //put words we don't want to show up from old dialogue here
+
+                    for (int i = 0; i < tempSentenceList.Count; i++)
+                    {
+                        foreach (string look in lookAhead)
+                        {
+                            if (tempSentenceList[i].Contains(look))
+                            {
+                                tempSentenceList.RemoveAt(i);
+                            }
+                        }
+                    }
+
                 }
             }
         }
+
 
 
         return tempSentenceList;
@@ -507,5 +528,5 @@ public class Storyteller : MonoBehaviour
     {
         return musingsGiven;
     }
-   
+
 }

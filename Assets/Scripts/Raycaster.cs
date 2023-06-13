@@ -13,7 +13,7 @@ Movement of the mouse should be made relative to the screen rect bounds.
 */
 public class Raycaster : MonoBehaviour
 {
-    public event Action OnHoverOverTargetCloud;
+    public event Action<GameObject> OnHoverOverTargetCloud;
     public event Action OnHoverExit;
 
 
@@ -150,11 +150,11 @@ public class Raycaster : MonoBehaviour
                 //if empty and hit, then switch to hovering
                 if (hit.transform)
                 {
+                   
                     state = MouseState.HOVERING;
                     //EventManager.TriggerEvent("openEye");
-
                     //callback to start butterfly glow - when entering cloud over hover
-                    OnHoverOverTargetCloud?.Invoke();
+                    OnHoverOverTargetCloud?.Invoke(hit.transform.gameObject);
                 }
                 else
                 {
@@ -174,7 +174,7 @@ public class Raycaster : MonoBehaviour
                 }
                 else
                 {
-                    OnHoverOverTargetCloud?.Invoke();
+                    OnHoverOverTargetCloud?.Invoke(hit.transform.gameObject);
                 }
 
 

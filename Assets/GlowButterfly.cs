@@ -44,7 +44,7 @@ public class GlowButterfly : MonoBehaviour
 
 
     //call this when hovering over cloud
-    public void StartGlow()
+    public void StartGlow(GameObject cloud)
     {
         if (!_isGlowing)
         {
@@ -105,9 +105,14 @@ public class GlowButterfly : MonoBehaviour
         _raycasterScript.StartCloudTalking();
         _isGlowing = false;
 
+        DestroyButterfly();
+        yield return null;
+    }
+
+    public void DestroyButterfly()
+    {
         GameObject g = this.gameObject;
         Object.Destroy(g.transform.GetChild(0).gameObject);
-        yield return null;
     }
 
     private void SetButterflySpeed(float speed)

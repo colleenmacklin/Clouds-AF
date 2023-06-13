@@ -67,12 +67,17 @@ public class Storyteller : MonoBehaviour
     [SerializeField] TextBoxController textBoxController;
     [SerializeField] List<string> viewedShapes = new List<string>();//the shapes we've viewed so far
 
+
+
     [Header("HuggingFace Model URL")]
     public string model_url;
 
     [Header("HuggingFace Key API")]
     public string hf_api_key;
 
+
+    [SerializeField]
+    private GlowButterfly _butterfly;
 
     //Story chosenStory;//the active story we will use
     private void OnEnable()
@@ -308,6 +313,9 @@ public class Storyteller : MonoBehaviour
         //create the list of chosen items.
         SendMusing(adjustedLines.ToArray());
         textBoxController.PlayingEnding = true;
+
+        _butterfly.DestroyButterfly();
+
     }
 
     //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using PoissonDisc;
-using System.Linq;
  
 
 /*
@@ -111,6 +110,8 @@ public class CloudManager : MonoBehaviour
     [Tooltip("Number of rejection samples before giving up on a sample. Default is 30 ")]
     public int poissonRejectionSamples = 30;//this can comfortably be a higher number
 
+    [SerializeField]
+    private Raycaster _raycaster;
     ///////////////////////
     //
     // Monobehaviors
@@ -130,7 +131,9 @@ public class CloudManager : MonoBehaviour
         Actions.FadeInCloud += FadeInCloud;
         Actions.FadeOutCloud += FadeOutCloud;
 
-     
+       
+
+
     }
 
     void OnDisable()
@@ -149,12 +152,18 @@ public class CloudManager : MonoBehaviour
 
 
     }
+
+   
+
+
     void Awake()
     {
+       
         SetTextureArrays(); //more intensive(?), so we do this in awake
 
 
-
+        _raycaster.OnHoverOverTargetCloud += StallReadyCloud;
+       // _raycaster.OnHoverExit += SetReadyCloud;
         Cursor.visible = false;
     }
 
@@ -165,6 +174,14 @@ public class CloudManager : MonoBehaviour
         //       EventManager.TriggerEvent("SpawnShape");
     }
 
+    private void StallReadyCloud(GameObject cloud)
+    {
+       CloudShape shape = cloud.GetComponent<CloudShape>();
+
+        shape.ready = false;
+    }
+
+    
     void SetTextureArrays()
     {//from unity docs
      // would be how to do it as a List

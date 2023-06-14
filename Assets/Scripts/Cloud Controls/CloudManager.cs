@@ -79,7 +79,8 @@ public class CloudManager : MonoBehaviour
     private List<string> cloudsSelectedHistory;
     [SerializeField]
     private List<string> cloudsActiveHistory;
-
+    [SerializeField]
+    private List<Texture2D> finalCloudTextures;
 
     [Header("Debug Cloud Selections")]
     public GameObject chosenCloud;
@@ -129,6 +130,7 @@ public class CloudManager : MonoBehaviour
         Actions.CloudIsReady += ReadyCloud;
         Actions.FadeInCloud += FadeInCloud;
         Actions.FadeOutCloud += FadeOutCloud;
+        Actions.SetEndingClouds += SetEndingClouds;
 
     }
 
@@ -144,7 +146,7 @@ public class CloudManager : MonoBehaviour
         Actions.CloudIsReady -= ReadyCloud;
         Actions.FadeInCloud -= FadeInCloud;
         Actions.FadeOutCloud -= FadeOutCloud;
-
+        Actions.SetEndingClouds -= SetEndingClouds;
 
 
     }
@@ -294,7 +296,9 @@ public class CloudManager : MonoBehaviour
                 {
                 //Debug.Log("shape was previously seen");
                 cloudTargetsList.Remove(nextShape);
-                
+                //make ending list
+                finalCloudTextures.Add(nextShape);
+
                 indexOffset++;
 
                 nextShape = cloudTargetsList[(i + indexOffset) % cloudTargetsList.Count];
@@ -383,6 +387,32 @@ public class CloudManager : MonoBehaviour
         }
     }
 
+    private void SetEndingClouds(List<string> cloudTexture)
+    {
+
+        Debug.Log("cloudTextures for ending list: " + cloudTexture[0]);
+        int indexOffset = 0;
+
+        foreach (GameObject c in generatedCloudObjects)
+        {
+            Debug.Log("index: " + indexOffset + " c: " + c.name +"generatedCloudObjects List Count: "+ generatedCloudObjects.Count);
+            CloudShape cloud = c.GetComponent<CloudShape>();
+
+            //int index = UnityEngine.Random.Range(0, cloudTargetsList.Count);
+            if (indexOffset < finalCloudTextures.Count-1)
+            {
+                Texture2D nextShape = finalCloudTextures[indexOffset];
+                cloud.SetShape(nextShape);
+            }
+            else {
+                cloud.fadeOutParticleSystem();
+                cloud.enabled = false;
+            }
+            indexOffset++;
+        }
+
+
+    }
     private void SeenCloud() //called from "DoneReading" Event in TextBoxController.NextLine()
     {
         if (GameState.Gameloop) {
@@ -557,6 +587,7 @@ public class CloudManager : MonoBehaviour
         Debug.Log(c.name+" clicked: " + clickedCloud.CurrentShapeName);
         cloudsSelectedHistory.Add(clickedCloud.CurrentShapeName);
         cloudTargetsList.Remove(clickedCloud.currentShape);
+        finalCloudTextures.Add(clickedCloud.currentShape);
     }
 
 

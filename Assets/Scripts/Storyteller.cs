@@ -167,6 +167,7 @@ public class Storyteller : MonoBehaviour
     //Send a musing to the text controller
     void SendMusing(string[] musing)
     {
+        Debug.Log(musing[0]);
         textBoxController.ReadNewLines(musing);
         //for (int i = 0; i < musing.Length; i++)
         //{
@@ -296,6 +297,7 @@ public class Storyteller : MonoBehaviour
     //create the ending story
     void EndStory()
     {
+        Debug.Log("EndStory() called on storyteller");
         //first create the list
         //"A, B, and C"
         //We would likely replace this with a different, combination key in the future.
@@ -303,6 +305,12 @@ public class Storyteller : MonoBehaviour
         for (int i = 0; i < viewedShapes.Count; i++)
         {
             string shapeName = viewedShapes[i];
+            names.Add(viewedShapes[i]);
+
+            Debug.Log("ending shapes (from storyteller viewedShapes[];" + shapeName);
+            //TODO INDIECADE: add an action that sends each shapeName to a CloudManager ending(shapeName) function that turns each cloud into that shape
+
+
             shapeName = shapeName.Replace("_", " ");
             if (i == 0)
             {
@@ -317,7 +325,7 @@ public class Storyteller : MonoBehaviour
                 chosenList += $", {shapeName}";
             }
         }
-
+        Actions.SetEndingClouds(names); //listened to by CloudManager
         //Adjust the lines in the original by replacing <CLOUD_LIST> with our list.
         List<string> adjustedLines = new List<string>();
         foreach (string line in muse.CloudData[31].Content)
@@ -404,7 +412,7 @@ public class Storyteller : MonoBehaviour
             //Debug.Log("hi");
             JSONNode data = request.downloadHandler.text;
             // Process the result
-            Debug.Log(ProcessResult(data, prompt));
+            //Debug.Log(ProcessResult(data, prompt));
 
             string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
                                                             //Debug.Log(currentMusing[0]);

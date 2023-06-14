@@ -89,28 +89,30 @@ public class Opening : MonoBehaviour
         titleCloud.SetShape(cloudTheory);
 
         OpeningCloudShape philosopherCloud = tempPhilosopher.GetComponent<OpeningCloudShape>();
-        philosopherCloud.scale = 6;
-        philosopherCloud.SetShape(philosopher);
-        cloudModels.Add(philosopherCloud);
-
         OpeningCloudShape comedianCloud = tempComedian.GetComponent<OpeningCloudShape>();
-        comedianCloud.scale = 6;
-        comedianCloud.SetShape(comedian);
-        cloudModels.Add(comedianCloud);
-
         OpeningCloudShape primordial_earth_Cloud = tempPrimordialEarth.GetComponent<OpeningCloudShape>();
-        primordial_earth_Cloud.scale = 10;
-        primordial_earth_Cloud.SetShape(primordialEarth);
+        cloudModels.Add(philosopherCloud);
+        cloudModels.Add(comedianCloud);
         cloudModels.Add(primordial_earth_Cloud);
 
-        //foreach loop
         foreach (OpeningCloudShape tempCloud in cloudModels)
         {
             tempCloud.TurnOffCollider();
-            tempCloud.isTarget=false;
+            tempCloud.isTarget = false;
             tempCloud.FadeOutPS(0); //hides cloud by stopping particle system
             tempCloud.isGameLoop = false;
         }
+
+        philosopherCloud.scale = 10;
+        philosopherCloud.SetShape(philosopher);
+
+        comedianCloud.scale = 10;
+        comedianCloud.SetShape(comedian);
+
+        primordial_earth_Cloud.scale = 15;
+        primordial_earth_Cloud.SetShape(primordialEarth);
+
+        //foreach loop
 
         
         EventManager.TriggerEvent("sunrise"); //listened to from the skyController

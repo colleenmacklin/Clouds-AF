@@ -19,7 +19,7 @@ public class Opening : MonoBehaviour
     public Transform M1Pos;
     public Transform M2Pos;
     public Transform M3Pos;
-
+    public OpeningCloudShape titleCloud;
 
     public Texture2D cloudTheory;
     public Texture2D comedian;
@@ -47,11 +47,6 @@ public class Opening : MonoBehaviour
     {
         EventManager.StartListening("Intro", Title);
         Actions.GetClickedCloud += GetClickedCloud;
-
-        //INDIECADE TODO: fade out non-chosen clouds
-        //Actions.FadeInCloud += FadeInCloud;
-        //Actions.FadeOutCloud += FadeOutCloud;
-
     }
 
     void OnDisable()
@@ -86,7 +81,7 @@ public class Opening : MonoBehaviour
         GameObject tempComedian = Instantiate(cloudObjectPrefab, M2Pos);
         GameObject tempPrimordialEarth = Instantiate(cloudObjectPrefab, M3Pos);
 
-        OpeningCloudShape titleCloud = tempTitle.GetComponent<OpeningCloudShape>();
+        titleCloud = tempTitle.GetComponent<OpeningCloudShape>();
         titleCloud.TurnOffCollider();
         titleCloud.FadeOutPS(0); //hides cloud by stopping particle system
         titleCloud.isGameLoop = false;
@@ -188,6 +183,7 @@ public class Opening : MonoBehaviour
                 Debug.Log("fading out non selected model clouds:" + tempCloud.CurrentShapeName);
 
                 tempCloud.FadeOutPS(0);
+                titleCloud.FadeOutPS(0);
                 tempCloud.TurnOffCollider();
                 tempCloud.isTarget = false;
             }

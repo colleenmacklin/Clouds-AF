@@ -97,8 +97,8 @@ public class GlowButterfly : MonoBehaviour
             }
             SetButterflySpeed(speed);
             yield return new WaitForSeconds(.05f);
-            i += 0.005f;
-            speed += 0.1f;
+            i += 0.01f;
+            speed += 0.2f;
 
         }
         //invoke glow is finished

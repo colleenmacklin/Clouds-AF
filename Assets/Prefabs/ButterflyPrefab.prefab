@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5753266067670588868}
   - component: {fileID: 7452102046845858241}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ButterflyPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}

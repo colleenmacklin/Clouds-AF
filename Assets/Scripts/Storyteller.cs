@@ -10,6 +10,8 @@ using UnityEngine.Networking;
 using System.Text.RegularExpressions;
 using UnityEngine.Windows;
 using Crosstales.RTVoice.Model;
+using System;
+using Random = UnityEngine.Random;
 
 /*
 
@@ -53,7 +55,7 @@ public class Storyteller : MonoBehaviour
     //NarratorSO narrator;
     //public Speaker speaker;
     public GameState GameState; //3 states: Intro, GameLoop, Ending
-
+    public event Action OnIntroComplete;
     [SerializeField]
     CloudMusingSO muse;
     [SerializeField]
@@ -80,6 +82,9 @@ public class Storyteller : MonoBehaviour
 
     [Header("HuggingFace Key API")]
     public string hf_api_key;
+
+    [SerializeField]
+    private GlowButterfly _butterfly;
 
     int timer = 20;
 
@@ -293,6 +298,9 @@ public class Storyteller : MonoBehaviour
             EventManager.TriggerEvent("IntroDone");
             GameState.Intro = false;
             GameState.Gameloop = true;
+
+            //TODO TERRY ENTER BUTTERFLY
+            OnIntroComplete?.Invoke();
         }
 
     }
@@ -341,6 +349,8 @@ public class Storyteller : MonoBehaviour
         //create the list of chosen items.
         SendMusing(adjustedLines.ToArray());
         textBoxController.PlayingEnding = true;
+
+        _butterfly.DestroyButterfly();
     }
 
     //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.

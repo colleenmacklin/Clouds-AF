@@ -120,14 +120,15 @@ public class Storyteller : MonoBehaviour
         //speaker.SpeakNative("RT Voice is speaking");
         prompts.Add("That cloud reminds me of __");
         prompts.Add("Clouds often take the form of __. I think this is because");
-        prompts.Add("I see __, which makes me wonder what a cloud is");
+        prompts.Add("I see __, which makes me wonder why");
         prompts.Add("That cloud reminds me of __, a");
         prompts.Add("A cloud shaped like __ symbolizes");
 
+        //TODO INDIECADE: check the formatting (__ and --)
         bindingPrompts.Add("I was thinking about __ and --’s relationship, and");
         bindingPrompts.Add("Do you know why __ and --");
-        bindingPrompts.Add("Do you think we saw __-shaped cloud and __-shaped cloud because");
-        bindingPrompts.Add("__ and -- in the same day predicts");
+        bindingPrompts.Add("Do you think we saw __-shaped cloud and ---shaped cloud because");
+        bindingPrompts.Add("Did you know that __ and -- in the same day predicts");
         bindingPrompts.Add("I’ve never seen __ with --, but now I see they are connected by");
 
         //.ProcessNarratorFile();
@@ -156,6 +157,8 @@ public class Storyteller : MonoBehaviour
         //chosenStory = narrator.StoryData[storyIndex]; //picked story
 
         //Send the story opening to the dialogue manager
+
+        //TODO INDIECADE: make openings random.
         SendMusing(muse.CloudData[0].Content);
         GameState.Intro = true;
 
@@ -178,7 +181,7 @@ public class Storyteller : MonoBehaviour
     void NextMusing(string key)
     {
 
-        string keyString = key.Replace("_", " "); //TODO: add correct article ("a", "an", or none (in the case of proper names)
+        string keyString = key.Replace("_", " ");
         string fullPrompt = " ";
 
         if (viewedShapes.Count < 1)
@@ -374,7 +377,7 @@ public class Storyteller : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        // If the request return an error set the error on console. - we should set parameters on the api to request again
+        // If the request return an error set the error on console. - we should set parameters on the api to request again  TODO: Debug this -- freezes when thrown (Abraham Lincoln)
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.Log("failed request error: " + request.error);

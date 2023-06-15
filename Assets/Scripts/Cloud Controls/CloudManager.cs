@@ -74,6 +74,8 @@ public class CloudManager : MonoBehaviour
     //[SerializeField]
     //private Texture2D[] cloudObjectTargetsArray;
     [SerializeField]
+    private string model_name;
+    [SerializeField]
     private Texture2D[] cloudGenericsArray; //textures stay as an array because we are not generating run time textures
     [SerializeField]
     private List<string> cloudsSelectedHistory;
@@ -97,11 +99,11 @@ public class CloudManager : MonoBehaviour
 
     [SerializeField]
     [Tooltip("The collision distance for the poisson discs. Effectively setting grid density")]
-    public float poissonRadius = 20;//default is 20
+    public float poissonRadius = 30;//default is 20
 
     [SerializeField]
     [Tooltip("The size of the region to create points in")] //This region is from 0,0 and must be translated 
-    public Vector2 poissonRegionSize = new Vector2(150f, 100f);//default we will use 150x120
+    public Vector2 poissonRegionSize = new Vector2(150f, 120f);//default we will use 150x120
 
     [SerializeField]
 
@@ -152,7 +154,16 @@ public class CloudManager : MonoBehaviour
     }
     void Awake()
     {
-        SetTextureArrays(); //more intensive(?), so we do this in awake
+        model_name = ModelInfo.ModelName;
+
+        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
+        if (string.IsNullOrEmpty(ModelInfo.ModelName))
+        {
+            Debug.Log("No model URL, defaulting to Philosopher");
+            model_name = "philosopher";
+        }
+
+        SetTextureArrays(model_name); //more intensive(?), so we do this in awake
     }
 
     void Start()
@@ -162,11 +173,27 @@ public class CloudManager : MonoBehaviour
         //       EventManager.TriggerEvent("SpawnShape");
     }
 
-    void SetTextureArrays()
+    void SetTextureArrays(string model)
     {//from unity docs
      // would be how to do it as a List
-        
-        cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+     //TODO INDIECADE: load cloudTargets based on model
+
+        switch (model)
+        {
+            case "philosopher":
+                cloudTargetsArray = Resources.LoadAll("Philosopher_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+            case "comedian":
+                cloudTargetsArray = Resources.LoadAll("Comedian_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+            case "primordial_earth":
+                cloudTargetsArray = Resources.LoadAll("Primordial_Earth_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+            default:
+                cloudTargetsArray = Resources.LoadAll("Philosopher_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+        }
+
         cloudTargetsList = new List<Texture2D>(cloudTargetsArray);
         cloudGenericsArray = Resources.LoadAll("Cloud_Natural", typeof(Texture2D)).Cast<Texture2D>().ToArray();
     }
@@ -174,7 +201,16 @@ public class CloudManager : MonoBehaviour
     //Basically make sure we always have updated images in our array
     void OnValidate()
     {
-        SetTextureArrays();
+        model_name = ModelInfo.ModelName;
+
+        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
+        if (string.IsNullOrEmpty(ModelInfo.ModelName))
+        {
+            Debug.Log("No model URL, defaulting to Philosopher");
+            model_name = "philosopher";
+        }
+
+        SetTextureArrays(model_name);
     }
 
 
@@ -390,7 +426,7 @@ public class CloudManager : MonoBehaviour
     private void SetEndingClouds(List<string> cloudTexture)
     {
 
-        Debug.Log("cloudTextures for ending list: " + cloudTexture[0]);
+        //Debug.Log("cloudTextures for ending list: " + cloudTexture[0]);
         int indexOffset = 0;
 
         foreach (GameObject c in generatedCloudObjects)

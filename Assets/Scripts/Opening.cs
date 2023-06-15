@@ -47,6 +47,11 @@ public class Opening : MonoBehaviour
     {
         EventManager.StartListening("Intro", Title);
         Actions.GetClickedCloud += GetClickedCloud;
+
+        //INDIECADE TODO: fade out non-chosen clouds
+        //Actions.FadeInCloud += FadeInCloud;
+        //Actions.FadeOutCloud += FadeOutCloud;
+
     }
 
     void OnDisable()
@@ -170,8 +175,24 @@ public class Opening : MonoBehaviour
         Debug.Log(c.name + " clicked: " + clickedCloud.CurrentShapeName);
 
         model_buffer.GetModel(clickedCloud.CurrentShapeName); //send model selected to ModelBuffer class
+        FadeOutNonSelected();
+    }
 
-        
+    private void FadeOutNonSelected()
+    {
+        //TODO INDIECADE
+        foreach (OpeningCloudShape tempCloud in cloudModels)
+        {
+            if (tempCloud != clickedCloud)
+            {
+                Debug.Log("fading out non selected model clouds:" + tempCloud.CurrentShapeName);
+
+                tempCloud.FadeOutPS(0);
+                tempCloud.TurnOffCollider();
+                tempCloud.isTarget = false;
+            }
+        }
+
     }
 }
 

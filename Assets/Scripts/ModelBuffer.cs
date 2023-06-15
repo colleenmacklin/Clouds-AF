@@ -129,7 +129,7 @@ public class ModelBuffer : MonoBehaviour
         Debug.Log("model " + ModelInfo.ModelName + "progress" + request.downloadProgress);
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html
 
-        OnStartedLoadingModel?.Invoke(); //speaks to TitleCounter
+        OnStartedLoadingModel?.Invoke(); //speaks to TitleCounter / INDIECADE TODO: FIX PAUSE
 
         }
 

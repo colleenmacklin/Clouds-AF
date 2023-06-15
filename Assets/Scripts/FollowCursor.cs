@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 public class FollowCursor : MonoBehaviour
@@ -31,6 +32,9 @@ public class FollowCursor : MonoBehaviour
 
     Vector3 delta = Vector3.zero;
     Vector3 lastPos = Vector3.zero;
+
+    float ver = 0;
+    float hor = 0;
     private void Update()
     {
         _mousePos = Input.mousePosition;
@@ -38,18 +42,15 @@ public class FollowCursor : MonoBehaviour
        
         transform.position = _camera.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 100)) ;
 
-        
-
-        delta = (_mousePos - lastPos);
-       // Debug.Log("delta is " + delta);
-        //transform.Rotate( delta);
-
-        lastPos = Input.mousePosition;
+       
     }
-        
-
-
-
 
 
 }
+        
+
+
+
+
+
+

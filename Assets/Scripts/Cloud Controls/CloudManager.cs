@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using PoissonDisc;
+using System.Linq;
  
 
 /*
@@ -73,12 +74,15 @@ public class CloudManager : MonoBehaviour
     //[SerializeField]
     //private Texture2D[] cloudObjectTargetsArray;
     [SerializeField]
+    private string model_name;
+    [SerializeField]
     private Texture2D[] cloudGenericsArray; //textures stay as an array because we are not generating run time textures
     [SerializeField]
     private List<string> cloudsSelectedHistory;
     [SerializeField]
     private List<string> cloudsActiveHistory;
-
+    [SerializeField]
+    private List<Texture2D> finalCloudTextures;
 
     [Header("Debug Cloud Selections")]
     public GameObject chosenCloud;
@@ -95,11 +99,11 @@ public class CloudManager : MonoBehaviour
 
     [SerializeField]
     [Tooltip("The collision distance for the poisson discs. Effectively setting grid density")]
-    public float poissonRadius = 20;//default is 20
+    public float poissonRadius = 30;//default is 20
 
     [SerializeField]
     [Tooltip("The size of the region to create points in")] //This region is from 0,0 and must be translated 
-    public Vector2 poissonRegionSize = new Vector2(150f, 100f);//default we will use 150x120
+    public Vector2 poissonRegionSize = new Vector2(150f, 120f);//default we will use 150x120
 
     [SerializeField]
 
@@ -110,8 +114,6 @@ public class CloudManager : MonoBehaviour
     [Tooltip("Number of rejection samples before giving up on a sample. Default is 30 ")]
     public int poissonRejectionSamples = 30;//this can comfortably be a higher number
 
-    [SerializeField]
-    private Raycaster _raycaster;
     ///////////////////////
     //
     // Monobehaviors
@@ -130,9 +132,7 @@ public class CloudManager : MonoBehaviour
         Actions.CloudIsReady += ReadyCloud;
         Actions.FadeInCloud += FadeInCloud;
         Actions.FadeOutCloud += FadeOutCloud;
-
-       
-
+        Actions.SetEndingClouds += SetEndingClouds;
 
     }
 
@@ -148,23 +148,22 @@ public class CloudManager : MonoBehaviour
         Actions.CloudIsReady -= ReadyCloud;
         Actions.FadeInCloud -= FadeInCloud;
         Actions.FadeOutCloud -= FadeOutCloud;
-
+        Actions.SetEndingClouds -= SetEndingClouds;
 
 
     }
-
-   
-
-
     void Awake()
     {
-       
-        SetTextureArrays(); //more intensive(?), so we do this in awake
+        model_name = ModelInfo.ModelName;
 
+        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
+        if (string.IsNullOrEmpty(ModelInfo.ModelName))
+        {
+            Debug.Log("No model URL, defaulting to Philosopher");
+            model_name = "philosopher";
+        }
 
-        _raycaster.OnHoverOverTargetCloud += StallReadyCloud;
-       // _raycaster.OnHoverExit += SetReadyCloud;
-        Cursor.visible = false;
+        SetTextureArrays(model_name); //more intensive(?), so we do this in awake
     }
 
     void Start()
@@ -174,19 +173,27 @@ public class CloudManager : MonoBehaviour
         //       EventManager.TriggerEvent("SpawnShape");
     }
 
-    private void StallReadyCloud(GameObject cloud)
-    {
-       CloudShape shape = cloud.GetComponent<CloudShape>();
-
-        shape.ready = false;
-    }
-
-    
-    void SetTextureArrays()
+    void SetTextureArrays(string model)
     {//from unity docs
      // would be how to do it as a List
-        
-        cloudTargetsArray = Resources.LoadAll("Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+     //TODO INDIECADE: load cloudTargets based on model
+
+        switch (model)
+        {
+            case "philosopher":
+                cloudTargetsArray = Resources.LoadAll("Philosopher_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+            case "comedian":
+                cloudTargetsArray = Resources.LoadAll("Comedian_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+            case "primordial_earth":
+                cloudTargetsArray = Resources.LoadAll("Primordial_Earth_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+            default:
+                cloudTargetsArray = Resources.LoadAll("Philosopher_Cloud_Targets", typeof(Texture2D)).Cast<Texture2D>().ToArray();
+                break;
+        }
+
         cloudTargetsList = new List<Texture2D>(cloudTargetsArray);
         cloudGenericsArray = Resources.LoadAll("Cloud_Natural", typeof(Texture2D)).Cast<Texture2D>().ToArray();
     }
@@ -194,7 +201,16 @@ public class CloudManager : MonoBehaviour
     //Basically make sure we always have updated images in our array
     void OnValidate()
     {
-        SetTextureArrays();
+        model_name = ModelInfo.ModelName;
+
+        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
+        if (string.IsNullOrEmpty(ModelInfo.ModelName))
+        {
+            Debug.Log("No model URL, defaulting to Philosopher");
+            model_name = "philosopher";
+        }
+
+        SetTextureArrays(model_name);
     }
 
 
@@ -270,8 +286,6 @@ public class CloudManager : MonoBehaviour
             cloud.SetShape(cloudGenericsArray[i % cloudGenericsArray.Length]);
             cloud.TurnOffCollider();
             cloud.isTarget = false; //mark this cloud as a non-targetable cloud
-
-
         }
     }
 
@@ -312,13 +326,15 @@ public class CloudManager : MonoBehaviour
 
             //compare current texture with existing selections
             //if it's already been used, then we skip forward in the deck
-            Debug.Log("Cloud CurrentShapeName: " + cloud.CurrentShapeName);
+            //Debug.Log("Cloud CurrentShapeName: " + cloud.CurrentShapeName);
 
                 while (cloudsActiveHistory.Contains(nextShape.name) || cloudsSelectedHistory.Contains(nextShape.name) || nextShape.name == cloud.CurrentShapeName)
                 {
-                Debug.Log("shape was previously seen");
+                //Debug.Log("shape was previously seen");
                 cloudTargetsList.Remove(nextShape);
-                
+                //make ending list
+                finalCloudTextures.Add(nextShape);
+
                 indexOffset++;
 
                 nextShape = cloudTargetsList[(i + indexOffset) % cloudTargetsList.Count];
@@ -407,6 +423,32 @@ public class CloudManager : MonoBehaviour
         }
     }
 
+    private void SetEndingClouds(List<string> cloudTexture)
+    {
+
+        //Debug.Log("cloudTextures for ending list: " + cloudTexture[0]);
+        int indexOffset = 0;
+
+        foreach (GameObject c in generatedCloudObjects)
+        {
+            Debug.Log("index: " + indexOffset + " c: " + c.name +"generatedCloudObjects List Count: "+ generatedCloudObjects.Count);
+            CloudShape cloud = c.GetComponent<CloudShape>();
+
+            //int index = UnityEngine.Random.Range(0, cloudTargetsList.Count);
+            if (indexOffset < finalCloudTextures.Count-1)
+            {
+                Texture2D nextShape = finalCloudTextures[indexOffset];
+                cloud.SetShape(nextShape);
+            }
+            else {
+                cloud.fadeOutParticleSystem();
+                cloud.enabled = false;
+            }
+            indexOffset++;
+        }
+
+
+    }
     private void SeenCloud() //called from "DoneReading" Event in TextBoxController.NextLine()
     {
         if (GameState.Gameloop) {
@@ -581,6 +623,7 @@ public class CloudManager : MonoBehaviour
         Debug.Log(c.name+" clicked: " + clickedCloud.CurrentShapeName);
         cloudsSelectedHistory.Add(clickedCloud.CurrentShapeName);
         cloudTargetsList.Remove(clickedCloud.currentShape);
+        finalCloudTextures.Add(clickedCloud.currentShape);
     }
 
 

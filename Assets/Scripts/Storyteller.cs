@@ -10,8 +10,6 @@ using UnityEngine.Networking;
 using System.Text.RegularExpressions;
 using UnityEngine.Windows;
 using Crosstales.RTVoice.Model;
-using System;
-using Random = UnityEngine.Random;
 
 /*
 
@@ -36,6 +34,15 @@ After some number of loops of this happening, trigger the ending. *needs to be p
 Major changes from Dialogue Manager:
 * No selection validation
 * More control over flow sequence
+* 
+* current model/name dict:
+*     Dictionary<String, String> model_urls = new Dictionary<String, String>()
+    {
+        {"philosopher", "https://api-inference.huggingface.co/models/Triangles/fantastic_philosopher_124_4000"},
+        {"comedian", "https://api-inference.huggingface.co/models/Triangles/comedian_4000_gpt_only"},
+        {"primordial_earth", "https://api-inference.huggingface.co/models/Triangles/primordial_earth_gpt_content_only"}
+    };
+
 
 */
 
@@ -47,8 +54,6 @@ public class Storyteller : MonoBehaviour
     //public Speaker speaker;
     public GameState GameState; //3 states: Intro, GameLoop, Ending
 
-
-    public event Action OnIntroComplete;
     [SerializeField]
     CloudMusingSO muse;
     [SerializeField]
@@ -67,7 +72,8 @@ public class Storyteller : MonoBehaviour
     [SerializeField] TextBoxController textBoxController;
     [SerializeField] List<string> viewedShapes = new List<string>();//the shapes we've viewed so far
 
-
+    [Header("Model Name")]
+    public string model_name;
 
     [Header("HuggingFace Model URL")]
     public string model_url;
@@ -77,14 +83,13 @@ public class Storyteller : MonoBehaviour
 
     int timer = 20;
 
-    [SerializeField]
-    private GlowButterfly _butterfly;
 
     //Story chosenStory;//the active story we will use
     private void OnEnable()
     {
         EventManager.StartListening("ConversationEnded", CheckForCompletion);
-        //    EventManager.StopListening("Conclusion", ShowConclusion);        
+        //    EventManager.StopListening("Conclusion", ShowConclusion);
+        
     }
     private void OnDisable()
     {
@@ -98,17 +103,32 @@ public class Storyteller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+            model_url = ModelInfo.modelURL;
+            hf_api_key = ModelInfo.hf_api_key;
+            model_name = ModelInfo.ModelName;
+
+        //check to see that the modelURL was passed on from the opening, and if so, assign public vars
+        if (string.IsNullOrEmpty(ModelInfo.modelURL)) 
+        {
+            Debug.Log("No model URL, defaulting to Philosopher");
+            model_name = "philosopher";
+            model_url = "https://api-inference.huggingface.co/models/Triangles/fantastic_philosopher_124_4000"; //default to philosopher
+            //hf_api_key = "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";
+            hf_api_key = "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";
+        }
+
         //speaker.SpeakNative("RT Voice is speaking");
         prompts.Add("That cloud reminds me of __");
         prompts.Add("Clouds often take the form of __. I think this is because");
-        prompts.Add("I see __, which makes me wonder what a cloud is");
+        prompts.Add("I see __, which makes me wonder why");
         prompts.Add("That cloud reminds me of __, a");
         prompts.Add("A cloud shaped like __ symbolizes");
 
+        //TODO INDIECADE: check the formatting (__ and --)
         bindingPrompts.Add("I was thinking about __ and --’s relationship, and");
         bindingPrompts.Add("Do you know why __ and --");
-        bindingPrompts.Add("Do you think we saw __-shaped cloud and __-shaped cloud because");
-        bindingPrompts.Add("__ and -- in the same day predicts");
+        bindingPrompts.Add("Do you think we saw __-shaped cloud and ---shaped cloud because");
+        bindingPrompts.Add("Did you know that __ and -- in the same day predicts");
         bindingPrompts.Add("I’ve never seen __ with --, but now I see they are connected by");
 
         //.ProcessNarratorFile();
@@ -120,7 +140,7 @@ public class Storyteller : MonoBehaviour
         EventManager.TriggerEvent("Setup"); //tell clouds to get ready
                                             //access pattern for the narrator story content
                                             //internally the data is kept in a Story structure that has a Name and Content (dictionary of string to string[])
-                                            //        Debug.Log(narrator.StoryData[0].Name);
+                                            //Debug.Log(narrator.StoryData[0].Name);
                                             //Debug.Log(narrator.StoryData[0].Content["entertainer"][0]);
 
     }
@@ -137,6 +157,8 @@ public class Storyteller : MonoBehaviour
         //chosenStory = narrator.StoryData[storyIndex]; //picked story
 
         //Send the story opening to the dialogue manager
+
+        //TODO INDIECADE: make openings random.
         SendMusing(muse.CloudData[0].Content);
         GameState.Intro = true;
 
@@ -148,6 +170,7 @@ public class Storyteller : MonoBehaviour
     //Send a musing to the text controller
     void SendMusing(string[] musing)
     {
+        Debug.Log(musing[0]);
         textBoxController.ReadNewLines(musing);
         //for (int i = 0; i < musing.Length; i++)
         //{
@@ -158,7 +181,7 @@ public class Storyteller : MonoBehaviour
     void NextMusing(string key)
     {
 
-        string keyString = key.Replace("_", " "); //TODO: add correct article ("a", "an", or none (in the case of proper names)
+        string keyString = key.Replace("_", " ");
         string fullPrompt = " ";
 
         if (viewedShapes.Count < 1)
@@ -184,9 +207,7 @@ public class Storyteller : MonoBehaviour
             {
 
                 int promptIndex = Random.Range(0, bindingPrompts.Count);
-                //int viewedShapeIndex = Random.Range(0, viewedShapes.Count);
-                int viewedShapeIndex = Random.Range(0, viewedShapes.Count - 1);
-
+                int viewedShapeIndex = Random.Range(0, viewedShapes.Count-1);
                 string viewedShapeString = viewedShapes[viewedShapeIndex].Replace("_", " ");
                 string prompt = bindingPrompts[promptIndex];
 
@@ -225,9 +246,7 @@ public class Storyteller : MonoBehaviour
         //    }
         //}
 
-        //added
         timer = 20;
-
         StartCoroutine(LiveMusing(fullPrompt, key));
 
         //increase musings
@@ -260,7 +279,7 @@ public class Storyteller : MonoBehaviour
         {
             EventManager.TriggerEvent("Musing");
             EventManager.TriggerEvent("Cutscene");
-            // EventManager.TriggerEvent("sunset"); moved this to credits
+           // EventManager.TriggerEvent("sunset"); moved this to credits
             EndStory();
             gameover = true;
             GameState.Ending = true;
@@ -274,9 +293,6 @@ public class Storyteller : MonoBehaviour
             EventManager.TriggerEvent("IntroDone");
             GameState.Intro = false;
             GameState.Gameloop = true;
-
-            //TODO TERRY ENTER BUTTERFLY
-            OnIntroComplete?.Invoke();
         }
 
     }
@@ -284,6 +300,7 @@ public class Storyteller : MonoBehaviour
     //create the ending story
     void EndStory()
     {
+        Debug.Log("EndStory() called on storyteller");
         //first create the list
         //"A, B, and C"
         //We would likely replace this with a different, combination key in the future.
@@ -291,6 +308,12 @@ public class Storyteller : MonoBehaviour
         for (int i = 0; i < viewedShapes.Count; i++)
         {
             string shapeName = viewedShapes[i];
+            names.Add(viewedShapes[i]);
+
+            Debug.Log("ending shapes (from storyteller viewedShapes[];" + shapeName);
+            //TODO INDIECADE: add an action that sends each shapeName to a CloudManager ending(shapeName) function that turns each cloud into that shape
+
+
             shapeName = shapeName.Replace("_", " ");
             if (i == 0)
             {
@@ -305,7 +328,7 @@ public class Storyteller : MonoBehaviour
                 chosenList += $", {shapeName}";
             }
         }
-
+        Actions.SetEndingClouds(names); //listened to by CloudManager
         //Adjust the lines in the original by replacing <CLOUD_LIST> with our list.
         List<string> adjustedLines = new List<string>();
         foreach (string line in muse.CloudData[31].Content)
@@ -318,9 +341,6 @@ public class Storyteller : MonoBehaviour
         //create the list of chosen items.
         SendMusing(adjustedLines.ToArray());
         textBoxController.PlayingEnding = true;
-
-        _butterfly.DestroyButterfly();
-
     }
 
     //This is where the webrequests are made - but it's buggy. Sometimes the connection fails, and when that happens, the game gets stuck.
@@ -357,7 +377,7 @@ public class Storyteller : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        // If the request return an error set the error on console. - we should set parameters on the api to request again
+        // If the request return an error set the error on console. - we should set parameters on the api to request again  TODO: Debug this -- freezes when thrown (Abraham Lincoln)
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.Log("failed request error: " + request.error);
@@ -392,16 +412,16 @@ public class Storyteller : MonoBehaviour
         }
         else
         {
+            //Debug.Log("hi");
             JSONNode data = request.downloadHandler.text;
-
             // Process the result
-            Debug.Log(ProcessResult(data, prompt));
+            //Debug.Log(ProcessResult(data, prompt));
 
             string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
-                                                                  //Debug.Log(currentMusing[0]);
+                                                            //Debug.Log(currentMusing[0]);
             SendMusing(currentMusing);
             //generativeStory.Add(ProcessResult(data));
-
+            
         }
 
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html
@@ -472,7 +492,7 @@ public class Storyteller : MonoBehaviour
                 {
                     tempSentenceList.Add(sentenceList[0]);
                 }
-
+                
             }
             else
             {
@@ -494,26 +514,23 @@ public class Storyteller : MonoBehaviour
                         tempSentenceList.Add(sentenceList[0]);
                         tempSentenceList.Add(sentenceList[1]);
                     }
-                    //lookahead
-
-                    string[] lookAhead = { "teapot" }; //put words we don't want to show up from old dialogue here
-
-                    for (int i = 0; i < tempSentenceList.Count; i++)
-                    {
-                        foreach (string look in lookAhead)
-                        {
-                            if (tempSentenceList[i].Contains(look))
-                            {
-                                tempSentenceList.RemoveAt(i);
-                            }
-                        }
-                    }
-
                 }
             }
         }
 
+        //lookAhead
+        string[] lookAhead = { "teapot" }; //put words we don't want to show up from old dialogue here
 
+        for (int i = 0; i < tempSentenceList.Count; i++)
+        {
+            foreach (string look in lookAhead)
+            {
+                if (tempSentenceList[i].Contains(look))
+                {
+                    tempSentenceList.RemoveAt(i);
+                }
+            }
+        }
 
         return tempSentenceList;
     }
@@ -528,5 +545,5 @@ public class Storyteller : MonoBehaviour
     {
         return musingsGiven;
     }
-
+   
 }

@@ -13,6 +13,8 @@ public class SceneCtrl : MonoBehaviour
         _currentScene = SceneManager.GetActiveScene().buildIndex;
     }
 
+
+
     private void Start()
     {
         switch (_currentScene)

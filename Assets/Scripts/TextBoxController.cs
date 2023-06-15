@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Crosstales.RTVoice;
 using System;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class TextBoxController : MonoBehaviour
@@ -11,6 +12,17 @@ public class TextBoxController : MonoBehaviour
 
     [SerializeField]
     TextMeshProUGUI textField;
+    [SerializeField]
+    TextMeshProUGUI textFieldBKGD;
+    [SerializeField]
+    String BKGDColor = "<mark = #00000055 padding=30, 30, 10, 10>";
+
+        //PINK
+        //"<mark = #FF00FF22 padding=30, 30, 10, 10>";
+
+        //"<mark=#DD00DD padding=\"30, 100, 10, 20\">";
+    
+
     [SerializeField]
     string[] linesList;
 
@@ -75,6 +87,8 @@ public class TextBoxController : MonoBehaviour
             dialogueAudio?.Play(); //play audio event
 
             yield return new WaitForSeconds(1f / charactersPerSecond);
+            textFieldBKGD.text = BKGDColor + textField.text + "</mark>";
+
         }
 
     }
@@ -83,6 +97,7 @@ public class TextBoxController : MonoBehaviour
         //var material = textCanvas.GetComponent<Renderer>().material;
         var text = textCanvas.GetComponent<CanvasGroup>();
         textField.text = activeLine;
+        textFieldBKGD.text = BKGDColor + textField.text + "</mark>";
         //set alpha to 0 first
         text.alpha = 0;
 
@@ -178,11 +193,14 @@ public class TextBoxController : MonoBehaviour
 
                 textField.text = "";
 
+                //PINK Background
+                textFieldBKGD.text = BKGDColor + textField.text + "</mark>";
+
                 typingCoroutine = StartCoroutine(TypeString()); //begin typing
             }
             else
             {
-                Debug.Log("fading");
+                //Debug.Log("fading");
 
                 fadeCoroutine = StartCoroutine(fadeLineInOut());//display the whole line (fadein)
             }
@@ -191,9 +209,11 @@ public class TextBoxController : MonoBehaviour
         else
         {
             complete = true;
-            Debug.Log("complete is true");
+            //Debug.Log("complete is true");
             textField.text = ""; //clear text because it's the end
-                                 //potentially trigger an event for ending the dialogue 
+                                 //potentially trigger an event for ending the dialogue
+            textFieldBKGD.text = BKGDColor + textField.text + "</mark>";
+
             EventManager.TriggerEvent("DoneReading");
 
             
@@ -214,6 +234,7 @@ public class TextBoxController : MonoBehaviour
         complete = false;
         textLineIndex = 0;
         textField.text = "";
+        textFieldBKGD.text = BKGDColor + textField.text + "</mark>";
         activeLine = "";
         voiceState = -1;
         for (int i = 0; i < lineBools.Count; i++)
@@ -244,12 +265,10 @@ public class TextBoxController : MonoBehaviour
         {
             typingCoroutine = StartCoroutine(TypeString()); //begin typing
 
-
-
         }
         else
         {
-            Debug.Log("fading");
+            //Debug.Log("fading");
 
             fadeCoroutine = StartCoroutine(fadeLineInOut());//display the whole line (fadein)
         }

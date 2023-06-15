@@ -9,8 +9,11 @@ public static class Actions
 
     public static Action SharpenCloud;
     public static Action BlurCloud;
-    public static Action <GameObject> GetClickedCloud;
-    public static Action <CloudShape> CloudIsReady;
+    public static Action<GameObject> GetClickedCloud;
+    public static Action<CloudShape> CloudIsReady;
+    public static Action<OpeningCloudShape> OpeningCloudIsReady;
     public static Action<GameObject> FadeInCloud;
     public static Action<GameObject> FadeOutCloud;
+    public static Action<String> GetModel;
+    public static Action<List<string>> SetEndingClouds;
 }

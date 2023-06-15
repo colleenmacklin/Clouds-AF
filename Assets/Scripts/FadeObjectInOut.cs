@@ -26,6 +26,10 @@ public class FadeObjectInOut : MonoBehaviour
 
 
     private ParticleSystemRenderer _psRenderer;
+    private ParticleSystem _ps;
+   
+
+
     void OnEnable()
     {
         EventManager.StartListening("FadeIn", FadeIn);
@@ -42,6 +46,7 @@ public class FadeObjectInOut : MonoBehaviour
     private void Awake()
     {
         _psRenderer = GetComponentInChildren<ParticleSystemRenderer>();
+        _ps = GetComponentInChildren<ParticleSystem>();
     }
 
     // allow automatic fading on the start of the scene
@@ -107,6 +112,7 @@ public class FadeObjectInOut : MonoBehaviour
     // fade sequence
 
     bool isFading = false;
+
     IEnumerator FadeSequence(float fadingOutTime)
     {
         isFading = true;
@@ -197,6 +203,10 @@ public class FadeObjectInOut : MonoBehaviour
 
     public IEnumerator FadeCloudOut()
     {
+        //add code to stop particle system
+        _ps.Stop();
+    
+
         float alphaValue = _psRenderer.material.color.a;
 
         while (alphaValue >= 0.0f)
@@ -212,6 +222,7 @@ public class FadeObjectInOut : MonoBehaviour
 
     public IEnumerator FadeCloudIn()
     {
+
         float alphaValue = _psRenderer.material.color.a;
         while (alphaValue <= 1f)
         {
@@ -222,17 +233,19 @@ public class FadeObjectInOut : MonoBehaviour
             yield return null;
         }
         yield return null;
+        _ps.Play(); //start the particle system
+
     }
 
     void FadeIn()
     {
-        Debug.Log("fading in, time: " + fadeTime + " delay: " + fadeDelay);
+        //Debug.Log("fading in, time: " + fadeTime + " delay: " + fadeDelay);
         FadeIn(fadeTime);
     }
 
     void FadeOut()
     {
-        Debug.Log("fading out");
+        //Debug.Log("fading out");
         FadeOut(fadeTime);
     }
 

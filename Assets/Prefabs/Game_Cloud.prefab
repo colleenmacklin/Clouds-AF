@@ -142,8 +142,8 @@ MonoBehaviour:
   ps: {fileID: 4001077985846674118}
   changeTimeMin: 70
   changeTimeMax: 100
-  minScale: 15
-  maxScale: 25
+  minScale: 18
+  maxScale: 23
   scale: 0
   currScale: 0
   cloudVisX: -80
@@ -161,7 +161,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 7, y: 7, z: 5}
+  m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &857159031385798982
 Rigidbody:
@@ -186,7 +186,7 @@ ConstantForce:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4001077985798978744}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Force: {x: -0.02, y: 0, z: 0}
   m_RelativeForce: {x: 0, y: 0, z: 0}
   m_Torque: {x: 0, y: 0, z: 0}
@@ -207,7 +207,6 @@ MonoBehaviour:
   fadeTime: 0
   fadeInOnStart: 1
   fadeOutOnStart: 0
-  IsFading: 0
 --- !u!1001 &4001077985832131846
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -333,7 +332,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: NoiseModule.strength.scalar
-      value: 0.02
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: ShapeModule.radiusThickness
@@ -349,7 +348,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.maxNumParticles
-      value: 2000
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -373,7 +372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 2000
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 58f60aff4d3f9524ba4afc859b1c1e89, type: 3}
       propertyPath: InitialModule.startLifetime.scalar

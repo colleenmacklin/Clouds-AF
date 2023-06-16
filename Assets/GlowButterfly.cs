@@ -1,12 +1,22 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GlowButterfly : MonoBehaviour
 {
-
+    [CanBeNull] //null in opening, referenced in main
     [SerializeField]
     private Raycaster _raycasterScript;
+
+    [CanBeNull] //null in main, referenced in opening
+    [SerializeField]
+    private RaycasterOpening _raycasterOpening;
+
+    [CanBeNull] //null in main, referenced in opening
+    [SerializeField]
+    private Opening _opening;
 
     private MeshRenderer[] _mats;
 
@@ -16,15 +26,26 @@ public class GlowButterfly : MonoBehaviour
     private Color _startCol;
     private Color _currentCol;
 
+    //this is for opening only 
+    private GameObject _selectedCloudObject = null;
 
     private float _butterflyIdleSpeed = 1.3f;
     private bool _isGlowing = false;
     private void Awake()
     {
-        
-        _raycasterScript.OnHoverOverTargetCloud += StartGlow;
-        _raycasterScript.OnHoverExit += DeGlow;
+        if (_raycasterScript)
+        {
+            _raycasterScript.OnHoverOverTargetCloud += StartGlow;
+            _raycasterScript.OnHoverExit += DeGlow;
+        }
+
+        if (_raycasterOpening)
+        {
+            _raycasterOpening.OnHoverOverTargetCloud += StartGlow;
+            _raycasterOpening.OnHoverExit += DeGlow;
+        }
     }
+        
 
     private void Start()
     {
@@ -52,6 +73,7 @@ public class GlowButterfly : MonoBehaviour
 
         }
 
+        _selectedCloudObject = cloud;
     }
 
     public void DeGlow()
@@ -103,7 +125,15 @@ public class GlowButterfly : MonoBehaviour
         }
         //invoke glow is finished
 
+        if (_raycasterScript)
+        {
+
         _raycasterScript.StartCloudTalking();
+        }
+        if(_raycasterOpening)
+        {
+            _opening.GetClickedCloud(_selectedCloudObject);
+        }
         _isGlowing = false;
 
         DestroyButterfly();
@@ -112,8 +142,18 @@ public class GlowButterfly : MonoBehaviour
 
     public void DestroyButterfly()
     {
-        GameObject g = this.gameObject;
-        Object.Destroy(g.transform.GetChild(0).gameObject);
+        if (_raycasterScript)
+        {
+            GameObject g = this.gameObject;
+            Object.Destroy(g.transform.GetChild(0).gameObject);
+        }
+
+        else
+        {
+            GameObject buttefly = GetComponentInChildren<FollowCursor>().gameObject;
+            buttefly.SetActive(false);
+        }
+       
     }
 
     private void SetButterflySpeed(float speed)
@@ -123,6 +163,6 @@ public class GlowButterfly : MonoBehaviour
     }
 
 
-   
+  
 
 }

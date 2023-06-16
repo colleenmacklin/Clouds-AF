@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _storyTeller: {fileID: 0}
-  Butterfly: {fileID: 687736693810050459, guid: ba2045cfbc1935c42883d50a249e7d71,
+  Butterfly: {fileID: 7361898524219202960, guid: acd67d7dba1ed294c97a80ddc3bf6eb6,
     type: 3}
 --- !u!114 &3244459401959335825
 MonoBehaviour:

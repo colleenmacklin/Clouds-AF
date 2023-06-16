@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityTemplateProjects;
@@ -30,6 +32,7 @@ public class RaycasterOpening : MonoBehaviour
     MouseState state = MouseState.EMPTY;
     Vector3 lookAtSelected = new Vector3();
     //Get the camera mover so we can turn it on and off during dialogue
+    [CanBeNull] //let it be null in opening
     public SimpleCameraController gazeMover; //attached to the camera *it probably shouldn't be
     //public TextBoxController textBoxControl;
 
@@ -49,10 +52,16 @@ public class RaycasterOpening : MonoBehaviour
 
     Quaternion initialCameraRot;
     Coroutine activeCoroutine;
+
+    public event Action<GameObject> OnHoverOverTargetCloud;
+    public event Action OnHoverExit;
+
+
+
     void Start()
     {
         mask = LayerMask.GetMask("Clouds");
-        gazeMover.enabled = false;
+       // gazeMover.enabled = false;
         initialCameraRot = Camera.main.transform.localRotation;
         StartGazeTracking();
     }
@@ -86,9 +95,9 @@ public class RaycasterOpening : MonoBehaviour
             StopCoroutine(activeCoroutine);
 
         }
-        activeCoroutine = StartCoroutine(ReturnToDefaultView());
+       // activeCoroutine = StartCoroutine(ReturnToDefaultView());
 
-        gazeMover.enabled = true;
+       // gazeMover.enabled = true;
         state = MouseState.EMPTY;
 
     }
@@ -140,54 +149,48 @@ public class RaycasterOpening : MonoBehaviour
         {
             case MouseState.EMPTY:
                 //if empty and hit, then switch to hovering
-                //if (hit.transform)
-               
                 if (hit.transform)
-
                 {
-                    Selected = hit.transform.gameObject;
 
-                    GameObject c = Selected;
-                    OpeningCloudShape select_c = c.GetComponent<OpeningCloudShape>();
-
-                    if (select_c.isTarget)
-                    {
-                        state = MouseState.HOVERING;
-                        EventManager.TriggerEvent("openEye");
-                    }
-
+                    state = MouseState.HOVERING;
+                    //EventManager.TriggerEvent("openEye");
+                    //callback to start butterfly glow - when entering cloud over hover
+                    OnHoverOverTargetCloud?.Invoke(hit.transform.gameObject);
+                }
+                else
+                {
+                    OnHoverExit?.Invoke();
                 }
                 break;
-
             case MouseState.HOVERING:
                 //if hovering and no hit, then switch to empty
                 if (!hit.transform)
                 {
+
                     state = MouseState.EMPTY;
                     Selected = null;
-                    EventManager.TriggerEvent("closeEye");
+                    //EventManager.TriggerEvent("closeEye");
+                    //if exit cloud then stop glow 
+                    OnHoverExit?.Invoke();
                 }
-                if (Input.GetMouseButtonDown(0))
+                else
                 {
-                    Selected = hit.transform.gameObject;
-
-                    GameObject c = Selected;
-                    
-                    Actions.GetClickedCloud(c); //lets cloudmanager know which cloud has been clicked
-
-                    lookAtSelected = Selected.transform.position - Camera.main.transform.position;
-                    //EventManager.TriggerEvent("Respond");
+                    OnHoverOverTargetCloud?.Invoke(hit.transform.gameObject);
                 }
+
+
+
                 break;
             case MouseState.READING:
 
                 if (Input.GetMouseButtonDown(0))
                 {
                     //in the future this should be some sort of reading state input
-                    //textBoxControl.Check();//bad mutation management.
+                  //  textBoxControl.Check();//bad mutation management.
                 }
                 break;
         }
     }
+    
 
 }

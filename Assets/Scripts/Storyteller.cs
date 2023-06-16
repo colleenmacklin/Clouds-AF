@@ -12,6 +12,7 @@ using UnityEngine.Windows;
 using Crosstales.RTVoice.Model;
 using System;
 using Random = UnityEngine.Random;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 /*
 
@@ -58,6 +59,10 @@ public class Storyteller : MonoBehaviour
     public event Action OnIntroComplete;
     [SerializeField]
     CloudMusingSO muse;
+
+    [SerializeField]
+    public TextAsset storyFile;
+
     [SerializeField]
     public RectTransform credits;
     private bool gameover = false;
@@ -86,6 +91,9 @@ public class Storyteller : MonoBehaviour
     [SerializeField]
     private GlowButterfly _butterfly;
 
+    [Header("model storyfile")]
+    public TextAsset story_file;
+
     int timer = 20;
 
 
@@ -112,6 +120,25 @@ public class Storyteller : MonoBehaviour
             hf_api_key = ModelInfo.hf_api_key;
             model_name = ModelInfo.ModelName;
 
+
+        /*
+        switch (model_name)
+        {
+            case "philosopher":
+
+                muse.storyFile = storyFile;
+                break;
+
+            case "comedian":
+                muse.storyFile = null;
+                break;
+
+            case "sentient_earth":
+                muse.storyFile = null;
+                break;
+        }
+        story_file = ModelInfo.storyFile;
+        */
         //check to see that the modelURL was passed on from the opening, and if so, assign public vars
         if (string.IsNullOrEmpty(ModelInfo.modelURL)) 
         {
@@ -121,6 +148,20 @@ public class Storyteller : MonoBehaviour
             //hf_api_key = "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";
             hf_api_key = "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";
         }
+
+        string filename = "Text/" + model_name + "_storiesbound";
+        Debug.Log("filename: " + filename);
+
+        //Load texture from disk
+        //TextAsset model_storyFile = Resources.Load(filename) as TextAsset;
+
+        TextAsset model_storyFile = Resources.Load<TextAsset>(filename);
+        Debug.Log("storyFile: " + model_storyFile.name);
+        storyFile = model_storyFile;
+
+        muse.storyFile = model_storyFile;
+
+        Debug.Log("muse.CloudData Count: " + muse.CloudData.Count);
 
         //speaker.SpeakNative("RT Voice is speaking");
         prompts.Add("That cloud reminds me of __");
@@ -339,10 +380,15 @@ public class Storyteller : MonoBehaviour
         Actions.SetEndingClouds(names); //listened to by CloudManager
         //Adjust the lines in the original by replacing <CLOUD_LIST> with our list.
         List<string> adjustedLines = new List<string>();
+
+        //TODO IndieCade: fix integer in CloudData to conform to correct one for model - this is hardcoded to philosopher.
+
+        Debug.Log("muse.CloudData: "+muse.CloudData);
+        //int index = muse.CloudData.IndexOf(Musing.Name);
+
         foreach (string line in muse.CloudData[31].Content)
         {
             string adjustedLine = line.Replace("<CLOUD_LIST>", chosenList);
-
             adjustedLines.Add(adjustedLine);
         }
 

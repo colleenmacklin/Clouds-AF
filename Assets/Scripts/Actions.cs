@@ -16,4 +16,5 @@ public static class Actions
     public static Action<GameObject> FadeOutCloud;
     public static Action<String> GetModel;
     public static Action<List<string>> SetEndingClouds;
+    public static Action<TextAsset> SetStory;
 }

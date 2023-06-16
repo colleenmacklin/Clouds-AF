@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
-using UnityEditor.Experimental.GraphView;
+//using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 /*
@@ -109,7 +109,7 @@ public class Opening : MonoBehaviour
         comedianCloud.scale = 10;
         comedianCloud.SetShape(comedian);
 
-        primordial_earth_Cloud.scale = 10;
+        primordial_earth_Cloud.scale = 12;
         primordial_earth_Cloud.SetShape(primordialEarth);
 
         //foreach loop
@@ -123,7 +123,7 @@ public class Opening : MonoBehaviour
 
         
         titleCloud.FadeInPS(5);
-        titleCloud.SharpenOpeningCloud(3f, 5f); //was 7f max
+        titleCloud.SharpenOpeningCloud(4f, 6f); //was 7f max
         titleCloud.SlowDownCloud();
         titleCloud.TurnOffCollider(); //don't detect this
 
@@ -136,7 +136,7 @@ public class Opening : MonoBehaviour
         comedianCloud.SlowDownCloud();
 
         primordial_earth_Cloud.FadeInPS(11);
-        primordial_earth_Cloud.SharpenOpeningCloud(1.5f, 3f);
+        primordial_earth_Cloud.SharpenOpeningCloud(1f, 2.5f);
         primordial_earth_Cloud.SlowDownCloud();
 
         pause = make_clickable(10.0f);

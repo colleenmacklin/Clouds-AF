@@ -435,7 +435,7 @@ public class CloudManager : MonoBehaviour
             CloudShape cloud = c.GetComponent<CloudShape>();
 
             //int index = UnityEngine.Random.Range(0, cloudTargetsList.Count);
-            if (indexOffset < finalCloudTextures.Count-1)
+            if (indexOffset < finalCloudTextures.Count)
             {
                 Texture2D nextShape = finalCloudTextures[indexOffset];
                 cloud.SetShape(nextShape);

@@ -217,6 +217,8 @@ public class Storyteller : MonoBehaviour
     void SendMusing(string[] musing)
     {
         Debug.Log(musing[0]);
+//TODO: INdieCADE Build - fix problem when musing is empty - check to see if it is null, and if so, say something else and release camera lock
+//
         textBoxController.ReadNewLines(musing);
         //for (int i = 0; i < musing.Length; i++)
         //{

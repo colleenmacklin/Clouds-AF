@@ -102,7 +102,7 @@ public class Storyteller : MonoBehaviour
     {
         EventManager.StartListening("ConversationEnded", CheckForCompletion);
         //    EventManager.StopListening("Conclusion", ShowConclusion);
-        
+
     }
     private void OnDisable()
     {
@@ -116,9 +116,9 @@ public class Storyteller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-            model_url = ModelInfo.modelURL;
-            hf_api_key = ModelInfo.hf_api_key;
-            model_name = ModelInfo.ModelName;
+        model_url = ModelInfo.modelURL;
+        hf_api_key = ModelInfo.hf_api_key;
+        model_name = ModelInfo.ModelName;
 
 
         /*
@@ -140,7 +140,7 @@ public class Storyteller : MonoBehaviour
         story_file = ModelInfo.storyFile;
         */
         //check to see that the modelURL was passed on from the opening, and if so, assign public vars
-        if (string.IsNullOrEmpty(ModelInfo.modelURL)) 
+        if (string.IsNullOrEmpty(ModelInfo.modelURL))
         {
             Debug.Log("No model URL, defaulting to Philosopher");
             model_name = "philosopher";
@@ -253,7 +253,7 @@ public class Storyteller : MonoBehaviour
             {
 
                 int promptIndex = Random.Range(0, bindingPrompts.Count);
-                int viewedShapeIndex = Random.Range(0, viewedShapes.Count-1);
+                int viewedShapeIndex = Random.Range(0, viewedShapes.Count - 1);
                 string viewedShapeString = viewedShapes[viewedShapeIndex].Replace("_", " ");
                 string prompt = bindingPrompts[promptIndex];
 
@@ -325,7 +325,7 @@ public class Storyteller : MonoBehaviour
         {
             EventManager.TriggerEvent("Musing");
             EventManager.TriggerEvent("Cutscene");
-           // EventManager.TriggerEvent("sunset"); moved this to credits
+            // EventManager.TriggerEvent("sunset"); moved this to credits
             EndStory();
             gameover = true;
             GameState.Ending = true;
@@ -381,10 +381,31 @@ public class Storyteller : MonoBehaviour
 
         //TODO IndieCade: fix integer in CloudData to conform to correct one for model - this is hardcoded to philosopher.
 
-        Debug.Log("muse.CloudData: "+muse.CloudData);
+        Debug.Log("muse.CloudData: " + muse.CloudData);
         //int index = muse.CloudData.IndexOf(Musing.Name);
 
-        foreach (string line in muse.CloudData[31].Content)
+        //WARNING: HACK
+        int dataIndex;
+
+        switch (model_name)
+        {
+            case "philosopher":
+                dataIndex = 31;
+                break;
+            case "comedian":
+                dataIndex = 21;
+                break;
+            case "primordial_earth":
+                dataIndex = 20;
+                break;
+            default:
+                dataIndex = 31; //philosopher
+                break;
+        }
+
+
+
+        foreach (string line in muse.CloudData[dataIndex].Content)
         {
             string adjustedLine = line.Replace("<CLOUD_LIST>", chosenList);
             adjustedLines.Add(adjustedLine);

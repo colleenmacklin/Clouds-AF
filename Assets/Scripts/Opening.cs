@@ -77,9 +77,9 @@ public class Opening : MonoBehaviour
         Vector3 model3_position = M3Pos.position;
 
         GameObject tempTitle = Instantiate(cloudObjectPrefab, theoryPos);
-        GameObject tempPhilosopher = Instantiate(cloudObjectPrefab, M1Pos);
-        GameObject tempComedian = Instantiate(cloudObjectPrefab, M2Pos);
-        GameObject tempPrimordialEarth = Instantiate(cloudObjectPrefab, M3Pos);
+        GameObject tempPhilosopher = Instantiate(cloudObjectPrefab, M3Pos);
+        GameObject tempComedian = Instantiate(cloudObjectPrefab, M1Pos);
+        GameObject tempPrimordialEarth = Instantiate(cloudObjectPrefab, M2Pos);
 
         titleCloud = tempTitle.GetComponent<OpeningCloudShape>();
         titleCloud.TurnOffCollider();
@@ -109,7 +109,7 @@ public class Opening : MonoBehaviour
         comedianCloud.scale = 10;
         comedianCloud.SetShape(comedian);
 
-        primordial_earth_Cloud.scale = 15;
+        primordial_earth_Cloud.scale = 10;
         primordial_earth_Cloud.SetShape(primordialEarth);
 
         //foreach loop
@@ -136,7 +136,7 @@ public class Opening : MonoBehaviour
         comedianCloud.SlowDownCloud();
 
         primordial_earth_Cloud.FadeInPS(11);
-        primordial_earth_Cloud.SharpenOpeningCloud(.7f, 2.5f);
+        primordial_earth_Cloud.SharpenOpeningCloud(1.5f, 3f);
         primordial_earth_Cloud.SlowDownCloud();
 
         pause = make_clickable(10.0f);

@@ -81,6 +81,8 @@ public class GlowButterfly : MonoBehaviour
         //TODO make this a fade out 
         StopAllCoroutines();
         _isGlowing = false;
+
+        //TODO track down error
         foreach (MeshRenderer m in _mats)
         {
             m.material.SetColor("_Color", _startCol);

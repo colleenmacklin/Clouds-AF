@@ -16,6 +16,7 @@ public class TextBoxController : MonoBehaviour
     TextMeshProUGUI textFieldBKGD;
     [SerializeField]
     String BKGDColor;
+
     //black
     //"<mark=#00000055 padding=\"30, 30, 10, 10\">"
     //PINK

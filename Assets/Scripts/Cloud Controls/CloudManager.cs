@@ -451,7 +451,7 @@ public class CloudManager : MonoBehaviour
     }
     private void SeenCloud() //called from "DoneReading" Event in TextBoxController.NextLine()
     {
-        if (GameState.Gameloop) {
+        if (GameState.Gameloop && clickedCloud) {
             CloudShape c = clickedCloud;
             Debug.Log("Seen this cloud, done reading = " + c.name);
             cloudsActiveHistory.Remove(clickedCloud.currentShape.name);

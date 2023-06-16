@@ -61,7 +61,7 @@ public class ModelBuffer : MonoBehaviour
     private void Update()
     {
         if (ModelInfo.modelURL == null)
-          //  Debug.Log("no model selected yet...");
+            //Debug.Log("no model selected yet...");
         {
             if (!_finishedCount)
             {

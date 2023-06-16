@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 public class SceneCtrl : MonoBehaviour
 {
     private int _currentScene;
+    public Animator transition;
+    public float transitionTime = 1f;
 
     private void Awake()
     {
@@ -37,6 +39,26 @@ public class SceneCtrl : MonoBehaviour
     }
     private void LoadNextScene(int scene)
     {
-        SceneManager.LoadSceneAsync(scene, LoadSceneMode.Single);
+        if (_currentScene == 0)
+        {
+            StartCoroutine(Transition(1));
+        }
+        else
+        {
+            SceneManager.LoadSceneAsync(scene, LoadSceneMode.Single);
+        }
+        
+       
     }
+
+    IEnumerator Transition(int scene) {
+        //Play Crossfade Animation
+        transition.SetTrigger("Start");
+        //Wait
+        yield return new WaitForSeconds(transitionTime);
+        //Load Scene
+        SceneManager.LoadSceneAsync(scene, LoadSceneMode.Single); //should still be async?
+
+    }
+
 }

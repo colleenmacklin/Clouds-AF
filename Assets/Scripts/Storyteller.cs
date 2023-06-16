@@ -360,8 +360,6 @@ public class Storyteller : MonoBehaviour
             names.Add(viewedShapes[i]);
 
             Debug.Log("ending shapes (from storyteller viewedShapes[];" + shapeName);
-            //TODO INDIECADE: add an action that sends each shapeName to a CloudManager ending(shapeName) function that turns each cloud into that shape
-
 
             shapeName = shapeName.Replace("_", " ");
             if (i == 0)

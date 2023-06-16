@@ -15,13 +15,14 @@ public class TextBoxController : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI textFieldBKGD;
     [SerializeField]
-    String BKGDColor = "<mark = #00000055 padding=30, 30, 10, 10>";
+    String BKGDColor;
+    //black
+    //"<mark=#00000055 padding=\"30, 30, 10, 10\">"
+    //PINK
+    //"<mark = #FF00FF22 padding=30, 30, 10, 10>";
 
-        //PINK
-        //"<mark = #FF00FF22 padding=30, 30, 10, 10>";
+    //"<mark=#DD00DD padding=\"30, 100, 10, 20\">";
 
-        //"<mark=#DD00DD padding=\"30, 100, 10, 20\">";
-    
 
     [SerializeField]
     string[] linesList;
@@ -69,6 +70,26 @@ public class TextBoxController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //TODO: INdieCade Change voices for each model
+
+        switch (ModelInfo.ModelName)
+        {
+            case ("philosopher"):
+                voice.Name = "Grandma";
+                break;
+            case ("comedian"):
+                voice.Name = "Moira";
+                //or 
+                break;
+            case ("primordial_earth"):
+                voice.Name = "Tingting";
+                //or Samantha
+                break;
+            default:
+                voice.Name = "Grandma";
+                break;
+        }
+
         dialogueAudio = GetComponent<AudioSource>();
         dialogueAudio.clip = typeSound;
         for (int i = 0; i < teller.numberOfSentences; i++)

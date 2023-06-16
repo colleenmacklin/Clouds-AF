@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class audio_effects : MonoBehaviour
 {
-    public GameObject sound;
+    public AudioSource birds, peepers;
+
     public int startingPitch = 4;
     public int timeToDecrease = 5;
     AudioSource audioSource;
@@ -13,7 +14,9 @@ public class audio_effects : MonoBehaviour
     // Start is called before the first frame update
     void onEnable()
     {
-        EventManager.StartListening("sunset", lowerPitch);
+        EventManager.StartListening("sunset", playCrickets);
+        //EventManager.StartListening("sunset", lowerPitch);
+
     }
 
     void onDisable()
@@ -41,11 +44,21 @@ public class audio_effects : MonoBehaviour
 
     void lowerPitch()
     {
-        //Debug.Log("lowering pitch");
+        Debug.Log("lowering pitch");
         if (audioSource.pitch > 0)
         {
             audioSource.pitch -= Time.deltaTime * startingPitch / timeToDecrease;
         }
 
     }
+
+    void playCrickets()
+    {
+        Debug.Log("playing crickets");
+        //peepers = GetComponent<AudioSource>();
+
+        peepers.Play();
+
+    }
+
 }

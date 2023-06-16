@@ -16,6 +16,7 @@ namespace UnityEngine.AzureSky
         public int sunrise_end_time_minute = 0;
         public int sunset_start_time;
         public float sunset_end_time = 24;
+        public AudioClip sunsetTrack;
 
         public float timeScale = 0.005f;
         //TODO: tweak the AzureSky materials stuff to make better colaration for sunrise and sunset
@@ -102,6 +103,8 @@ namespace UnityEngine.AzureSky
             // var current_minute = azureTimeController.GetTimeOfDay().y;
             //  azureTimeController.SetTimeline(current_hour);
             // azureTimeController.StartTimelineTransition(sunset_end_time_hour, sunset_end_time_minute, timeScale, AzureTimeDirection.Forward);
+            AudioManager.instance.swapTrack(sunsetTrack);
+
 
             StopAllCoroutines();
             StartCoroutine(StartTimeLineTransition(sunset_end_time, 8000));

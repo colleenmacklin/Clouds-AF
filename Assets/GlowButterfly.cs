@@ -43,7 +43,7 @@ public class GlowButterfly : MonoBehaviour
         {
             _raycasterOpening.OnHoverOverTargetCloud += StartGlow;
             _raycasterOpening.OnHoverExit += DeGlow;
-            Debug.Log("FUCK ME");
+           
         }
     }
 
@@ -173,10 +173,14 @@ public class GlowButterfly : MonoBehaviour
 
         else
         {
-            GameObject buttefly = GetComponentInChildren<FollowCursor>().gameObject;
-            buttefly.SetActive(false);
+            if (GetComponentInChildren<FollowCursor>()!= null)
+            {
+                GameObject buttefly = GetComponentInChildren<FollowCursor>().gameObject;
+                buttefly.SetActive(false);
+            }
+           
         }
-
+        
     }
 
     private void SetButterflySpeed(float speed)

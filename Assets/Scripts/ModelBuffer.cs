@@ -109,20 +109,22 @@ public class ModelBuffer : MonoBehaviour
 
         yield return request.SendWebRequest();
 
+        string data = request.downloadHandler.text;
+        Debug.Log(data);
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.Log("model "+ModelInfo.ModelName+" failed request error: " + request.error);
-            Debug.Log("model " + ModelInfo.ModelName + "failed downloadHandler.data: " + request.downloadHandler.data);
+            Debug.Log("model "+ModelInfo.ModelName + " failed request error: " + request.error);
+            Debug.Log("model " + ModelInfo.ModelName + " failed downloadHandler.data: " + request.downloadHandler.data);
             //TODO: when a 503 error is thrown (model is not ready) set "wait_for_model" = true; remake the request
-            string data = request.downloadHandler.text;
+             data = request.downloadHandler.text;
             Debug.Log(data);
         }
         else
         {
-            string data = request.downloadHandler.text;
+             data = request.downloadHandler.text;
             // Process the result
-            Debug.Log(data);
+            Debug.Log("other kind of error: "+data);
 
         }
 

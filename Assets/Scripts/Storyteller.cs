@@ -216,7 +216,7 @@ public class Storyteller : MonoBehaviour
     //Send a musing to the text controller
     void SendMusing(string[] musing)
     {
-        Debug.Log(musing[0]);
+        Debug.Log("sendMusing: "+musing[0]);
 //TODO: INdieCADE Build - fix problem when musing is empty - check to see if it is null, and if so, say something else and release camera lock
 //
         textBoxController.ReadNewLines(musing);
@@ -264,35 +264,10 @@ public class Storyteller : MonoBehaviour
             }
         }
 
-
-
-
         //store the shape
         //Debug.Log(key);
         viewedShapes.Add(key);
-        //send the musing
-        //for (int i = 0; i < muse.CloudData.Count; i++)
-        //{
-
-        //    if (muse.CloudData[i].Name == key)
-        //    {
-        //        string[] currentMusing = muse.CloudData[i].Content;
-        //        for (int j = 0; j < viewedShapes.Count; j++)
-        //        {
-        //            //Debug.Log(viewedShapes[j]);
-        //            for (int k = 0; k < muse.CloudData[i].Bindings.Length; k++)
-        //            {
-        //                Debug.Log(muse.CloudData[i].Bindings[k].Name);
-        //                if(viewedShapes[j] == muse.CloudData[i].Bindings[k].Name)
-        //                {
-        //                    currentMusing = muse.CloudData[i].Bindings[k].Content;
-        //                }
-        //            }
-        //        }
-
-        //        SendMusing(currentMusing);
-        //    }
-        //}
+        
 
         timer = 20;
         StartCoroutine(LiveMusing(fullPrompt, key));
@@ -454,15 +429,20 @@ public class Storyteller : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        // If the request return an error set the error on console. - we should set parameters on the api to request again  TODO: Debug this -- freezes when thrown (Abraham Lincoln)
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        Debug.Log("live musing attempt result: "+request.result);
+        // If the request return an error set the error on console. - we should set parameters on the api to request again  TODO INDIECADE: Debug this -- freezes when thrown
+
+
+        //if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        if (request.result != UnityWebRequest.Result.Success) //CM added to check for all errors and "inProgress" hangs
         {
             Debug.Log("failed request error: " + request.error);
-            Debug.Log("failed downloadHandler.data: " + request.downloadHandler.data);
+            Debug.Log("failed downloadHandler.data: " + request.downloadHandler.text);
             //TODO: when a 503 error is thrown (model is not ready) set "wait_for_model" = true; remake the request
             JSONNode data = request.downloadHandler.text;
 
             //on error code here
+            //pull a pre-rendered musing from the text file
             for (int i = 0; i < muse.CloudData.Count; i++)
             {
 
@@ -474,7 +454,7 @@ public class Storyteller : MonoBehaviour
                         //Debug.Log(viewedShapes[j]);
                         for (int k = 0; k < muse.CloudData[i].Bindings.Length; k++)
                         {
-                            Debug.Log(muse.CloudData[i].Bindings[k].Name);
+                            Debug.Log("Binding: "+muse.CloudData[i].Bindings[k].Name);
                             if (viewedShapes[j] == muse.CloudData[i].Bindings[k].Name)
                             {
                                 currentMusing = muse.CloudData[i].Bindings[k].Content;
@@ -489,16 +469,19 @@ public class Storyteller : MonoBehaviour
         }
         else
         {
-            //Debug.Log("hi");
+            Debug.Log("Success!");
             JSONNode data = request.downloadHandler.text;
+
+         
             // Process the result
             //Debug.Log(ProcessResult(data, prompt));
 
-            string[] currentMusing = ProcessResult(data, prompt); //TODO: need to post process this data into sentences
-                                                            //Debug.Log(currentMusing[0]);
+            string[] currentMusing = ProcessResult(data, prompt);
             SendMusing(currentMusing);
-            //generativeStory.Add(ProcessResult(data));
-            
+            Debug.Log("CurrentMusing: "+ currentMusing[0]);
+
+            //generativeStory.Add(ProcessResult(data)); //may want 
+
         }
 
         request.Dispose(); //Colleen added to manage a memory leak. See documentation here: https://answers.unity.com/questions/1904005/a-native-collection-has-not-been-disposed-resultin-1.html

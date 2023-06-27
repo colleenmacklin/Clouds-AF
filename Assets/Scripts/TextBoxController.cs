@@ -231,7 +231,7 @@ public class TextBoxController : MonoBehaviour
         else
         {
             complete = true;
-            //Debug.Log("complete is true");
+            Debug.Log("TEXTBoxCOntroller: voice complete is true");
             textField.text = ""; //clear text because it's the end
                                  //potentially trigger an event for ending the dialogue
             textFieldBKGD.text = BKGDColor + textField.text + "</mark>";
@@ -272,7 +272,7 @@ public class TextBoxController : MonoBehaviour
         Reset(); //reset first and then ingest lines
         CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
-
+        Debug.Log("ReadNEwLines: "+ activeLine);
         if (isPC)
         {
             speaker.Speak(activeLine, null);

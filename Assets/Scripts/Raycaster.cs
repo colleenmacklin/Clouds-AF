@@ -185,6 +185,7 @@ public class Raycaster : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
+                    Debug.Log("mouseState = Reading");
                     //in the future this should be some sort of reading state input
                     textBoxControl.Check();//bad mutation management.
                 }

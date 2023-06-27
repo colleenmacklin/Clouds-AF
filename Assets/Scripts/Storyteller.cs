@@ -223,9 +223,11 @@ public class Storyteller : MonoBehaviour
 //TODO: INdieCADE Build - fix problem when musing is empty - check to see if it is null, and if so, say something else and release camera lock
 //
 
-        if (musing.Length > 0)
-        {
-         textBoxController.ReadNewLines(musing);
+        //if (musing.Length > 0)
+        if (musing[0].Length >0) //checking to see if there's a character at all in the string, since it's possible that there's a list of empty strings...
+
+            {
+                textBoxController.ReadNewLines(musing);
 
         }
         else
@@ -461,19 +463,6 @@ public class Storyteller : MonoBehaviour
                 if (muse.CloudData[i].Name == key)
                 {
                     string[] currentMusing = muse.CloudData[i].Content;
-                    for (int j = 0; j < viewedShapes.Count; j++)
-                    {
-                        //Debug.Log(viewedShapes[j]);
-                        for (int k = 0; k < muse.CloudData[i].Bindings.Length; k++)
-                        {
-                            Debug.Log("Binding: "+muse.CloudData[i].Bindings[k].Name);
-                            if (viewedShapes[j] == muse.CloudData[i].Bindings[k].Name)
-                            {
-                                currentMusing = muse.CloudData[i].Bindings[k].Content;
-                            }
-                        }
-                    }
-
                     SendMusing(currentMusing);
                 }
             }
@@ -519,7 +508,8 @@ public class Storyteller : MonoBehaviour
         Debug.Log(paragraph);
 
         // Split the paragraph into sentences
-        string[] sentences = paragraph.Split("\\n");
+        //string[] sentences = paragraph.Split("\\n"); //TODO: this throws the error - if the model is trained on text files with two paragraph returns (/n/n), it will return a null line
+        string[] sentences = paragraph.Split("\\n", StringSplitOptions.RemoveEmptyEntries); //TODO: TEST (6/27)
 
         //Debug.Log(sentences.Length);
 
@@ -527,14 +517,17 @@ public class Storyteller : MonoBehaviour
         List<string> sentenceList = new List<string>();
 
         // Iterate through the sentences and add each one to the list
-        //foreach (string sentence in sentences)
-        //{
-        //    sentenceList.Add(sentence);
-        //}
-        for (int i = 0; i < numberOfSentences; i++) //TODO: Returns an out of index error --cm
+        foreach (string sentence in sentences)
         {
-            sentenceList.Add(sentences[i]);
+            sentenceList.Add(sentence);
+            Debug.Log("processing the text into sentences... " + sentence);
+
         }
+
+        //for (int i = 0; i < numberOfSentences; i++) //TODO: Returns an out of index error --cm
+        //{
+        //sentenceList.Add(sentences[i]);
+        //}
 
         return ChooseSentences(sentenceList, prompt).ToArray();
 

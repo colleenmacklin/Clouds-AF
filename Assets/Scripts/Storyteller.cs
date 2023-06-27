@@ -214,12 +214,24 @@ public class Storyteller : MonoBehaviour
     }
 
     //Send a musing to the text controller
+
+
+    string[] fakeMusing = { "hi i don't have anything to say", "i still don't have anything to say ", "hi i'm still out" };
     void SendMusing(string[] musing)
     {
         Debug.Log("sendMusing: "+musing[0]);
 //TODO: INdieCADE Build - fix problem when musing is empty - check to see if it is null, and if so, say something else and release camera lock
 //
-        textBoxController.ReadNewLines(musing);
+
+        if (musing.Length > 0)
+        {
+         textBoxController.ReadNewLines(musing);
+
+        }
+        else
+        {
+            textBoxController.ReadNewLines(fakeMusing);
+        }
         //for (int i = 0; i < musing.Length; i++)
         //{
         //    speaker.Speak(musing[i]);

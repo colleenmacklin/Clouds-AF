@@ -63,6 +63,8 @@ namespace Crosstales.RTVoice.Provider
 
       public override bool hasVoicesInEditor => true;
 
+      public override int MaxSimultaneousSpeeches => 0;
+
       #endregion
 
 
@@ -247,7 +249,7 @@ namespace Crosstales.RTVoice.Provider
 
                      if (process.ExitCode == 0)
                      {
-                        yield return playAudioFile(wrapper, Crosstales.Common.Util.NetworkHelper.ValidURLFromFilePath(outputFile), outputFile);
+                        yield return playAudioFile(wrapper, Crosstales.Common.Util.NetworkHelper.GetURLFromFile(outputFile), outputFile);
                      }
                      else
                      {
@@ -475,10 +477,10 @@ namespace Crosstales.RTVoice.Provider
             {
                voices.Add(Speaker.Instance.ESpeakApplication.CTContains("espeak-ng")
                   ? new Crosstales.RTVoice.Model.Voice(reply.Substring(30, 19).Trim().Replace("_", " "), reply.Substring(50).Trim(),
-                     Crosstales.RTVoice.Util.Helper.StringToGender(reply.Substring(23, 1)), "unknown",
+                     Crosstales.RTVoice.Util.Helper.StringToGender(reply.Substring(23, 1)), Crosstales.RTVoice.Util.Constants.VOICE_AGE_UNKNOWN,
                      reply.Substring(4, 15).Trim(), "", "espeak-ng")
                   : new Crosstales.RTVoice.Model.Voice(reply.Substring(22, 20).Trim(), reply.Substring(43).Trim(),
-                     Crosstales.RTVoice.Util.Helper.StringToGender(reply.Substring(19, 1)), "unknown",
+                     Crosstales.RTVoice.Util.Helper.StringToGender(reply.Substring(19, 1)), Crosstales.RTVoice.Util.Constants.VOICE_AGE_UNKNOWN,
                      reply.Substring(4, 15).Trim(), "", "espeak"));
             }
          }
@@ -733,4 +735,4 @@ namespace Crosstales.RTVoice.Provider
    }
 }
 #endif
-// © 2018-2022 crosstales LLC (https://www.crosstales.com)
+// © 2018-2023 crosstales LLC (https://www.crosstales.com)

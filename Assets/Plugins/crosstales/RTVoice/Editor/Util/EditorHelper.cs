@@ -107,7 +107,7 @@ namespace Crosstales.RTVoice.EditorUtil
       /// <summary>Shows the "no voices found"-UI.</summary>
       public static void NoVoicesUI()
       {
-         if (isRTVoiceInScene)
+         if (Speaker.Instance != null && isRTVoiceInScene)
          {
             if (Crosstales.RTVoice.Speaker.Instance.isPlatformSupported && !Crosstales.RTVoice.Speaker.Instance.isWorkingInPlaymode)
             {
@@ -147,11 +147,19 @@ namespace Crosstales.RTVoice.EditorUtil
 
       /// <summary>Checks if the "RTVoice"-prefab is in the scene.</summary>
       /// <returns>True if the "RTVoice"-prefab is in the scene.</returns>
+#if UNITY_2023_1_OR_NEWER
+      public static bool isRTVoiceInScene => GameObject.FindFirstObjectByType<Crosstales.RTVoice.Speaker>() != null;
+#else
       public static bool isRTVoiceInScene => GameObject.FindObjectOfType(typeof(Crosstales.RTVoice.Speaker)) != null; //GameObject.Find(Crosstales.RTVoice.Util.Constants.RTVOICE_SCENE_OBJECT_NAME) != null;
+#endif
 
       /// <summary>Checks if the "GlobalCache"-prefab is in the scene.</summary>
       /// <returns>True if the "GlobalCache"-prefab is in the scene.</returns>
+#if UNITY_2023_1_OR_NEWER
+      public static bool isGlobalCacheInScene => GameObject.FindFirstObjectByType<Crosstales.RTVoice.GlobalCache>() != null;
+#else
       public static bool isGlobalCacheInScene => GameObject.FindObjectOfType(typeof(Crosstales.RTVoice.GlobalCache)) != null; //GameObject.Find(Crosstales.RTVoice.Util.Constants.GLOBALCACHE_SCENE_OBJECT_NAME) != null;
+#endif
 
       /// <summary>Shows a banner for "Online Check".</summary>
       public static void BannerOC()
@@ -202,4 +210,4 @@ namespace Crosstales.RTVoice.EditorUtil
    }
 }
 #endif
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

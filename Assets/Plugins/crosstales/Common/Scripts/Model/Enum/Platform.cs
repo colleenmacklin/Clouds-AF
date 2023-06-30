@@ -3,15 +3,14 @@
    /// <summary>All available platforms.</summary>
    public enum Platform
    {
-      Windows,
-      OSX,
-      Linux,
-      IOS,
-      Android,
-      WSA,
-      Web,
-      Unsupported
-      //MaryTTS
+      Windows = 0,
+      OSX = 1,
+      Linux = 2,
+      IOS = 3,
+      Android = 4,
+      WSA = 5,
+      Web = 6,
+      Unsupported = 7
    }
 }
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

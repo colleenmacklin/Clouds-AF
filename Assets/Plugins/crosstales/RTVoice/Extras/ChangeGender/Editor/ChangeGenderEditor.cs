@@ -31,7 +31,7 @@ namespace Crosstales.RTVoice.EditorExtension
 
          if (script.isActiveAndEnabled)
          {
-            if (Crosstales.RTVoice.Speaker.Instance.isTTSAvailable && Crosstales.RTVoice.EditorUtil.EditorHelper.isRTVoiceInScene)
+            if (Speaker.Instance != null && Crosstales.RTVoice.Speaker.Instance.isTTSAvailable && Crosstales.RTVoice.EditorUtil.EditorHelper.isRTVoiceInScene)
             {
                GUILayout.Label("Action", EditorStyles.boldLabel);
 
@@ -60,4 +60,4 @@ namespace Crosstales.RTVoice.EditorExtension
    }
 }
 #endif
-// © 2019-2022 crosstales LLC (https://www.crosstales.com)
+// © 2019-2023 crosstales LLC (https://www.crosstales.com)

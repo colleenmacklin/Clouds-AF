@@ -24,7 +24,7 @@ namespace Crosstales.RTVoice.EditorExtension
 
       private void OnDisable()
       {
-         if (Crosstales.RTVoice.Util.Helper.isEditorMode)
+         if (Speaker.Instance != null && Crosstales.RTVoice.Util.Helper.isEditorMode)
             Speaker.Instance.Silence();
       }
 
@@ -36,7 +36,7 @@ namespace Crosstales.RTVoice.EditorExtension
          {
             if (!string.IsNullOrEmpty(script.Text))
             {
-               if (Speaker.Instance.isTTSAvailable && Crosstales.RTVoice.EditorUtil.EditorHelper.isRTVoiceInScene)
+               if (Speaker.Instance != null && Speaker.Instance.isTTSAvailable && Crosstales.RTVoice.EditorUtil.EditorHelper.isRTVoiceInScene)
                {
                   //add stuff if needed
                }
@@ -62,4 +62,4 @@ namespace Crosstales.RTVoice.EditorExtension
    }
 }
 #endif
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

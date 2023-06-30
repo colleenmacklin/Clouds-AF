@@ -35,7 +35,12 @@ namespace Crosstales.Common.EditorTask
          {
             if (!isValidBuildTargetGroup(group)) continue;
 
+#if UNITY_2023_1_OR_NEWER
+            UnityEditor.Build.NamedBuildTarget nbt = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(group);
+            System.Collections.Generic.List<string> defineSymbols = PlayerSettings.GetScriptingDefineSymbols(nbt).Split(';').Select(d => d.Trim()).ToList();
+#else
             System.Collections.Generic.List<string> defineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
+#endif
             bool changed = false;
 
             foreach (string symbol in symbols.Where(symbol => !defineSymbols.Contains(symbol)))
@@ -48,7 +53,11 @@ namespace Crosstales.Common.EditorTask
             {
                try
                {
+#if UNITY_2023_1_OR_NEWER
+                  PlayerSettings.SetScriptingDefineSymbols(nbt, string.Join(";", defineSymbols.ToArray()));
+#else
                   PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", defineSymbols.ToArray()));
+#endif
                }
                catch (System.Exception)
                {
@@ -64,8 +73,12 @@ namespace Crosstales.Common.EditorTask
          foreach (BuildTargetGroup group in System.Enum.GetValues(typeof(BuildTargetGroup)))
          {
             if (!isValidBuildTargetGroup(group)) continue;
-
+#if UNITY_2023_1_OR_NEWER
+            UnityEditor.Build.NamedBuildTarget nbt = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(group);
+            System.Collections.Generic.List<string> defineSymbols = PlayerSettings.GetScriptingDefineSymbols(nbt).Split(';').Select(d => d.Trim()).ToList();
+#else
             System.Collections.Generic.List<string> defineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
+#endif
             bool changed = false;
 
             foreach (string symbol in symbols.Where(symbol => defineSymbols.Contains(symbol)))
@@ -78,7 +91,11 @@ namespace Crosstales.Common.EditorTask
             {
                try
                {
+#if UNITY_2023_1_OR_NEWER
+                  PlayerSettings.SetScriptingDefineSymbols(nbt, string.Join(";", defineSymbols.ToArray()));
+#else
                   PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", defineSymbols.ToArray()));
+#endif
                }
                catch (System.Exception)
                {
@@ -116,4 +133,4 @@ namespace Crosstales.Common.EditorTask
    }
 }
 #endif
-// © 2018-2022 crosstales LLC (https://www.crosstales.com)
+// © 2018-2023 crosstales LLC (https://www.crosstales.com)

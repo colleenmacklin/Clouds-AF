@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Text;
-using System.IO;
 using System;
 
 namespace Crosstales.Common.Audio
@@ -22,7 +20,7 @@ namespace Crosstales.Common.Audio
       #region Variables
 
       // Force save as 16-bit .wav
-      private const int blockSize_16Bit = 2;
+      private const int BLOCK_SIZE_16_BIT = 2;
 
       #endregion
 
@@ -31,7 +29,7 @@ namespace Crosstales.Common.Audio
 
       /// <summary>Load PCM format *.wav audio file and convert to AudioClip.</summary>
       /// <param name="filePath">Local file path to .wav file</param>
-      /// <param name="name">Name of the AudioClip (default: wav, optional)</param>
+      /// <param name="name">Name of the AudioClip (optional, default: wav)</param>
       /// <returns>AudioClip from the byte-array.</returns>
       public static AudioClip ToAudioClip(string filePath, string name = "wav")
       {
@@ -44,7 +42,7 @@ namespace Crosstales.Common.Audio
 */
          try
          {
-            byte[] fileBytes = File.ReadAllBytes(filePath);
+            byte[] fileBytes = Crosstales.Common.Util.FileHelper.ReadAllBytes(filePath);
 
             return ToAudioClip(fileBytes, name);
          }
@@ -58,9 +56,9 @@ namespace Crosstales.Common.Audio
 
       /// <summary>Load PCM format *.wav audio stream and convert to AudioClip.</summary>
       /// <param name="stream">Local file path to .wav file</param>
-      /// <param name="name">Name of the AudioClip (default: wav, optional)</param>
+      /// <param name="name">Name of the AudioClip (optional, default: wav)</param>
       /// <returns>AudioClip from the byte-array.</returns>
-      public static AudioClip ToAudioClip(Stream stream, string name = "wav")
+      public static AudioClip ToAudioClip(System.IO.Stream stream, string name = "wav")
       {
          try
          {
@@ -76,7 +74,7 @@ namespace Crosstales.Common.Audio
 
       /// <summary>Load PCM format byte-array and convert to AudioClip.</summary>
       /// <param name="fileBytes">Byte array with the PCM data</param>
-      /// <param name="name">Name of the AudioClip (default: wav, optional)</param>
+      /// <param name="name">Name of the AudioClip (optional, default: wav)</param>
       /// <returns>AudioClip from the byte-array.</returns>
       public static AudioClip ToAudioClip(byte[] fileBytes, string name = "wav")
       {
@@ -136,11 +134,11 @@ namespace Crosstales.Common.Audio
       /// <summary>Convert an AudioClip to a byte-array and save it to a file.</summary>
       /// <param name="audioClip">AudioClip to save</param>
       /// <param name="filepath">File path</param>
-      /// <param name="saveAsFile">Save the file (default: true, optional)</param>
+      /// <param name="saveAsFile">Save the file (optional, default: true)</param>
       /// <returns>AudioClip as byte-array.</returns>
       public static byte[] FromAudioClip(AudioClip audioClip, string filepath, bool saveAsFile = true)
       {
-         using (MemoryStream stream = new MemoryStream())
+         using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
          {
             const int headerSize = 44;
 
@@ -150,7 +148,7 @@ namespace Crosstales.Common.Audio
             // NB: Only supports 16 bit
 
             // total file size = 44 bytes for header format and audioClip.samples * factor due to float to Int16 / sbyte conversion
-            int fileSize = audioClip.samples * audioClip.channels * blockSize_16Bit + headerSize; // BlockSize (bitDepth)
+            int fileSize = audioClip.samples * audioClip.channels * BLOCK_SIZE_16_BIT + headerSize; // BlockSize (bitDepth)
 
             // chunk descriptor (riff)
             writeFileHeader(stream, fileSize);
@@ -169,7 +167,7 @@ namespace Crosstales.Common.Audio
             {
                try
                {
-                  File.WriteAllBytes(filepath, bytes);
+                  Crosstales.Common.Util.FileHelper.WriteAllBytes(filepath, bytes);
                }
                catch (Exception ex)
                {
@@ -290,20 +288,20 @@ namespace Crosstales.Common.Audio
          return data;
       }
 
-      private static int writeFileHeader(MemoryStream stream, int fileSize)
+      private static int writeFileHeader(System.IO.MemoryStream stream, int fileSize)
       {
          int count = 0;
          const int total = 12;
 
          // riff chunk id
-         byte[] riff = Encoding.ASCII.GetBytes("RIFF");
+         byte[] riff = System.Text.Encoding.ASCII.GetBytes("RIFF");
          count += writeBytesToMemoryStream(stream, riff);
 
          // riff chunk size
          int chunkSize = fileSize - 8; // total size - 8 for the other two fields in the header
          count += writeBytesToMemoryStream(stream, BitConverter.GetBytes(chunkSize));
 
-         byte[] wave = Encoding.ASCII.GetBytes("WAVE");
+         byte[] wave = System.Text.Encoding.ASCII.GetBytes("WAVE");
          count += writeBytesToMemoryStream(stream, wave);
 
          // Validate header
@@ -312,12 +310,12 @@ namespace Crosstales.Common.Audio
          return count;
       }
 
-      private static int writeFileFormat(MemoryStream stream, int channels, int sampleRate, ushort bitDepth)
+      private static int writeFileFormat(System.IO.MemoryStream stream, int channels, int sampleRate, ushort bitDepth)
       {
          int count = 0;
          const int total = 24;
 
-         byte[] id = Encoding.ASCII.GetBytes("fmt ");
+         byte[] id = System.Text.Encoding.ASCII.GetBytes("fmt ");
          count += writeBytesToMemoryStream(stream, id);
 
          int subchunk1Size = 16; // 24 - 8
@@ -345,7 +343,7 @@ namespace Crosstales.Common.Audio
          return count;
       }
 
-      private static int writeFileData(MemoryStream stream, AudioClip audioClip)
+      private static int writeFileData(System.IO.MemoryStream stream, AudioClip audioClip)
       {
          int count = 0;
          const int total = 8;
@@ -356,10 +354,10 @@ namespace Crosstales.Common.Audio
 
          byte[] bytes = convertAudioClipDataToInt16ByteArray(data);
 
-         byte[] id = Encoding.ASCII.GetBytes("data");
+         byte[] id = System.Text.Encoding.ASCII.GetBytes("data");
          count += writeBytesToMemoryStream(stream, id);
 
-         int subchunk2Size = Convert.ToInt32(audioClip.samples * blockSize_16Bit * audioClip.channels); // BlockSize (bitDepth)
+         int subchunk2Size = Convert.ToInt32(audioClip.samples * BLOCK_SIZE_16_BIT * audioClip.channels); // BlockSize (bitDepth)
          count += writeBytesToMemoryStream(stream, BitConverter.GetBytes(subchunk2Size));
 
          // Validate header
@@ -376,7 +374,7 @@ namespace Crosstales.Common.Audio
 
       private static byte[] convertAudioClipDataToInt16ByteArray(float[] data)
       {
-         using (MemoryStream dataStream = new MemoryStream())
+         using (System.IO.MemoryStream dataStream = new System.IO.MemoryStream())
          {
             const int x = sizeof(short);
 
@@ -396,7 +394,7 @@ namespace Crosstales.Common.Audio
          }
       }
 
-      private static int writeBytesToMemoryStream(MemoryStream stream, byte[] bytes)
+      private static int writeBytesToMemoryStream(System.IO.MemoryStream stream, byte[] bytes)
       {
          int count = bytes.Length;
          stream.Write(bytes, 0, count);
@@ -448,4 +446,4 @@ namespace Crosstales.Common.Audio
       #endregion
    }
 }
-// © 2018-2022 crosstales LLC (https://www.crosstales.com)
+// © 2018-2023 crosstales LLC (https://www.crosstales.com)

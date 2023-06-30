@@ -1,7 +1,9 @@
-﻿using System.Linq;
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
+using Crosstales.RTVoice.EditorUtil;
+using Crosstales.RTVoice.Util;
 
 namespace Crosstales.RTVoice.EditorTask
 {
@@ -98,6 +100,57 @@ namespace Crosstales.RTVoice.EditorTask
          }
 
          st = status;
+      }
+
+      public static void UpdateCheckWithDialog()
+      {
+         string[] data = readData();
+
+         updateStatus(data);
+
+         switch (status)
+         {
+            case UpdateStatus.UPDATE:
+            {
+               bool option = EditorUtility.DisplayDialog($"{Constants.ASSET_NAME} - Update available",
+                  updateText(data),
+                  "Yes, let's do it!",
+                  "Not right now");
+
+               if (option)
+                  Crosstales.Common.Util.NetworkHelper.OpenURL(EditorConstants.ASSET_URL);
+               break;
+            }
+            case UpdateStatus.UPDATE_VERSION:
+            {
+               bool option = EditorUtility.DisplayDialog($"{Constants.ASSET_NAME} - Upgrade needed",
+                  updateVersionText(data),
+                  "Yes, let's do it!",
+                  "Not right now");
+
+               if (option)
+                  Crosstales.Common.Util.NetworkHelper.OpenURL(EditorConstants.ASSET_URL);
+               break;
+            }
+            case UpdateStatus.DEPRECATED:
+            {
+               bool option = EditorUtility.DisplayDialog($"{Constants.ASSET_NAME} - Upgrade needed",
+                  deprecatedText(data),
+                  "Learn more",
+                  "Not right now");
+
+               if (option)
+                  Crosstales.Common.Util.NetworkHelper.OpenURL(EditorConstants.ASSET_URL);
+               break;
+            }
+            default:
+            {
+               EditorUtility.DisplayDialog($"{Constants.ASSET_NAME} - Latest version {Constants.ASSET_VERSION}",
+                  TEXT_NO_UPDATE,
+                  "OK");
+               break;
+            }
+         }
       }
 
       #endregion
@@ -217,8 +270,7 @@ namespace Crosstales.RTVoice.EditorTask
          return sb.ToString();
       }
 
-
-      private static string updateVersionText(string[] data) //TODO remove in the future
+      private static string updateVersionText(string[] data)
       {
          System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
@@ -344,7 +396,7 @@ namespace Crosstales.RTVoice.EditorTask
          return sb.ToString();
       }
 
-      private static string updateVersionTextForEditor(string[] data) //TODO remove in the future
+      private static string updateVersionTextForEditor(string[] data)
       {
          System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
@@ -390,4 +442,4 @@ namespace Crosstales.RTVoice.EditorTask
    }
 }
 #endif
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

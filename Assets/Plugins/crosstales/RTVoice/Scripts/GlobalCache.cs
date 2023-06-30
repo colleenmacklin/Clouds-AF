@@ -147,7 +147,14 @@ namespace Crosstales.RTVoice
 
          foreach (System.Collections.Generic.KeyValuePair<Crosstales.RTVoice.Model.Wrapper, AudioClip> kvp in Clips)
          {
-            Destroy(kvp.Value);
+            if (Crosstales.RTVoice.Util.Helper.isEditorMode)
+            {
+               DestroyImmediate(kvp.Value);
+            }
+            else
+            {
+               Destroy(kvp.Value);
+            }
          }
 
          Clips.Clear();
@@ -160,6 +167,15 @@ namespace Crosstales.RTVoice
          ClearClipCache();
       }
 
+      /// <summary>Clears and deletes the complete cache.</summary>
+      public void ClearAndDeleteCache()
+      {
+         ClearCache();
+
+         if (System.IO.File.Exists(dataStorePath))
+            System.IO.File.Delete(dataStorePath);
+      }
+
       /// <summary>Saves the complete cache.</summary>
       public void SaveCache()
       {
@@ -167,7 +183,7 @@ namespace Crosstales.RTVoice
 
          Crosstales.Common.Util.XmlHelper.SerializeToFile(data, dataStorePath);
 
-         Debug.Log("SaveCache: " + data.Count);
+         //Debug.Log("SaveCache: " + data.Count);
       }
 
       /// <summary>Loads the complete cache.</summary>
@@ -186,7 +202,7 @@ namespace Crosstales.RTVoice
             }
          }
 
-         Debug.Log("LoadCache: " + Clips.Count);
+         //Debug.Log("LoadCache: " + Clips.Count);
       }
 
       #endregion
@@ -214,4 +230,4 @@ namespace Crosstales.RTVoice
       }
    }
 }
-// © 2020-2022 crosstales LLC (https://www.crosstales.com)
+// © 2020-2023 crosstales LLC (https://www.crosstales.com)

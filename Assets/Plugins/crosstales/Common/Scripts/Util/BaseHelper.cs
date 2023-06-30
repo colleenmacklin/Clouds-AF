@@ -11,20 +11,108 @@ namespace Crosstales.Common.Util
    {
       #region Variables
 
-      public static readonly System.Globalization.CultureInfo BaseCulture = new System.Globalization.CultureInfo("en-US"); //TODO set with current user locale?
-
-      protected static readonly System.Random rnd = new System.Random();
-
       public static bool ApplicationIsPlaying = Application.isPlaying;
 
-      private static string[] args;
+      protected static readonly System.Random _rnd = new System.Random();
 
-      private static int androidAPILevel = 0;
+      private static string[] _args = null;
+
+      private static int _androidAPILevel = 0;
 
       #endregion
 
 
       #region Properties
+
+      /// <summary>The current culture of the application.</summary>
+      /// <returns>Culture of the application.</returns>
+      public static System.Globalization.CultureInfo BaseCulture
+      {
+         get
+         {
+            try
+            {
+               return new System.Globalization.CultureInfo(LanguageToISO639(Application.systemLanguage));
+            }
+            catch
+            {
+               return System.Globalization.CultureInfo.CurrentCulture;
+            }
+         }
+      }
+
+      /// <summary>Checks if we are in Editor mode.</summary>
+      /// <returns>True if in Editor mode.</returns>
+      public static bool isEditorMode => isEditor && !ApplicationIsPlaying;
+
+      /// <summary>Checks if the current build target uses IL2CPP.</summary>
+      /// <returns>True if the current build target uses IL2CPP.</returns>
+      public static bool isIL2CPP
+      {
+         get
+         {
+#if UNITY_EDITOR
+            UnityEditor.BuildTarget target = UnityEditor.EditorUserBuildSettings.activeBuildTarget;
+            UnityEditor.BuildTargetGroup group = UnityEditor.BuildPipeline.GetBuildTargetGroup(target);
+#if UNITY_2023_1_OR_NEWER
+            UnityEditor.Build.NamedBuildTarget nbt = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(group);
+            return UnityEditor.PlayerSettings.GetScriptingBackend(nbt) == UnityEditor.ScriptingImplementation.IL2CPP;
+#else
+            return UnityEditor.PlayerSettings.GetScriptingBackend(group) == UnityEditor.ScriptingImplementation.IL2CPP;
+#endif
+#else
+#if ENABLE_IL2CPP
+            return true;
+#else
+            return false;
+#endif
+#endif
+         }
+      }
+
+      /// <summary>Returns the current platform.</summary>
+      /// <returns>The current platform.</returns>
+      public static Crosstales.Common.Model.Enum.Platform CurrentPlatform
+      {
+         get
+         {
+            if (isWindowsPlatform)
+               return Crosstales.Common.Model.Enum.Platform.Windows;
+
+            if (isMacOSPlatform)
+               return Crosstales.Common.Model.Enum.Platform.OSX;
+
+            if (isLinuxPlatform)
+               return Crosstales.Common.Model.Enum.Platform.Linux;
+
+            if (isAndroidPlatform)
+               return Crosstales.Common.Model.Enum.Platform.Android;
+
+            if (isIOSBasedPlatform)
+               return Crosstales.Common.Model.Enum.Platform.IOS;
+
+            if (isWSABasedPlatform)
+               return Crosstales.Common.Model.Enum.Platform.WSA;
+
+            return isWebPlatform
+               ? Crosstales.Common.Model.Enum.Platform.Web
+               : Crosstales.Common.Model.Enum.Platform.Unsupported;
+         }
+      }
+
+      /// <summary>Returns the Android API level of the current device (Android only)".</summary>
+      /// <returns>The Android API level of the current device.</returns>
+      public static int AndroidAPILevel
+      {
+         get
+         {
+#if UNITY_ANDROID
+            if (_androidAPILevel == 0)
+               _androidAPILevel = int.Parse(SystemInfo.operatingSystem.Substring(SystemInfo.operatingSystem.IndexOf("-") + 1, 3));
+#endif
+            return _androidAPILevel;
+         }
+      }
 
       #region Platforms
 
@@ -49,7 +137,7 @@ namespace Crosstales.Common.Util
          get
          {
 #if UNITY_STANDALONE_OSX
-             return true;
+            return true;
 #else
             return false;
 #endif
@@ -158,6 +246,21 @@ namespace Crosstales.Common.Util
          }
       }
 
+/*
+      /// <summary>Checks if the current platform is PS5.</summary>
+      /// <returns>True if the current platform is PS5.</returns>
+      public static bool isPS5Platform
+      {
+         get
+         {
+#if UNITY_PS5 //TODO does that define exists?
+            return true;
+#else
+            return false;
+#endif
+         }
+      }
+*/
       /// <summary>Checks if the current platform is WebGL.</summary>
       /// <returns>True if the current platform is WebGL.</returns>
       public static bool isWebGLPlatform
@@ -244,84 +347,18 @@ namespace Crosstales.Common.Util
 
       #endregion
 
-      /// <summary>Checks if we are in Editor mode.</summary>
-      /// <returns>True if in Editor mode.</returns>
-      public static bool isEditorMode => isEditor && !ApplicationIsPlaying;
-
-      /// <summary>Checks if the current build target uses IL2CPP.</summary>
-      /// <returns>True if the current build target uses IL2CPP.</returns>
-      public static bool isIL2CPP
-      {
-         get
-         {
-#if UNITY_EDITOR
-            UnityEditor.BuildTarget target = UnityEditor.EditorUserBuildSettings.activeBuildTarget;
-            UnityEditor.BuildTargetGroup group = UnityEditor.BuildPipeline.GetBuildTargetGroup(target);
-
-            return UnityEditor.PlayerSettings.GetScriptingBackend(group) == UnityEditor.ScriptingImplementation.IL2CPP;
-#else
-#if ENABLE_IL2CPP
-            return true;
-#else
-            return false;
-#endif
-#endif
-         }
-      }
-
-      /// <summary>Returns the current platform.</summary>
-      /// <returns>The current platform.</returns>
-      public static Crosstales.Common.Model.Enum.Platform CurrentPlatform
-      {
-         get
-         {
-            if (isWindowsPlatform)
-               return Crosstales.Common.Model.Enum.Platform.Windows;
-
-            if (isMacOSPlatform)
-               return Crosstales.Common.Model.Enum.Platform.OSX;
-
-            if (isLinuxPlatform)
-               return Crosstales.Common.Model.Enum.Platform.Linux;
-
-            if (isAndroidPlatform)
-               return Crosstales.Common.Model.Enum.Platform.Android;
-
-            if (isIOSBasedPlatform)
-               return Crosstales.Common.Model.Enum.Platform.IOS;
-
-            if (isWSABasedPlatform)
-               return Crosstales.Common.Model.Enum.Platform.WSA;
-
-            return isWebPlatform ? Crosstales.Common.Model.Enum.Platform.Web : Crosstales.Common.Model.Enum.Platform.Unsupported;
-         }
-      }
-
-      /// <summary>Returns the Android API level of the current device (Android only)".</summary>
-      /// <returns>The Android API level of the current device.</returns>
-      public static int AndroidAPILevel
-      {
-         get
-         {
-#if UNITY_ANDROID
-            if (androidAPILevel == 0)
-               androidAPILevel = int.Parse(SystemInfo.operatingSystem.Substring(SystemInfo.operatingSystem.IndexOf("-") + 1, 3));
-#endif
-            return androidAPILevel;
-         }
-      }
-
       #endregion
 
 
       #region Static block
 
+#if UNITY_EDITOR
       static BaseHelper()
       {
          //Debug.Log("Static block");
          initialize();
       }
-
+#endif
       [RuntimeInitializeOnLoadMethod]
       private static void initialize()
       {
@@ -343,26 +380,26 @@ namespace Crosstales.Common.Util
       #region Public methods
 
       /// <summary>Creates a string of characters with a given length.</summary>
-      /// <param name="replaceChars">Characters to generate the string (if more than one character is used, the generated string will be a randomized result of all characters)</param>
+      /// <param name="generateChars">Characters to generate the string (if more than one character is used, the generated string will be a randomized result of all characters)</param>
       /// <param name="stringLength">Length of the generated string</param>
       /// <returns>Generated string</returns>
-      public static string CreateString(string replaceChars, int stringLength)
+      public static string CreateString(string generateChars, int stringLength)
       {
-         if (replaceChars != null)
+         if (generateChars != null)
          {
-            if (replaceChars.Length > 1)
+            if (generateChars.Length > 1)
             {
                char[] chars = new char[stringLength];
 
                for (int ii = 0; ii < stringLength; ii++)
                {
-                  chars[ii] = replaceChars[rnd.Next(0, replaceChars.Length)];
+                  chars[ii] = generateChars[_rnd.Next(0, generateChars.Length)];
                }
 
                return new string(chars);
             }
 
-            return replaceChars.Length == 1 ? new string(replaceChars[0], stringLength) : string.Empty;
+            return generateChars.Length == 1 ? new string(generateChars[0], stringLength) : string.Empty;
          }
 
          return string.Empty;
@@ -370,9 +407,9 @@ namespace Crosstales.Common.Util
 
       /// <summary>Split the given text to lines and return it as list.</summary>
       /// <param name="text">Complete text fragment</param>
-      /// <param name="ignoreCommentedLines">Ignore commente lines (default: true, optional)</param>
-      /// <param name="skipHeaderLines">Number of skipped header lines (default: 0, optional)</param>
-      /// <param name="skipFooterLines">Number of skipped footer lines (default: 0, optional)</param>
+      /// <param name="ignoreCommentedLines">Ignore commente lines (optional, default: true)</param>
+      /// <param name="skipHeaderLines">Number of skipped header lines (optional, default: 0)</param>
+      /// <param name="skipFooterLines">Number of skipped footer lines (optional, default: 0)</param>
       /// <returns>Splitted lines as array</returns>
       public static System.Collections.Generic.List<string> SplitStringToLines(string text,
          bool ignoreCommentedLines = true, int skipHeaderLines = 0, int skipFooterLines = 0)
@@ -381,7 +418,8 @@ namespace Crosstales.Common.Util
 
          if (string.IsNullOrEmpty(text))
          {
-            Debug.LogWarning("Parameter 'text' is null or empty => 'SplitStringToLines()' will return an empty string list.");
+            Debug.LogWarning(
+               "Parameter 'text' is null or empty => 'SplitStringToLines()' will return an empty string list.");
          }
          else
          {
@@ -409,28 +447,10 @@ namespace Crosstales.Common.Util
 
          return result;
       }
-/*
-      /// <summary>Format byte-value to Human-Readable-Form.</summary>
-      /// <returns>Formatted byte-value in Human-Readable-Form.</returns>
-      public static string FormatBytesToHRF(long bytes)
-      {
-         string[] sizes = {"B", "KB", "MB", "GB", "TB"};
-         double len = bytes;
-         int order = 0;
-         while (len >= 1024 && order < sizes.Length - 1)
-         {
-            order++;
-            len /= 1024;
-         }
-
-         // Adjust the format string to your preferences.
-         return $"{len:0.##} {sizes[order]}";
-      }
-*/
 
       /// <summary>Format byte-value to Human-Readable-Form.</summary>
       /// <param name="bytes">Value in bytes</param>
-      /// <param name="useSI">Use SI-system (default: false, optional)</param>
+      /// <param name="useSI">Use SI-system (optional, default: false)</param>
       /// <returns>Formatted byte-value in Human-Readable-Form.</returns>
       public static string FormatBytesToHRF(long bytes, bool useSI = false)
       {
@@ -471,17 +491,11 @@ namespace Crosstales.Common.Util
       /// <summary>Format seconds to Human-Readable-Form.</summary>
       /// <param name="seconds">Value in seconds</param>
       /// <returns>Formatted seconds in Human-Readable-Form.</returns>
-      public static string FormatSecondsToHourMinSec(double seconds) //TODO remove later
-      {
-         return FormatSecondsToHRF(seconds);
-      }
-
-      /// <summary>Format seconds to Human-Readable-Form.</summary>
-      /// <param name="seconds">Value in seconds</param>
-      /// <returns>Formatted seconds in Human-Readable-Form.</returns>
       public static string FormatSecondsToHRF(double seconds)
       {
-         int totalSeconds = (int)seconds;
+         bool wasMinus = seconds < 0;
+
+         int totalSeconds = Mathf.Abs((int)seconds);
          int calcSeconds = totalSeconds % 60;
 
          if (seconds >= 86400)
@@ -490,7 +504,7 @@ namespace Crosstales.Common.Util
             int calcHours = (totalSeconds -= calcDays * 86400) / 3600;
             int calcMinutes = (totalSeconds - calcHours * 3600) / 60;
 
-            return $"{calcDays}d {calcHours}:{addLeadingZero(calcMinutes)}:{addLeadingZero(calcSeconds)}";
+            return $"{(wasMinus ? "-" : "")}{calcDays}d {calcHours}:{addLeadingZero(calcMinutes)}:{addLeadingZero(calcSeconds)}";
          }
 
          if (seconds >= 3600)
@@ -498,13 +512,13 @@ namespace Crosstales.Common.Util
             int calcHours = totalSeconds / 3600;
             int calcMinutes = (totalSeconds - calcHours * 3600) / 60;
 
-            return $"{calcHours}:{addLeadingZero(calcMinutes)}:{addLeadingZero(calcSeconds)}";
+            return $"{(wasMinus ? "-" : "")}{calcHours}:{addLeadingZero(calcMinutes)}:{addLeadingZero(calcSeconds)}";
          }
          else
          {
             int calcMinutes = totalSeconds / 60;
 
-            return $"{calcMinutes}:{addLeadingZero(calcSeconds)}";
+            return $"{(wasMinus ? "-" : "")}{calcMinutes}:{addLeadingZero(calcSeconds)}";
          }
       }
 
@@ -548,31 +562,33 @@ namespace Crosstales.Common.Util
 
       /// <summary>Generates a "Lorem Ipsum" based on various parameters.</summary>
       /// <param name="length">Length of the text</param>
-      /// <param name="minSentences">Minimum number of sentences for the text (default: 1, optional)</param>
-      /// <param name="maxSentences">Maximal number of sentences for the text (default: int.MaxValue, optional)</param>
-      /// <param name="minWords">Minimum number of words per sentence (default: 1, optional)</param>
-      /// <param name="maxWords">Maximal number of words per sentence (default: 15, optional)</param>
+      /// <param name="minSentences">Minimum number of sentences for the text (optional, default: 1)</param>
+      /// <param name="maxSentences">Maximal number of sentences for the text (optional, default: int.MaxValue)</param>
+      /// <param name="minWords">Minimum number of words per sentence (optional, default: 1)</param>
+      /// <param name="maxWords">Maximal number of words per sentence (optional, default: 15)</param>
       /// <returns>"Lorem Ipsum" based on the given parameters.</returns>
       public static string GenerateLoremIpsum(int length, int minSentences = 1, int maxSentences = int.MaxValue, int minWords = 1, int maxWords = 15)
       {
          string[] words =
          {
-            "lorem", "ipsum", "dolor", "sit", "amet", "consectetuer", "adipiscing", "elit", "sed", "diam", "nonummy", "nibh", "euismod", "tincidunt", "ut", "laoreet", "dolore", "magna", "aliquam", "erat"
+            "lorem", "ipsum", "dolor", "sit", "amet", "consectetuer", "adipiscing", "elit", "sed", "diam",
+            "nonummy", "nibh", "euismod", "tincidunt", "ut", "laoreet", "dolore", "magna", "aliquam", "erat"
          };
 
-         int numSentences = rnd.Next(maxSentences - minSentences) + minSentences + 1;
+         int numSentences = _rnd.Next(maxSentences - minSentences) + minSentences + 1;
 
          System.Text.StringBuilder result = new System.Text.StringBuilder();
 
          for (int s = 0; s < numSentences && result.Length <= length; s++)
          {
-            int numWords = rnd.Next(maxWords - minWords) + minWords + 1;
+            int numWords = _rnd.Next(maxWords - minWords) + minWords + 1;
             for (int w = 0; w < numWords && result.Length <= length; w++)
             {
                if (w > 0)
                   result.Append(" ");
 
-               result.Append(w == 0 ? words[rnd.Next(words.Length)].CTToTitleCase() : words[rnd.Next(words.Length)]);
+               result.Append(
+                  w == 0 ? words[_rnd.Next(words.Length)].CTToTitleCase() : words[_rnd.Next(words.Length)]);
             }
 
             result.Append(". ");
@@ -586,42 +602,6 @@ namespace Crosstales.Common.Util
          return text;
       }
 
-/*
-      /// <summary>Generates a string of all latin latin characters (ABC...xyz).</summary>
-      /// <returns>"String of all latin latin characters.</returns>
-      public static string GenerateLatinABC()
-      {
-         return GenerateLatinUppercaseABC() + GenerateLatinLowercaseABC();
-      }
-
-      /// <summary>Generates a string of all latin latin characters in uppercase (ABC...XYZ).</summary>
-      /// <returns>"String of all latin latin characters in uppercase.</returns>
-      public static string GenerateLatinUppercaseABC()
-      {
-         System.Text.StringBuilder result = new System.Text.StringBuilder();
-
-         for (int ii = 65; ii <= 90; ii++)
-         {
-            result.Append((char)ii);
-         }
-
-         return result.ToString();
-      }
-
-      /// <summary>Generates a string of all latin latin characters in lowercase (abc...xyz).</summary>
-      /// <returns>"String of all latin latin characters in lowercase.</returns>
-      public static string GenerateLatinLowercaseABC()
-      {
-         System.Text.StringBuilder result = new System.Text.StringBuilder();
-
-         for (int ii = 97; ii <= 122; ii++)
-         {
-            result.Append((char)ii);
-         }
-
-         return result.ToString();
-      }
-*/
       /// <summary>Converts a SystemLanguage to an ISO639-1 code. Returns "en" if the SystemLanguage could not be converted.</summary>
       /// <param name="language">SystemLanguage to convert.</param>
       /// <returns>"ISO639-1 code for the given SystemLanguage.</returns>
@@ -684,7 +664,8 @@ namespace Crosstales.Common.Util
             case SystemLanguage.Lithuanian:
                return "lt";
             case SystemLanguage.Norwegian:
-               return "no";
+               return "nb";
+            //return "no";
             case SystemLanguage.Polish:
                return "pl";
             case SystemLanguage.Portuguese:
@@ -693,8 +674,8 @@ namespace Crosstales.Common.Util
                return "ro";
             case SystemLanguage.Russian:
                return "ru";
-            case SystemLanguage.SerboCroatian:
-               return "sh";
+            //case SystemLanguage.SerboCroatian:
+            //   return "sh";
             case SystemLanguage.Slovak:
                return "sk";
             case SystemLanguage.Slovenian:
@@ -780,6 +761,7 @@ namespace Crosstales.Common.Util
                case "lt":
                   return SystemLanguage.Lithuanian;
                case "no":
+               case "nb":
                   return SystemLanguage.Norwegian;
                case "pl":
                   return SystemLanguage.Polish;
@@ -789,8 +771,8 @@ namespace Crosstales.Common.Util
                   return SystemLanguage.Romanian;
                case "ru":
                   return SystemLanguage.Russian;
-               case "sh":
-                  return SystemLanguage.SerboCroatian;
+               //case "sh":
+               //   return SystemLanguage.SerboCroatian;
                case "sk":
                   return SystemLanguage.Slovak;
                case "sl":
@@ -821,6 +803,9 @@ namespace Crosstales.Common.Util
       /// <param name="parameters">Parameters for the method (optional)</param>
       public static object InvokeMethod(string className, string methodName, params object[] parameters)
       {
+#if UNITY_WSA
+         return null;
+#else
          if (string.IsNullOrEmpty(className))
          {
             Debug.LogWarning("'className' is null or empty; can not execute.");
@@ -833,13 +818,14 @@ namespace Crosstales.Common.Util
             return null;
          }
 
-         foreach (System.Type type in System.AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()))
+         foreach (System.Type type in System.AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(assembly => assembly.GetTypes()))
          {
             try
             {
                if (type.FullName?.Equals(className) == true)
                   if (type.IsClass)
-                     return type.GetMethod(methodName, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Invoke(null, parameters);
+                     return type.GetMethod(methodName, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)?.Invoke(null, parameters);
             }
             catch (System.Exception ex)
             {
@@ -848,6 +834,7 @@ namespace Crosstales.Common.Util
          }
 
          return null;
+#endif
       }
 
       /// <summary>Returns an argument for a name from the url or command line.</summary>
@@ -873,7 +860,7 @@ namespace Crosstales.Common.Util
       /// <returns>Arguments from the url or command line.</returns>
       public static string[] GetArguments()
       {
-         if (args == null)
+         if (_args == null)
          {
 #if UNITY_WEBGL && !UNITY_EDITOR
 //#if (UNITY_WEBGL || UNITY_ANDROID) && !UNITY_EDITOR
@@ -881,14 +868,53 @@ namespace Crosstales.Common.Util
             string parameters = Application.absoluteURL.Substring(Application.absoluteURL.IndexOf("?") + 1);
 
             //Debug.Log("URL parameters: " + parameters);
-            args = parameters.Split(new char[] { '&', '=' });
+            _args = parameters.Split(new char[] { '&', '=' });
 #else
-            args = System.Environment.GetCommandLineArgs();
+#if !UNITY_WSA
+            _args = System.Environment.GetCommandLineArgs();
+#endif
 #endif
          }
 
-         return args;
+         return _args;
       }
+
+/*
+      /// <summary>Generates a string of all latin latin characters (ABC...xyz).</summary>
+      /// <returns>"String of all latin latin characters.</returns>
+      public static string GenerateLatinABC()
+      {
+         return GenerateLatinUppercaseABC() + GenerateLatinLowercaseABC();
+      }
+
+      /// <summary>Generates a string of all latin latin characters in uppercase (ABC...XYZ).</summary>
+      /// <returns>"String of all latin latin characters in uppercase.</returns>
+      public static string GenerateLatinUppercaseABC()
+      {
+         System.Text.StringBuilder result = new System.Text.StringBuilder();
+
+         for (int ii = 65; ii <= 90; ii++)
+         {
+            result.Append((char)ii);
+         }
+
+         return result.ToString();
+      }
+
+      /// <summary>Generates a string of all latin latin characters in lowercase (abc...xyz).</summary>
+      /// <returns>"String of all latin latin characters in lowercase.</returns>
+      public static string GenerateLatinLowercaseABC()
+      {
+         System.Text.StringBuilder result = new System.Text.StringBuilder();
+
+         for (int ii = 97; ii <= 122; ii++)
+         {
+            result.Append((char)ii);
+         }
+
+         return result.ToString();
+      }
+*/
 
       #endregion
 
@@ -955,4 +981,4 @@ namespace Crosstales.Common.Util
       */
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

@@ -10,8 +10,11 @@ namespace Crosstales.Common.Util
    {
       #region Variables
 
-      private uint exitCode = 123456;
-      private CTProcessStartInfo startInfo = new CTProcessStartInfo();
+      private uint _exitCode = 123456;
+      private CTProcessStartInfo _startInfo = new CTProcessStartInfo();
+
+      private static readonly System.Reflection.FieldInfo[] EVENT_FIELDS = typeof(System.Diagnostics.DataReceivedEventArgs).GetFields(
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 
       #endregion
 
@@ -27,12 +30,12 @@ namespace Crosstales.Common.Util
       /// <summary>Gets or sets the properties to pass to the Start() method of the Process.</summary>
       public CTProcessStartInfo StartInfo
       {
-         get => startInfo;
+         get => _startInfo;
 
          set
          {
             if (value != null)
-               startInfo = value;
+               _startInfo = value;
          }
       }
 
@@ -40,7 +43,7 @@ namespace Crosstales.Common.Util
       public bool HasExited { get; private set; }
 
       /// <summary>Gets the value that the associated process specified when it terminated.</summary>
-      public uint ExitCode => exitCode;
+      public uint ExitCode => _exitCode;
 
       /// <summary>Gets the time that the associated process was started.</summary>
       public System.DateTime StartTime { get; private set; }
@@ -84,20 +87,40 @@ namespace Crosstales.Common.Util
 
       #endregion
 
+
+      #region Public methods
+
+      public void BeginOutputReadLine()
+      {
+         //System.Threading.Thread.Sleep(100);
+         new System.Threading.Thread(watchStdOut).Start();
+      }
+
+      public void BeginErrorReadLine()
+      {
+         //System.Threading.Thread.Sleep(100);
+         new System.Threading.Thread(watchStdErr).Start();
+      }
+
+      /// <summary>Starts the process resource that is specified by the parameter containing process start information (for example, the file name of the process to start) and associates the resource with a new Process component..</summary>
+      public void Start(CTProcessStartInfo info)
+      {
+         if (info != null)
+            StartInfo = info;
+
+         Start();
+      }
+
+      #endregion
+
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-//#if false
       #region Windows
 
       #region Variables
 
-      private System.IntPtr threadHandle = System.IntPtr.Zero;
+      private System.IntPtr _threadHandle = System.IntPtr.Zero;
 
-      private static readonly System.Reflection.FieldInfo[] eventFields =
-         typeof(System.Diagnostics.DataReceivedEventArgs).GetFields(
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance |
-            System.Reflection.BindingFlags.DeclaredOnly);
-
-      private const uint Infinite = 0xffffffff;
+      private const uint INFINITE = 0xffffffff;
 
       // Creation flags
       private const uint CREATE_NO_WINDOW = 0x08000000;
@@ -127,15 +150,6 @@ namespace Crosstales.Common.Util
          }
       }
 
-      /// <summary>Starts the process resource that is specified by the parameter containing process start information (for example, the file name of the process to start) and associates the resource with a new Process component..</summary>
-      public void Start(CTProcessStartInfo info)
-      {
-         if (info != null)
-            StartInfo = info;
-
-         Start();
-      }
-
       /// <summary>Immediately stops the associated process.</summary>
       public void Kill()
       {
@@ -156,20 +170,8 @@ namespace Crosstales.Common.Util
          }
          else
          {
-            NativeMethods.WaitForSingleObject(Handle, Infinite);
+            NativeMethods.WaitForSingleObject(Handle, INFINITE);
          }
-      }
-
-      public void BeginOutputReadLine()
-      {
-         //System.Threading.Thread.Sleep(100);
-         new System.Threading.Thread(watchStdOut).Start();
-      }
-
-      public void BeginErrorReadLine()
-      {
-         //System.Threading.Thread.Sleep(100);
-         new System.Threading.Thread(watchStdErr).Start();
       }
 
       public void Dispose()
@@ -180,11 +182,11 @@ namespace Crosstales.Common.Util
          if (Handle != System.IntPtr.Zero)
             NativeMethods.CloseHandle(Handle);
 
-         if (threadHandle != System.IntPtr.Zero)
-            NativeMethods.CloseHandle(threadHandle);
+         if (_threadHandle != System.IntPtr.Zero)
+            NativeMethods.CloseHandle(_threadHandle);
 
          Handle = System.IntPtr.Zero;
-         threadHandle = System.IntPtr.Zero;
+         _threadHandle = System.IntPtr.Zero;
          Id = 0;
 
          isBusy = false;
@@ -225,7 +227,7 @@ namespace Crosstales.Common.Util
 
             if (StartInfo.RedirectStandardOutput)
             {
-               string tempStdFile = System.IO.Path.GetTempFileName();
+               string tempStdFile = FileHelper.TempFile;
                args += $" > \"{tempStdFile}\"";
 
                if (Crosstales.Common.Util.BaseConstants.DEV_DEBUG)
@@ -241,7 +243,7 @@ namespace Crosstales.Common.Util
 
             if (StartInfo.RedirectStandardError)
             {
-               string tempErrFile = System.IO.Path.GetTempFileName();
+               string tempErrFile = FileHelper.TempFile;
                args += $" 2> \"{tempErrFile}\"";
 
                if (Crosstales.Common.Util.BaseConstants.DEV_DEBUG)
@@ -270,7 +272,7 @@ namespace Crosstales.Common.Util
             if (retValue)
             {
                Handle = processInfo.hProcess;
-               threadHandle = processInfo.hThread;
+               _threadHandle = processInfo.hThread;
                Id = processInfo.dwProcessId;
 
                WaitForExit();
@@ -290,18 +292,18 @@ namespace Crosstales.Common.Util
          {
             System.Threading.Thread.Sleep(200); //give the streams the chance to write out all events
 
-            NativeMethods.GetExitCodeProcess(Handle, ref exitCode);
+            NativeMethods.GetExitCodeProcess(Handle, ref _exitCode);
 
             ExitTime = System.DateTime.Now;
 
             if (Handle != System.IntPtr.Zero)
                NativeMethods.CloseHandle(Handle);
 
-            if (threadHandle != System.IntPtr.Zero)
-               NativeMethods.CloseHandle(threadHandle);
+            if (_threadHandle != System.IntPtr.Zero)
+               NativeMethods.CloseHandle(_threadHandle);
 
             Handle = System.IntPtr.Zero;
-            threadHandle = System.IntPtr.Zero;
+            _threadHandle = System.IntPtr.Zero;
             Id = 0;
 
             if (!HasExited)
@@ -317,6 +319,183 @@ namespace Crosstales.Common.Util
          Kill();
          Dispose();
       }
+
+      #endregion
+
+      #endregion
+
+#else
+
+      #region Unix
+
+      #region Variables
+
+      private System.Threading.Thread _worker;
+
+      #endregion
+
+
+      #region Public methods
+
+      /// <summary>Starts (or reuses) the process resource that is specified by the StartInfo property of this Process component and associates it with the component.</summary>
+      public void Start()
+      {
+         isBusy = true;
+         HasExited = false;
+
+         if (StartInfo.UseThread)
+         {
+            _worker = new System.Threading.Thread(() => createProcess());
+            _worker.Start();
+
+            System.Threading.Thread.Sleep(200);
+         }
+         else
+         {
+            createProcess();
+         }
+      }
+
+      /// <summary>Immediately stops the associated process.</summary>
+      public void Kill()
+      {
+         _worker.CTAbort();
+
+         Dispose();
+      }
+
+      public void WaitForExit(int milliseconds = 0)
+      {
+         //Debug.Log("Not implemented!");
+      }
+
+      public void Dispose()
+      {
+         if (BaseConstants.DEV_DEBUG)
+            Debug.LogWarning("Dispose called!");
+
+         Id = 0;
+         isBusy = false;
+         HasExited = true;
+
+         if (StandardOutput != null)
+            StandardOutput.Dispose();
+
+         if (StandardError != null)
+            StandardError.Dispose();
+      }
+
+      #endregion
+
+
+      #region Private methods
+
+      private void createProcess()
+      {
+         StartTime = System.DateTime.Now;
+
+         string app = StartInfo.FileName;
+         string args = StartInfo.Arguments;
+
+         if (BaseConstants.DEV_DEBUG)
+            Debug.LogWarning($"createProcess: {StartTime}");
+
+         try
+         {
+#if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
+//#if false
+            if (StartInfo.RedirectStandardOutput)
+            {
+               StandardOutput = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
+            }
+
+            if (StartInfo.RedirectStandardError)
+            {
+               string tempErrFile = FileHelper.TempFile;
+               args += $" 2> \"{tempErrFile}\"";
+
+               if (BaseConstants.DEV_DEBUG)
+                  Debug.Log($"tempErrFile: {tempErrFile}");
+
+               StandardError = new System.IO.StreamReader(new System.IO.FileStream(tempErrFile, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite), StartInfo.StandardOutputEncoding);
+            }
+            else
+            {
+               StandardError = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
+            }
+
+            string result = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(NativeMethods.RunCommand($"{app} {args}"));
+
+            if (StartInfo.RedirectStandardOutput && !string.IsNullOrEmpty(result))
+            {
+               byte[] byteArray = StartInfo.StandardOutputEncoding.GetBytes(result);
+               System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
+               StandardOutput = new System.IO.StreamReader(stream);
+            }
+
+            _exitCode = 0;
+#else
+            if (StartInfo.RedirectStandardOutput)
+            {
+               string tempStdFile = FileHelper.TempFile;
+               args += $" > \"{tempStdFile}\"";
+
+               if (BaseConstants.DEV_DEBUG)
+                  Debug.Log($"tempStdFile: {tempStdFile}");
+
+               StandardOutput = new System.IO.StreamReader(new System.IO.FileStream(tempStdFile, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite), StartInfo.StandardOutputEncoding);
+            }
+            else
+            {
+               StandardOutput = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
+            }
+
+            if (StartInfo.RedirectStandardError)
+            {
+               string tempErrFile = FileHelper.TempFile;
+               args += $" 2> \"{tempErrFile}\"";
+
+               if (BaseConstants.DEV_DEBUG)
+                  Debug.Log($"tempErrFile: {tempErrFile}");
+
+               StandardError = new System.IO.StreamReader(new System.IO.FileStream(tempErrFile, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite), StartInfo.StandardOutputEncoding);
+            }
+            else
+            {
+               StandardError = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
+            }
+
+            _exitCode = (uint)NativeMethods.RunCommand($"{app} {args}");
+#endif
+         }
+         catch (System.Threading.ThreadAbortException)
+         {
+            //Debug.LogWarning("Process killed!");
+            _exitCode = 123456;
+         }
+         catch (System.Exception ex)
+         {
+            Debug.LogError($"Process threw an error: {ex}");
+            _exitCode = 99;
+         }
+         finally
+         {
+            ExitTime = System.DateTime.Now;
+            Id = 0;
+
+            if (!HasExited)
+               onExited();
+
+            isBusy = false;
+            HasExited = true;
+         }
+      }
+
+      #endregion
+
+      #endregion
+
+#endif
 
       private void watchStdOut()
       {
@@ -359,9 +538,9 @@ namespace Crosstales.Common.Util
             (System.Diagnostics.DataReceivedEventArgs)System.Runtime.Serialization.FormatterServices
                .GetUninitializedObject(typeof(System.Diagnostics.DataReceivedEventArgs));
 
-         if (eventFields.Length > 0)
+         if (EVENT_FIELDS.Length > 0)
          {
-            eventFields[0].SetValue(mockEventArgs, data);
+            EVENT_FIELDS[0].SetValue(mockEventArgs, data);
          }
          else
          {
@@ -370,209 +549,10 @@ namespace Crosstales.Common.Util
 
          return mockEventArgs;
       }
-
-      #endregion
-
-      #endregion
-
-#else
-
-      #region Unix
-
-      #region Variables
-
-      private System.Threading.Thread worker;
-
-      #endregion
-
-
-      #region Public methods
-
-      /// <summary>Starts (or reuses) the process resource that is specified by the StartInfo property of this Process component and associates it with the component.</summary>
-      public void Start()
-      {
-         isBusy = true;
-         HasExited = false;
-
-         if (StartInfo.UseThread)
-         {
-            worker = new System.Threading.Thread(() => createProcess());
-            worker.Start();
-
-            System.Threading.Thread.Sleep(200);
-         }
-         else
-         {
-            createProcess();
-         }
-      }
-
-      /// <summary>Starts the process resource that is specified by the parameter containing process start information (for example, the file name of the process to start) and associates the resource with a new Process component..</summary>
-      public void Start(CTProcessStartInfo info)
-      {
-         if (info != null)
-            StartInfo = info;
-
-         Start();
-      }
-
-      /// <summary>Immediately stops the associated process.</summary>
-      public void Kill()
-      {
-         if (worker != null && worker.IsAlive)
-         {
-            worker.Abort();
-         }
-
-         Dispose();
-      }
-
-      public void WaitForExit(int milliseconds = 0)
-      {
-         //Debug.Log("Not implemented!");
-      }
-
-      public void BeginOutputReadLine()
-      {
-         //Debug.Log("Not implemented!");
-      }
-
-      public void BeginErrorReadLine()
-      {
-         //Debug.Log("Not implemented!");
-      }
-
-      public void Dispose()
-      {
-         if (BaseConstants.DEV_DEBUG)
-            Debug.LogWarning("Dispose called!");
-
-         Id = 0;
-         isBusy = false;
-         HasExited = true;
-
-         if (StandardOutput != null)
-            StandardOutput.Dispose();
-
-         if (StandardError != null)
-            StandardError.Dispose();
-      }
-
-      #endregion
-
-
-      #region Private methods
-
-      private void createProcess()
-      {
-         StartTime = System.DateTime.Now;
-
-         string app = StartInfo.FileName;
-         string args = StartInfo.Arguments;
-
-         if (BaseConstants.DEV_DEBUG)
-            Debug.LogWarning($"createProcess: {StartTime}");
-
-         try
-         {
-#if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
-//#if true
-            if (StartInfo.RedirectStandardOutput)
-            {
-               StandardOutput = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
-            }
-
-            if (StartInfo.RedirectStandardError)
-            {
-               string tempErrFile = System.IO.Path.GetTempFileName();
-               args += $" 2> \"{tempErrFile}\"";
-
-               if (BaseConstants.DEV_DEBUG)
-                  Debug.Log($"tempErrFile: {tempErrFile}");
-
-               StandardError = new System.IO.StreamReader(new System.IO.FileStream(tempErrFile, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite), StartInfo.StandardOutputEncoding);
-            }
-            else
-            {
-               StandardError = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
-            }
-
-            string result = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(NativeMethods.RunCommand($"{app} {args}"));
-
-            if (StartInfo.RedirectStandardOutput && !string.IsNullOrEmpty(result))
-            {
-               byte[] byteArray = StartInfo.StandardOutputEncoding.GetBytes(result);
-               System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
-               StandardOutput = new System.IO.StreamReader(stream);
-            }
-
-            exitCode = 0;
-#else
-            if (StartInfo.RedirectStandardOutput)
-            {
-               string tempStdFile = System.IO.Path.GetTempFileName();
-               args += $" > \"{tempStdFile}\"";
-
-               if (BaseConstants.DEV_DEBUG)
-                  Debug.Log($"tempStdFile: {tempStdFile}");
-
-               StandardOutput = new System.IO.StreamReader(new System.IO.FileStream(tempStdFile, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite), StartInfo.StandardOutputEncoding);
-            }
-            else
-            {
-               StandardOutput = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
-            }
-
-            if (StartInfo.RedirectStandardError)
-            {
-               string tempErrFile = System.IO.Path.GetTempFileName();
-               args += $" 2> \"{tempErrFile}\"";
-
-               if (BaseConstants.DEV_DEBUG)
-                  Debug.Log($"tempErrFile: {tempErrFile}");
-
-               StandardError =
-                  new System.IO.StreamReader(new System.IO.FileStream(tempErrFile, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite), StartInfo.StandardOutputEncoding);
-            }
-            else
-            {
-               StandardError = new System.IO.StreamReader(new System.IO.MemoryStream(), StartInfo.StandardOutputEncoding);
-            }
-
-            exitCode = (uint)NativeMethods.RunCommand($"{app} {args}");
-#endif
-         }
-         catch (System.Threading.ThreadAbortException)
-         {
-            //Debug.LogWarning("Process killed!");
-            exitCode = 123456;
-         }
-         catch (System.Exception ex)
-         {
-            Debug.LogError($"Process threw an error: {ex}");
-            exitCode = 99;
-         }
-         finally
-         {
-            ExitTime = System.DateTime.Now;
-            Id = 0;
-
-            if (!HasExited)
-               onExited();
-
-            isBusy = false;
-            HasExited = true;
-         }
-      }
-
-      #endregion
-
-      #endregion
-
-#endif
    }
 
    #endregion
+
 
    #region Native methods
 
@@ -665,12 +645,13 @@ namespace Crosstales.Common.Util
 
 #elif UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
 //#elif false
-        #region macOS
 
-        [System.Runtime.InteropServices.DllImport("ProcessStart")]
-        internal static extern System.IntPtr RunCommand(string command);
+      #region macOS
 
-        #endregion
+      [System.Runtime.InteropServices.DllImport("ProcessStart")]
+      internal static extern System.IntPtr RunCommand(string command);
+
+      #endregion
 
 #elif UNITY_STANDALONE_LINUX || UNITY_EDITOR_LINUX
 //#elif true
@@ -736,4 +717,4 @@ namespace Crosstales.Common.Util
    #endregion
 }
 #endif
-// © 2019-2022 crosstales LLC (https://www.crosstales.com)
+// © 2019-2023 crosstales LLC (https://www.crosstales.com)

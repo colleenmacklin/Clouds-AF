@@ -403,9 +403,7 @@ namespace Crosstales.RTVoice.EditorExtension
                         if (script.isSpeaking)
                         {
                            if (GUILayout.Button(new GUIContent(" Silence", Crosstales.RTVoice.EditorUtil.EditorHelper.Icon_Silence, "Silence all active speakers.")))
-                           {
                               script.Silence();
-                           }
                         }
                         else
                         {
@@ -474,11 +472,7 @@ namespace Crosstales.RTVoice.EditorExtension
 
                GUILayout.Label("Speech Count:\t" + script.SpeechCount);
                GUILayout.Label("Total Speeches:\t" + Crosstales.RTVoice.Util.Context.NumberOfSpeeches);
-#if UNITY_2019_1_OR_NEWER
                GUILayout.Label("Total Files:\t" + Crosstales.RTVoice.Util.Context.NumberOfAudioFiles);
-#else
-               GUILayout.Label("Total Audio Files:\t" + Crosstales.RTVoice.Util.Context.NumberOfAudioFiles);
-#endif
 
                /*
                if (script.Caching)
@@ -527,4 +521,4 @@ namespace Crosstales.RTVoice.EditorExtension
    }
 }
 #endif
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

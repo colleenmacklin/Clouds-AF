@@ -10,9 +10,9 @@ namespace Crosstales.Common.EditorUtil
    {
       #region Static variables
 
-      private static readonly System.Type moduleManager = System.Type.GetType("UnityEditor.Modules.ModuleManager,UnityEditor.dll");
-      private static readonly System.Reflection.MethodInfo isPlatformSupportLoaded = moduleManager.GetMethod("IsPlatformSupportLoaded", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-      private static readonly System.Reflection.MethodInfo getTargetStringFromBuildTarget = moduleManager.GetMethod("GetTargetStringFromBuildTarget", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+      private static readonly System.Type MODULE_MANAGER = System.Type.GetType("UnityEditor.Modules.ModuleManager,UnityEditor.dll");
+      private static readonly System.Reflection.MethodInfo isPlatformSupportLoaded = MODULE_MANAGER.GetMethod("IsPlatformSupportLoaded", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+      private static readonly System.Reflection.MethodInfo getTargetStringFromBuildTarget = MODULE_MANAGER.GetMethod("GetTargetStringFromBuildTarget", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
 
       private static Texture2D logo_asset_bwf;
       private static Texture2D logo_asset_dj;
@@ -58,6 +58,7 @@ namespace Crosstales.Common.EditorUtil
       private static Texture2D asset_PlayMaker;
       private static Texture2D asset_VolumetricAudio;
       private static Texture2D asset_rocktomate;
+      private static Texture2D asset_RTFB;
 
       #endregion
 
@@ -136,6 +137,8 @@ namespace Crosstales.Common.EditorUtil
 
       public static Texture2D Asset_RockTomate => loadImage(ref asset_rocktomate, "asset_rocktomate.png");
 
+      public static Texture2D Asset_RTFB => loadImage(ref asset_RTFB, "asset_RTFB.png");
+
       #endregion
 
 
@@ -161,25 +164,25 @@ namespace Crosstales.Common.EditorUtil
                   switch (Application.platform)
                   {
                      case RuntimePlatform.WindowsEditor:
-                        scriptfile = $"{System.IO.Path.GetTempPath()}RestartUnity-{System.Guid.NewGuid()}.cmd";
+                        scriptfile = $"{Crosstales.Common.Util.FileHelper.TempPath}RestartUnity-{System.Guid.NewGuid()}.cmd";
 
-                        System.IO.File.WriteAllText(scriptfile, generateWindowsRestartScript(executeMethod));
+                        Crosstales.Common.Util.FileHelper.WriteAllText(scriptfile, generateWindowsRestartScript(executeMethod));
 
                         process.StartInfo.FileName = "cmd.exe";
                         process.StartInfo.Arguments = $"/c start  \"\" \"{scriptfile}\"";
                         break;
                      case RuntimePlatform.OSXEditor:
-                        scriptfile = $"{System.IO.Path.GetTempPath()}RestartUnity-{System.Guid.NewGuid()}.sh";
+                        scriptfile = $"{Crosstales.Common.Util.FileHelper.TempPath}RestartUnity-{System.Guid.NewGuid()}.sh";
 
-                        System.IO.File.WriteAllText(scriptfile, generateMacRestartScript(executeMethod));
+                        Crosstales.Common.Util.FileHelper.WriteAllText(scriptfile, generateMacRestartScript(executeMethod));
 
                         process.StartInfo.FileName = "/bin/sh";
                         process.StartInfo.Arguments = $"\"{scriptfile}\" &";
                         break;
                      case RuntimePlatform.LinuxEditor:
-                        scriptfile = $"{System.IO.Path.GetTempPath()}RestartUnity-{System.Guid.NewGuid()}.sh";
+                        scriptfile = $"{Crosstales.Common.Util.FileHelper.TempPath}RestartUnity-{System.Guid.NewGuid()}.sh";
 
-                        System.IO.File.WriteAllText(scriptfile, generateLinuxRestartScript(executeMethod));
+                        Crosstales.Common.Util.FileHelper.WriteAllText(scriptfile, generateLinuxRestartScript(executeMethod));
 
                         process.StartInfo.FileName = "/bin/sh";
                         process.StartInfo.Arguments = $"\"{scriptfile}\" &";
@@ -274,19 +277,10 @@ namespace Crosstales.Common.EditorUtil
 
          if (!string.IsNullOrEmpty(build) && build.CTContains("osx"))
             return BuildTarget.StandaloneOSX;
-#if UNITY_2019_2_OR_NEWER
-         if (!string.IsNullOrEmpty(build) && build.CTContains("linux"))
-             return BuildTarget.StandaloneLinux64;
-#else
-         if ("linux".CTEquals(build))
-            return BuildTarget.StandaloneLinux;
 
-         if ("linux64".CTEquals(build))
+         if (!string.IsNullOrEmpty(build) && build.CTContains("linux"))
             return BuildTarget.StandaloneLinux64;
 
-         if ("linuxuniversal".CTEquals(build))
-            return BuildTarget.StandaloneLinuxUniversal;
-#endif
          if ("android".CTEquals(build))
             return BuildTarget.Android;
 
@@ -304,6 +298,9 @@ namespace Crosstales.Common.EditorUtil
 
          if ("ps4".CTEquals(build))
             return BuildTarget.PS4;
+
+         if ("ps5".CTEquals(build))
+            return BuildTarget.PS5;
 
          if ("xboxone".CTEquals(build))
             return BuildTarget.XboxOne;
@@ -328,17 +325,8 @@ namespace Crosstales.Common.EditorUtil
                return "Win64";
             case BuildTarget.StandaloneOSX:
                return "OSXUniversal";
-#if UNITY_2019_2_OR_NEWER
-            case BuildTarget.StandaloneLinux64:
-              return "Linux64";
-#else
-            case BuildTarget.StandaloneLinux:
-               return "Linux";
             case BuildTarget.StandaloneLinux64:
                return "Linux64";
-            case BuildTarget.StandaloneLinuxUniversal:
-               return "LinuxUniversal";
-#endif
             case BuildTarget.Android:
                return "Android";
             case BuildTarget.iOS:
@@ -351,6 +339,8 @@ namespace Crosstales.Common.EditorUtil
                return "tvOS";
             case BuildTarget.PS4:
                return "PS4";
+            case BuildTarget.PS5:
+               return "PS5";
             case BuildTarget.XboxOne:
                return "XboxOne";
             case BuildTarget.Switch:
@@ -392,7 +382,7 @@ namespace Crosstales.Common.EditorUtil
                // no asset selected, place in asset root
                path = "Assets/" + name + ".asset";
             }
-            else if (System.IO.Directory.Exists(path))
+            else if (Crosstales.Common.Util.FileHelper.ExistsDirectory(path))
             {
                // place in currently selected directory
                path += "/" + name + ".asset";
@@ -400,7 +390,7 @@ namespace Crosstales.Common.EditorUtil
             else
             {
                // place in current selection's containing directory
-               path = System.IO.Path.GetDirectoryName(path) + "/" + name + ".asset";
+               path = Crosstales.Common.Util.FileHelper.GetDirectoryName(path) + "/" + name + ".asset";
             }
          }
 
@@ -421,7 +411,9 @@ namespace Crosstales.Common.EditorUtil
       public static void InstantiatePrefab(string prefabName, string path)
       {
          PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath($"Assets{path}{prefabName}.prefab", typeof(GameObject)));
-         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
+
+         if (isEditorMode)
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
       }
 
       #endregion
@@ -445,8 +437,8 @@ namespace Crosstales.Common.EditorUtil
          // header
          sb.AppendLine("echo ##############################################################################");
          sb.AppendLine("echo #                                                                            #");
-         sb.AppendLine("echo #  Common 2022.1.0 - Windows                                                 #");
-         sb.AppendLine("echo #  Copyright 2018-2022 by www.crosstales.com                                 #");
+         sb.AppendLine("echo #  Common 2023.1.0 - Windows                                                 #");
+         sb.AppendLine("echo #  Copyright 2018-2023 by www.crosstales.com                                 #");
          sb.AppendLine("echo #                                                                            #");
          sb.AppendLine("echo #  This script restarts Unity.                                               #");
          sb.AppendLine("echo #  This will take some time, so please be patient and DON'T CLOSE THIS       #");
@@ -467,14 +459,7 @@ namespace Crosstales.Common.EditorUtil
          sb.AppendLine("echo.");
          sb.AppendLine("echo Waiting for Unity to close...");
          sb.AppendLine("timeout /t 3");
-         /*
-#if UNITY_2018_2_OR_NEWER
-         sb.Append("del \"");
-         sb.Append(Constants.PATH);
-         sb.Append("Temp\\UnityLockfile\" /q");
-         sb.AppendLine();
-#endif
-         */
+
          sb.AppendLine("goto waitloop");
          sb.AppendLine(":waitloopend");
 
@@ -534,8 +519,8 @@ namespace Crosstales.Common.EditorUtil
          // header
          sb.AppendLine("echo \"+----------------------------------------------------------------------------+\"");
          sb.AppendLine("echo \"¦                                                                            ¦\"");
-         sb.AppendLine("echo \"¦  Common 2022.1.0 - macOS                                                   ¦\"");
-         sb.AppendLine("echo \"¦  Copyright 2018-2022 by www.crosstales.com                                 ¦\"");
+         sb.AppendLine("echo \"¦  Common 2023.1.0 - macOS                                                   ¦\"");
+         sb.AppendLine("echo \"¦  Copyright 2018-2023 by www.crosstales.com                                 ¦\"");
          sb.AppendLine("echo \"¦                                                                            ¦\"");
          sb.AppendLine("echo \"¦  This script restarts Unity.                                               ¦\"");
          sb.AppendLine("echo \"¦  This will take some time, so please be patient and DON'T CLOSE THIS       ¦\"");
@@ -556,14 +541,7 @@ namespace Crosstales.Common.EditorUtil
          sb.AppendLine("do");
          sb.AppendLine("  echo \"Waiting for Unity to close...\"");
          sb.AppendLine("  sleep 3");
-         /*
-#if UNITY_2018_2_OR_NEWER
-         sb.Append("  rm \"");
-         sb.Append(Constants.PATH);
-         sb.Append("Temp/UnityLockfile\"");
-         sb.AppendLine();
-#endif
-         */
+
          sb.AppendLine("done");
 
          // Restart Unity
@@ -621,8 +599,8 @@ namespace Crosstales.Common.EditorUtil
          // header
          sb.AppendLine("echo \"+----------------------------------------------------------------------------+\"");
          sb.AppendLine("echo \"¦                                                                            ¦\"");
-         sb.AppendLine("echo \"¦  Common 2022.1.0 - Linux                                                   ¦\"");
-         sb.AppendLine("echo \"¦  Copyright 2018-2022 by www.crosstales.com                                 ¦\"");
+         sb.AppendLine("echo \"¦  Common 2023.1.0 - Linux                                                   ¦\"");
+         sb.AppendLine("echo \"¦  Copyright 2018-2023 by www.crosstales.com                                 ¦\"");
          sb.AppendLine("echo \"¦                                                                            ¦\"");
          sb.AppendLine("echo \"¦  This script restarts Unity.                                               ¦\"");
          sb.AppendLine("echo \"¦  This will take some time, so please be patient and DON'T CLOSE THIS       ¦\"");
@@ -643,14 +621,7 @@ namespace Crosstales.Common.EditorUtil
          sb.AppendLine("do");
          sb.AppendLine("  echo \"Waiting for Unity to close...\"");
          sb.AppendLine("  sleep 3");
-         /*
-#if UNITY_2018_2_OR_NEWER
-         sb.Append("  rm \"");
-         sb.Append(Constants.PATH);
-         sb.Append("Temp/UnityLockfile\"");
-         sb.AppendLine();
-#endif
-         */
+
          sb.AppendLine("done");
 
          // Restart Unity
@@ -711,4 +682,4 @@ namespace Crosstales.Common.EditorUtil
    }
 }
 #endif
-// © 2018-2022 crosstales LLC (https://www.crosstales.com)
+// © 2018-2023 crosstales LLC (https://www.crosstales.com)

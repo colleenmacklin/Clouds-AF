@@ -522,4 +522,4 @@ namespace Crosstales.RTVoice.Tool
       #endregion
    }
 }
-// © 2017-2022 crosstales LLC (https://www.crosstales.com)
+// © 2017-2023 crosstales LLC (https://www.crosstales.com)

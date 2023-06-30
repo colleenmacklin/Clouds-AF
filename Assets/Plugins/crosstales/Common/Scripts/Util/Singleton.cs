@@ -17,7 +17,7 @@ namespace Crosstales.Common.Util
       public static string GameObjectName = typeof(T).Name;
 
       protected static T instance;
-      private static readonly object lockObj = new object();
+      private static readonly object LOCK_OBJ = new object();
 
       #endregion
 
@@ -51,7 +51,7 @@ namespace Crosstales.Common.Util
 
          protected set
          {
-            lock (lockObj)
+            lock (LOCK_OBJ)
             {
                //if (Util.BaseConstants.DEV_DEBUG)
                //   Debug.Log($"{Time.realtimeSinceStartup}-[Singleton] Instance '{typeof(T)}' SET: {value.GetInstanceID()}");
@@ -144,8 +144,11 @@ namespace Crosstales.Common.Util
          {
             // Search for existing instance.
             if (searchExistingGameObject)
+#if UNITY_2023_1_OR_NEWER
+               Instance = FindFirstObjectByType<T>();
+#else
                Instance = (T)FindObjectOfType(typeof(T));
-
+#endif
             // Create new instance if one doesn't already exist.
             if (instance == null)
             {
@@ -372,4 +375,4 @@ namespace Crosstales.Common.Util
       }
    }
 }
-// © 2020-2022 crosstales LLC (https://www.crosstales.com)
+// © 2020-2023 crosstales LLC (https://www.crosstales.com)

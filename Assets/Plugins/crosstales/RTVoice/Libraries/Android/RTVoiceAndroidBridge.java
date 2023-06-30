@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 /**
  * RTVoiceAndroidBridge.java
- * Version 2022.1.0
+ * Version 2022.2.1
  * 
  * Acts as a handler for all TTS functions called by RT-Voice on Android.
  *
@@ -309,7 +309,7 @@ public class RTVoiceAndroidBridge {
     /**
      * Returns the available TTS engines.
      *
-     * @return String[] with the available TTS engines
+     * @return String[] with the available TTS engines, like the default "com.google.android.tts"
      */
     public static String[] GetEngines() {
         String[] result = null;

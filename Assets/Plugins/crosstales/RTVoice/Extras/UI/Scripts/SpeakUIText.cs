@@ -18,6 +18,8 @@ namespace Crosstales.RTVoice.UI
 
       private Color originalColor;
 
+      private string lastText;
+
       #endregion
 
 
@@ -31,24 +33,40 @@ namespace Crosstales.RTVoice.UI
          originalColor = TextComponent.color;
       }
 
+      protected override void Start()
+      {
+         base.Start();
+         lastText = TextComponent.text;
+      }
+
       private void Update()
       {
-         if (isInside)
+         if (SpeakIfChanged && !isSpeaking && lastText != TextComponent.text)
          {
-            elapsedTime += Time.deltaTime;
-
-            if (elapsedTime > Delay && uid == null && (!SpeakOnlyOnce || !spoken))
-            {
-               if (ChangeColor)
-                  TextComponent.color = TextColor;
-
-               uid = speak(ClearTags ? TextComponent.text.CTClearTags() : TextComponent.text);
-               elapsedTime = 0f;
-            }
+            isSpeaking = true;
+            lastText = TextComponent.text;
+            uid = speak(ClearTags ? TextComponent.text.CTClearTags() : TextComponent.text);
+            elapsedTime = 0f;
          }
          else
          {
-            elapsedTime = 0f;
+            if (isInside)
+            {
+               elapsedTime += Time.deltaTime;
+
+               if (elapsedTime > Delay && !isSpeaking && (!SpeakOnlyOnce || !spoken))
+               {
+                  if (ChangeColor)
+                     TextComponent.color = TextColor;
+
+                  uid = speak(ClearTags ? TextComponent.text.CTClearTags() : TextComponent.text);
+                  elapsedTime = 0f;
+               }
+            }
+            else
+            {
+               elapsedTime = 0f;
+            }
          }
       }
 
@@ -77,4 +95,4 @@ namespace Crosstales.RTVoice.UI
       #endregion
    }
 }
-// © 2021-2022 crosstales LLC (https://www.crosstales.com)
+// © 2021-2023 crosstales LLC (https://www.crosstales.com)

@@ -5,7 +5,7 @@ namespace Crosstales.Common.Util
    /// <summary>Helper-class for XML.</summary>
    public abstract class XmlHelper
    {
-      /// <summary>Serialize an object to an XML-file.</summary>
+      /// <summary>Serialize an object to a XML-file.</summary>
       /// <param name="obj">Object to serialize.</param>
       /// <param name="filename">File name of the XML.</param>
       public static void SerializeToFile<T>(T obj, string filename)
@@ -18,7 +18,7 @@ namespace Crosstales.Common.Util
 
          try
          {
-            System.IO.File.WriteAllText(filename, SerializeToString(obj));
+            FileHelper.WriteAllText(filename, SerializeToString(obj));
          }
          catch (System.Exception ex)
          {
@@ -26,47 +26,23 @@ namespace Crosstales.Common.Util
          }
       }
 
-      /// <summary>Deserialize a XML-file to an object.</summary>
-      /// <param name="filename">XML-file of the object</param>
-      /// <param name="skipBOM">Skip BOM (optional, default: false)</param>
-      /// <returns>Object</returns>
-      public static T DeserializeFromFile<T>(string filename, bool skipBOM = false)
-      {
-         if (filename == null)
-            throw new System.ArgumentNullException(nameof(filename));
-
-         try
-         {
-            if (System.IO.File.Exists(filename))
-            {
-               string data = System.IO.File.ReadAllText(filename);
-
-               if (string.IsNullOrEmpty(data))
-               {
-                  Debug.LogWarning($"Data was null: {filename}");
-               }
-               else
-               {
-                  return DeserializeFromString<T>(System.IO.File.ReadAllText(filename), skipBOM);
-               }
-            }
-            else
-            {
-               Debug.LogError($"File does not exist: {filename}");
-            }
-         }
-         catch (System.Exception ex)
-         {
-            Debug.LogError($"Could not deserialize the object from a file: {ex}");
-         }
-
-         return default;
-      }
-
-      /// <summary>Serialize an object to an XML-string.</summary>
+      /// <summary>Serialize an object to a XML-string.</summary>
       /// <param name="obj">Object to serialize.</param>
       /// <returns>Object as XML-string</returns>
       public static string SerializeToString<T>(T obj)
+      {
+         if (null == obj)
+            throw new System.ArgumentNullException(nameof(obj));
+
+         byte[] result = SerializeToByteArray(obj);
+
+         return result != null ? System.Text.Encoding.UTF8.GetString(result).Trim('\uFEFF', '\u200B') : string.Empty; //remove invalid BOM
+      }
+
+      /// <summary>Serialize an object to a XML byte-array.</summary>
+      /// <param name="obj">Object to serialize.</param>
+      /// <returns>Object as byte-array</returns>
+      public static byte[] SerializeToByteArray<T>(T obj)
       {
          if (null == obj)
             throw new System.ArgumentNullException(nameof(obj));
@@ -80,14 +56,51 @@ namespace Crosstales.Common.Util
             xs.Serialize(xmlTextWriter, obj);
 
             ms = (System.IO.MemoryStream)xmlTextWriter.BaseStream;
-            return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+            return ms.ToArray();
          }
          catch (System.Exception ex)
          {
-            Debug.LogError($"Could not serialize the object to a string: {ex}");
+            Debug.LogError($"Could not serialize the object to a byte-array: {ex}");
          }
 
-         return string.Empty;
+         return null;
+      }
+
+      /// <summary>Deserialize a XML-file to an object.</summary>
+      /// <param name="filename">XML-file of the object</param>
+      /// <param name="skipBOM">Skip BOM (optional, default: false)</param>
+      /// <returns>Object</returns>
+      public static T DeserializeFromFile<T>(string filename, bool skipBOM = false)
+      {
+         if (filename == null)
+            throw new System.ArgumentNullException(nameof(filename));
+
+         try
+         {
+            if (FileHelper.ExistsFile(filename))
+            {
+               string data = FileHelper.ReadAllText(filename);
+
+               if (string.IsNullOrEmpty(data))
+               {
+                  Debug.LogWarning($"Data was null: {filename}");
+               }
+               else
+               {
+                  return DeserializeFromString<T>(data, skipBOM);
+               }
+            }
+            else
+            {
+               Debug.LogError($"File does not exist: {filename}");
+            }
+         }
+         catch (System.Exception ex)
+         {
+            Debug.LogError($"Could not deserialize the object from a file: {ex}");
+         }
+
+         return default;
       }
 
       /// <summary>Deserialize a XML-string to an object.</summary>
@@ -119,6 +132,29 @@ namespace Crosstales.Common.Util
          return default;
       }
 
+      /// <summary>Deserialize a XML byte-array to an object.</summary>
+      /// <param name="data">XML of the object</param>
+      /// <returns>Object</returns>
+      public static T DeserializeFromByteArray<T>(byte[] data)
+      {
+         if (data == null)
+            throw new System.ArgumentNullException(nameof(data));
+
+         try
+         {
+            System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer(typeof(T));
+            System.IO.MemoryStream ms = new System.IO.MemoryStream(data);
+
+            return (T)xs.Deserialize(ms);
+         }
+         catch (System.Exception ex)
+         {
+            Debug.LogError($"Could not deserialize the object from a byte-array: {ex}");
+         }
+
+         return default;
+      }
+
       /// <summary>Deserialize a Unity XML resource (TextAsset) to an object.</summary>
       /// <param name="resourceName">Name of the resource</param>
       /// <param name="skipBOM">Skip BOM (optional, default: true)</param>
@@ -135,4 +171,4 @@ namespace Crosstales.Common.Util
       }
    }
 }
-// © 2014-2022 crosstales LLC (https://www.crosstales.com)
+// © 2014-2023 crosstales LLC (https://www.crosstales.com)

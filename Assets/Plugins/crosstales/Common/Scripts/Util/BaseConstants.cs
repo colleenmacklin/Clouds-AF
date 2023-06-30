@@ -40,6 +40,9 @@ namespace Crosstales.Common.Util
       /// <summary>URL of the 3rd party asset "RockTomate".</summary>
       public const string ASSET_3P_ROCKTOMATE = "https://assetstore.unity.com/packages/slug/156311?aid=1011lNGT";
 
+      /// <summary>URL of the 3rd party asset "Runtime File Browser".</summary>
+      public const string ASSET_3P_RTFB = "https://assetstore.unity.com/packages/slug/113006?aid=1011lNGT";
+
       /// <summary>URL of the "Badword Filter" asset.</summary>
       public const string ASSET_BWF = "https://assetstore.unity.com/packages/slug/26255?aid=1011lNGT";
 
@@ -105,31 +108,55 @@ namespace Crosstales.Common.Util
       public const string PATH_DELIMITER_UNIX = "/";
 
 
-      public static readonly System.Text.RegularExpressions.Regex REGEX_LINEENDINGS = new System.Text.RegularExpressions.Regex(@"\r\n|\r|\n");
+      private static System.Text.RegularExpressions.Regex _regexLineEndings;
+      public static System.Text.RegularExpressions.Regex REGEX_LINEENDINGS => _regexLineEndings ?? (_regexLineEndings = new System.Text.RegularExpressions.Regex(@"[\u000A\u000B\u000C\u000D\u2028\u2029\u0085]+"));
 
-      public static readonly System.Text.RegularExpressions.Regex REGEX_EMAIL = new System.Text.RegularExpressions.Regex(@"^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$");
-      public static readonly System.Text.RegularExpressions.Regex REGEX_CREDITCARD = new System.Text.RegularExpressions.Regex(@"^((\d{4}[- ]?){3}\d{4})$");
-      public static readonly System.Text.RegularExpressions.Regex REGEX_URL_WEB = new System.Text.RegularExpressions.Regex(@"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?$");
-      public static readonly System.Text.RegularExpressions.Regex REGEX_IP_ADDRESS = new System.Text.RegularExpressions.Regex(@"^([0-9]{1,3}\.){3}[0-9]{1,3}$");
-      public static readonly System.Text.RegularExpressions.Regex REGEX_INVALID_CHARS = new System.Text.RegularExpressions.Regex(@"[^\w\.@-]");
+      private static System.Text.RegularExpressions.Regex _regexEmail;
+      public static System.Text.RegularExpressions.Regex REGEX_EMAIL => _regexEmail ?? (_regexEmail = new System.Text.RegularExpressions.Regex(@"^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$"));
 
-      public static readonly System.Text.RegularExpressions.Regex REGEX_ALPHANUMERIC = new System.Text.RegularExpressions.Regex(@"([A-Za-z0-9_]+)");
+      private static System.Text.RegularExpressions.Regex _regexCreditCard;
+      public static System.Text.RegularExpressions.Regex REGEX_CREDITCARD => _regexCreditCard ?? (_regexCreditCard = new System.Text.RegularExpressions.Regex(@"^((\d{4}[- ]?){3}\d{4})$"));
+
+      private static System.Text.RegularExpressions.Regex _regexUrlWeb;
+      public static System.Text.RegularExpressions.Regex REGEX_URL_WEB => _regexUrlWeb ?? (_regexUrlWeb = new System.Text.RegularExpressions.Regex(@"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?$"));
+
+      private static System.Text.RegularExpressions.Regex _regexIPAddress;
+      public static System.Text.RegularExpressions.Regex REGEX_IP_ADDRESS => _regexIPAddress ?? (_regexIPAddress = new System.Text.RegularExpressions.Regex(@"^([0-9]{1,3}\.){3}[0-9]{1,3}$"));
+
+      private static System.Text.RegularExpressions.Regex _regexInvalidChars;
+      public static System.Text.RegularExpressions.Regex REGEX_INVALID_CHARS => _regexInvalidChars ?? (_regexInvalidChars = new System.Text.RegularExpressions.Regex(@"[^\w\.@-]"));
+
+      private static System.Text.RegularExpressions.Regex _regexAlpha;
+      public static System.Text.RegularExpressions.Regex REGEX_ALPHANUMERIC => _regexAlpha ?? (_regexAlpha = new System.Text.RegularExpressions.Regex(@"([A-Za-z0-9_]+)"));
+
+      private static System.Text.RegularExpressions.Regex _regexCleanSpace;
+      public static System.Text.RegularExpressions.Regex REGEX_CLEAN_SPACES => _regexCleanSpace ?? (_regexCleanSpace = new System.Text.RegularExpressions.Regex(@"\s+"));
+
+      private static System.Text.RegularExpressions.Regex _regexCleanTags;
+      public static System.Text.RegularExpressions.Regex REGEX_CLEAN_TAGS => _regexCleanTags ?? (_regexCleanTags = new System.Text.RegularExpressions.Regex(@"<.*?>"));
+
+      private static System.Text.RegularExpressions.Regex _regexDriveLetters;
+      public static System.Text.RegularExpressions.Regex REGEX_DRIVE_LETTERS => _regexDriveLetters ?? (_regexDriveLetters = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z]:"));
+
+      private static System.Text.RegularExpressions.Regex _regexFile;
+
+      //public static System.Text.RegularExpressions.Regex REGEX_FILE => _regexFile ?? (_regexFile = new System.Text.RegularExpressions.Regex(@"^\.[\w]+$"));
+      public static System.Text.RegularExpressions.Regex REGEX_FILE => _regexFile ?? (_regexFile = new System.Text.RegularExpressions.Regex(@"^.*\.[\w]+$"));
+
+      //public static readonly System.Text.RegularExpressions.Regex asciiOnlyRegex = new System.Text.RegularExpressions.Regex(@"[^\u0000-\u00FF]+");
       //public static readonly System.Text.RegularExpressions.Regex REGEX_REALNUMBER = new System.Text.RegularExpressions.Regex(@"([-+]?[0-9]*\.?[0-9]+)");
       //public static readonly System.Text.RegularExpressions.Regex REGEX_SIGNED_INTEGER = new System.Text.RegularExpressions.Regex(@"([-+]?[0-9]+)");
-
       //public static readonly Regex cleanStringRegex = new Regex(@"([^a-zA-Z0-9 ]|[ ]{2,})");
-      public static readonly System.Text.RegularExpressions.Regex REGEX_CLEAN_SPACES = new System.Text.RegularExpressions.Regex(@"\s+");
-
-      public static readonly System.Text.RegularExpressions.Regex REGEX_CLEAN_TAGS = new System.Text.RegularExpressions.Regex(@"<.*?>");
-      //public static readonly System.Text.RegularExpressions.Regex asciiOnlyRegex = new System.Text.RegularExpressions.Regex(@"[^\u0000-\u00FF]+");
 
       public const string ALPHABET_LATIN_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       public const string ALPHABET_LATIN_LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-      public const string ALPHABET_FRENCH_UPPERCASE = "ÀÂÄÆÇÈÉÊËÎÏÔŒÙÛÜ";
-      public const string ALPHABET_FRENCH_LOWERCASE = "àâäæçèéêëîïôœùûü";
-      //public const string ALPHABET_LATIN = ALPHABET_LATIN_UPPERCASE + ALPHABET_LATIN_LOWERCASE;
+      public const string ALPHABET_EXT_UPPERCASE = "ÀÂÄÆÇÈÉÊËÎÏÔŒÙÛÜ";
+      public const string ALPHABET_EXT_LOWERCASE = "àâäæçèéêëîïôœùûü";
+      public static readonly string ALPHABET_LATIN = $"{ALPHABET_LATIN_UPPERCASE}{ALPHABET_EXT_UPPERCASE}{ALPHABET_LATIN_LOWERCASE}{ALPHABET_EXT_LOWERCASE}";
 
       public const string NUMBERS = "0123456789";
+
+      public static readonly string SIGNS = $"{ALPHABET_LATIN}{NUMBERS}";
 
       #endregion
 
@@ -147,7 +174,10 @@ namespace Crosstales.Common.Util
 
       // Prefixes for URLs and paths
       public const string PREFIX_HTTP = "http://";
+
       public const string PREFIX_HTTPS = "https://";
+      //public const string PREFIX_SMB = "smb://";
+      //public const string PREFIX_FTP = "ftp://";
 
       /// <summary>Kill processes after 5000 milliseconds.</summary>
       public static int PROCESS_KILL_TIME = 5000;
@@ -210,4 +240,4 @@ namespace Crosstales.Common.Util
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

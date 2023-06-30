@@ -8,7 +8,7 @@ namespace Crosstales
    {
       #region Variables
 
-      private static readonly Vector3 flat = new Vector3(1, 0, 1);
+      private static readonly Vector3 FLAT_VECTOR = new Vector3(1, 0, 1);
 
       #endregion
 
@@ -33,13 +33,13 @@ namespace Crosstales
       }
 
 #if UNITY_WSA || UNITY_XBOXONE
-     /// <summary>
-     /// Converts to title case: each word starts with an upper case.
-     /// </summary>
-     private static string toTitleCase(string str)
-     {
+      /// <summary>
+      /// Converts to title case: each word starts with an upper case.
+      /// </summary>
+      private static string toTitleCase(string str)
+      {
          if (str.Length == 0)
-             return str;
+            return str;
 
          System.Text.StringBuilder result = new System.Text.StringBuilder(str);
 
@@ -47,14 +47,14 @@ namespace Crosstales
 
          for (int ii = 1; ii < result.Length; ii++)
          {
-             if (char.IsWhiteSpace(result[ii - 1]))
-                 result[ii] = char.ToUpper(result[ii]);
-             else
-                 result[ii] = char.ToLower(result[ii]);
+            if (char.IsWhiteSpace(result[ii - 1]))
+               result[ii] = char.ToUpper(result[ii]);
+            else
+               result[ii] = char.ToLower(result[ii]);
          }
 
          return result.ToString();
-     }
+      }
 #endif
 
       /// <summary>
@@ -81,7 +81,7 @@ namespace Crosstales
       /// <param name="str">String-instance.</param>
       /// <param name="oldString">String to replace.</param>
       /// <param name="newString">New replacement string.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>Replaced string.</returns>
       public static string CTReplace(this string str, string oldString, string newString, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -118,7 +118,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="toCheck">String to check.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>True if the string contains the given string.</returns>
       public static bool CTEquals(this string str, string toCheck, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -134,7 +134,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="toCheck">String to check.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>True if the string contains the given string.</returns>
       public static bool CTContains(this string str, string toCheck, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -147,7 +147,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="searchTerms">Search terms separated by the given split-character.</param>
-      /// <param name="splitChar">Split-character (default: ' ', optional)</param>
+      /// <param name="splitChar">Split-character (optional, default: ' ')</param>
       /// <returns>True if the string contains any parts of the given string.</returns>
       public static bool CTContainsAny(this string str, string searchTerms, char splitChar = ' ')
       {
@@ -168,7 +168,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="searchTerms">Search terms separated by the given split-character.</param>
-      /// <param name="splitChar">Split-character (default: ' ', optional)</param>
+      /// <param name="splitChar">Split-character (optional, default: ' ')</param>
       /// <returns>True if the string contains all parts of the given string.</returns>
       public static bool CTContainsAll(this string str, string searchTerms, char splitChar = ' ')
       {
@@ -188,8 +188,8 @@ namespace Crosstales
       /// Replaces new lines with a replacement string pattern.
       /// </summary>
       /// <param name="str">String-instance.</param>
-      /// <param name="replacement">Replacement string pattern (default: "#nl#", optional).</param>
-      /// <param name="newLine">New line string (default: System.Environment.NewLine, optional).</param>
+      /// <param name="replacement">Replacement string pattern (optional, default: "#nl#").</param>
+      /// <param name="newLine">New line string (optional, default: System.Environment.NewLine).</param>
       /// <returns>Replaced string without new lines.</returns>
       public static string CTRemoveNewLines(this string str, string replacement = "#nl#", string newLine = null)
       {
@@ -201,8 +201,8 @@ namespace Crosstales
       /// Replaces a given string pattern with new lines in a string.
       /// </summary>
       /// <param name="str">String-instance.</param>
-      /// <param name="replacement">Replacement string pattern (default: "#nl#", optional).</param>
-      /// <param name="newLine">New line string (default: System.Environment.NewLine, optional).</param>
+      /// <param name="replacement">Replacement string pattern (optional, default: "#nl#").</param>
+      /// <param name="newLine">New line string (optional, default: System.Environment.NewLine).</param>
       /// <returns>Replaced string with new lines.</returns>
       public static string CTAddNewLines(this string str, string replacement = "#nl#", string newLine = null)
       {
@@ -275,7 +275,7 @@ namespace Crosstales
       /// <returns>True if the string is an IPv4 address.</returns>
       public static bool CTisIPv4(this string str)
       {
-         return str != null && Crosstales.Common.Util.BaseConstants.REGEX_IP_ADDRESS.IsMatch(str);
+         return str != null && Crosstales.Common.Util.NetworkHelper.isIPv4(str);
       }
 
       /// <summary>
@@ -317,7 +317,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="toCheck">String to check.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>True if the string is integer.</returns>
       public static bool CTStartsWith(this string str, string toCheck, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -333,7 +333,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="toCheck">String to check.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>True if the string is integer.</returns>
       public static bool CTEndsWith(this string str, string toCheck, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -349,7 +349,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="toCheck">String for the index.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>The index of the last occurence of the given string if the string is integer.</returns>
       public static int CTLastIndexOf(this string str, string toCheck, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -365,7 +365,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="str">String-instance.</param>
       /// <param name="toCheck">String for the index.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>The index of the first occurence of the given string if the string is integer.</returns>
       public static int CTIndexOf(this string str, string toCheck, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -382,7 +382,7 @@ namespace Crosstales
       /// <param name="str">String-instance.</param>
       /// <param name="toCheck">String for the index.</param>
       /// <param name="startIndex">Start index for the check.</param>
-      /// <param name="comp">StringComparison-method (default: StringComparison.OrdinalIgnoreCase, optional)</param>
+      /// <param name="comp">StringComparison-method (optional, default: StringComparison.OrdinalIgnoreCase)</param>
       /// <returns>The index of the first occurence of the given string if the string is integer.</returns>
       public static int CTIndexOf(this string str, string toCheck, int startIndex, System.StringComparison comp = System.StringComparison.OrdinalIgnoreCase)
       {
@@ -397,7 +397,7 @@ namespace Crosstales
       /// Converts the value of a string to a Base64-string.
       /// </summary>
       /// <param name="str">Input string.</param>
-      /// <param name="encoding">Encoding of the string (default: UTF8, optional).</param>
+      /// <param name="encoding">Encoding of the string (optional, default: UTF8).</param>
       /// <returns>String value as converted Base64-string.</returns>
       public static string CTToBase64(this string str, System.Text.Encoding encoding = null)
       {
@@ -417,7 +417,7 @@ namespace Crosstales
       /// Converts the value of a Base64-string to a string.
       /// </summary>
       /// <param name="str">Input Base64-string.</param>
-      /// <param name="encoding">Encoding of the string (default: UTF8, optional).</param>
+      /// <param name="encoding">Encoding of the string (optional, default: UTF8).</param>
       /// <returns>Base64-string value as converted string.</returns>
       public static string CTFromBase64(this string str, System.Text.Encoding encoding = null)
       {
@@ -448,7 +448,7 @@ namespace Crosstales
       /// Converts the value of a string to a Hex-string (with Unicode support).
       /// </summary>
       /// <param name="str">Input string.</param>
-      /// <param name="addPrefix">Add "0x"-as prefix (default: false, optional).</param>
+      /// <param name="addPrefix">Add "0x"-as prefix (optional, default: false).</param>
       /// <returns>String value as converted Hex-string.</returns>
       public static string CTToHex(this string str, bool addPrefix = false)
       {
@@ -561,7 +561,7 @@ namespace Crosstales
       /// Converts the value of a string to a byte-array.
       /// </summary>
       /// <param name="str">Input string.</param>
-      /// <param name="encoding">Encoding of the string (default: UTF8, optional).</param>
+      /// <param name="encoding">Encoding of the string (optional, default: UTF8).</param>
       /// <returns>Byte-array with the string.</returns>
       public static byte[] CTToByteArray(this string str, System.Text.Encoding encoding = null)
       {
@@ -619,9 +619,12 @@ namespace Crosstales
       /// Shuffles an array.
       /// </summary>
       /// <param name="array">Array-instance to shuffle.</param>
-      /// <param name="seed">Seed for the PRNG (default: 0 (=standard), optional)</param>
+      /// <param name="seed">Seed for the PRNG (optional, default: 0 (=standard))</param>
       public static void CTShuffle<T>(this T[] array, int seed = 0)
       {
+#if UNITY_WSA
+         return;
+#else
          if (array == null || array.Length <= 0)
             throw new System.ArgumentNullException(nameof(array));
 
@@ -632,6 +635,7 @@ namespace Crosstales
             int k = rnd.Next(n--);
             (array[n], array[k]) = (array[k], array[n]);
          }
+#endif
       }
 
       /// <summary>
@@ -639,10 +643,10 @@ namespace Crosstales
       /// Dumps an array to a string.
       /// </summary>
       /// <param name="array">Array-instance to dump.</param>
-      /// <param name="prefix">Prefix for every element (default: empty, optional).</param>
-      /// <param name="postfix">Postfix for every element (default: empty, optional).</param>
-      /// <param name="appendNewLine">Append new line, otherwise use the given delimiter (default: false, optional).</param>
-      /// <param name="delimiter">Delimiter if appendNewLine is false (default: "; ", optional).</param>
+      /// <param name="prefix">Prefix for every element (optional, default: empty).</param>
+      /// <param name="postfix">Postfix for every element (optional, default: empty).</param>
+      /// <param name="appendNewLine">Append new line, otherwise use the given delimiter (optional, default: false).</param>
+      /// <param name="delimiter">Delimiter if appendNewLine is false (optional, default: "; ").</param>
       /// <returns>String with lines for all array entries.</returns>
       public static string CTDump<T>(this T[] array, string prefix = "", string postfix = "", bool appendNewLine = true, string delimiter = "; ")
       {
@@ -786,7 +790,7 @@ namespace Crosstales
       /// </summary>
       /// <param name="array">Array-instance to ToString.</param>
       /// <returns>String array with all entries (via ToString).</returns>
-      public static string[] CTToString<T>(this T[] array)
+      public static string[] CTToStringArray<T>(this T[] array)
       {
          if (array == null) // || array.Length <= 0)
             throw new System.ArgumentNullException(nameof(array));
@@ -866,16 +870,21 @@ namespace Crosstales
 
       /// <summary>
       /// Extension method for byte-arrays.
-      /// Converts a byte-array to a Texture.
+      /// Converts a byte-array to a Texture. Supported image formats: PNG and JPG.
       /// </summary>
       /// <param name="data">byte-array-instance to convert.</param>
+      /// <param name="supportTexture">Support texture to prevent possible texture garbage (optional).</param>
       /// <returns>Converted Texture.</returns>
-      public static Texture2D CTToTexture(this byte[] data)
+      public static Texture2D CTToTexture(this byte[] data, Texture2D supportTexture = null)
       {
          if (data == null)
             throw new System.ArgumentNullException(nameof(data));
 
-         Texture2D tex = new Texture2D(1, 1); // note that the size is overridden
+         Texture2D tex = supportTexture;
+
+         if (tex == null)
+            tex = new Texture2D(1, 1); // note that the size is overridden
+
          tex.LoadImage(data);
 
          return tex;
@@ -883,17 +892,24 @@ namespace Crosstales
 
       /// <summary>
       /// Extension method for byte-arrays.
-      /// Converts a byte-array to Sprite.
+      /// Converts a byte-array to a Sprite. Supported image formats: PNG and JPG.
       /// </summary>
       /// <param name="data">byte-array-instance to convert.</param>
+      /// <param name="supportTexture">Support texture to prevent possible texture garbage (optional).</param>
       /// <returns>Converted Sprite.</returns>
-      public static Sprite CTToSprite(this byte[] data)
+      public static Sprite CTToSprite(this byte[] data, Texture2D supportTexture = null)
       {
          if (data == null)
             throw new System.ArgumentNullException(nameof(data));
 
-         Texture2D tex = data.CTToTexture();
-         return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
+         if (supportTexture == null)
+         {
+            Texture2D tex = data.CTToTexture();
+            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
+         }
+
+         supportTexture = data.CTToTexture(supportTexture);
+         return Sprite.Create(supportTexture, new Rect(0, 0, supportTexture.width, supportTexture.height), new Vector2(supportTexture.width / 2, supportTexture.height / 2));
       }
 
       /// <summary>
@@ -901,7 +917,7 @@ namespace Crosstales
       /// Converts a byte-array to a string.
       /// </summary>
       /// <param name="data">Input string as byte-array.</param>
-      /// <param name="encoding">Encoding of the string (default: UTF8, optional).</param>
+      /// <param name="encoding">Encoding of the string (optional, default: UTF8).</param>
       /// <returns>Byte-array with the string.</returns>
       public static string CTToString(this byte[] data, System.Text.Encoding encoding = null)
       {
@@ -924,6 +940,30 @@ namespace Crosstales
          return data == null ? null : System.Convert.ToBase64String(data);
       }
 
+      /// <summary>
+      /// Extension method for 2D-arrays.
+      /// Returns the column of a 2D-array as array.
+      /// </summary>
+      /// <param name="matrix">Input as 2D-array.</param>
+      /// <param name="columnNumber">Desired column of the 2D-array</param>
+      /// <returns>Column of a 2D-array as array.</returns>
+      public static T[] GetColumn<T>(this T[,] matrix, int columnNumber)
+      {
+         return Enumerable.Range(0, matrix.GetLength(0)).Select(x => matrix[x, columnNumber]).ToArray();
+      }
+
+      /// <summary>
+      /// Extension method for 2D-arrays.
+      /// Returns the row of a 2D-array as array.
+      /// </summary>
+      /// <param name="matrix">Input as 2D-array.</param>
+      /// <param name="columnNumber">Desired row of the 2D-array</param>
+      /// <returns>Row of a 2D-array as array.</returns>
+      public static T[] GetRow<T>(this T[,] matrix, int rowNumber)
+      {
+         return Enumerable.Range(0, matrix.GetLength(1)).Select(x => matrix[rowNumber, x]).ToArray();
+      }
+
       #endregion
 
 
@@ -934,9 +974,12 @@ namespace Crosstales
       /// Shuffles a List.
       /// </summary>
       /// <param name="list">IList-instance to shuffle.</param>
-      /// <param name="seed">Seed for the PRNG (default: 0 (=standard), optional)</param>
+      /// <param name="seed">Seed for the PRNG (optional, default: 0 (=standard))</param>
       public static void CTShuffle<T>(this System.Collections.Generic.IList<T> list, int seed = 0)
       {
+#if UNITY_WSA
+         return;
+#else
          if (list == null)
             throw new System.ArgumentNullException(nameof(list));
 
@@ -948,6 +991,7 @@ namespace Crosstales
             int k = rnd.Next(n--);
             (list[n], list[k]) = (list[k], list[n]);
          }
+#endif
       }
 
       /// <summary>
@@ -955,10 +999,10 @@ namespace Crosstales
       /// Dumps a list to a string.
       /// </summary>
       /// <param name="list">IList-instance to dump.</param>
-      /// <param name="prefix">Prefix for every element (default: empty, optional).</param>
-      /// <param name="postfix">Postfix for every element (default: empty, optional).</param>
-      /// <param name="appendNewLine">Append new line, otherwise use the given delimiter (default: false, optional).</param>
-      /// <param name="delimiter">Delimiter if appendNewLine is false (default: "; ", optional).</param>
+      /// <param name="prefix">Prefix for every element (optional, default: empty).</param>
+      /// <param name="postfix">Postfix for every element (optional, default: empty).</param>
+      /// <param name="appendNewLine">Append new line, otherwise use the given delimiter (optional, default: false).</param>
+      /// <param name="delimiter">Delimiter if appendNewLine is false (optional, default: "; ").</param>
       /// <returns>String with lines for all list entries.</returns>
       public static string CTDump<T>(this System.Collections.Generic.IList<T> list, string prefix = "", string postfix = "", bool appendNewLine = true, string delimiter = "; ")
       {
@@ -1123,10 +1167,10 @@ namespace Crosstales
       /// Dumps a dictionary to a string.
       /// </summary>
       /// <param name="dict">IDictionary-instance to dump.</param>
-      /// <param name="prefix">Prefix for every element (default: empty, optional).</param>
-      /// <param name="postfix">Postfix for every element (default: empty, optional).</param>
-      /// <param name="appendNewLine">Append new line, otherwise use the given delimiter (default: false, optional).</param>
-      /// <param name="delimiter">Delimiter if appendNewLine is false (default: "; ", optional).</param>
+      /// <param name="prefix">Prefix for every element (optional, default: empty).</param>
+      /// <param name="postfix">Postfix for every element (optional, default: empty).</param>
+      /// <param name="appendNewLine">Append new line, otherwise use the given delimiter (optional, default: false).</param>
+      /// <param name="delimiter">Delimiter if appendNewLine is false (optional, default: "; ").</param>
       /// <returns>String with lines for all dictionary entries.</returns>
       public static string CTDump<K, V>(this System.Collections.Generic.IDictionary<K, V> dict, string prefix = "", string postfix = "", bool appendNewLine = true, string delimiter = "; ")
       {
@@ -1364,7 +1408,7 @@ namespace Crosstales
       /// </summary>
       public static Vector3 CTFlatten(this Vector3 a)
       {
-         return a.CTMultiply(flat);
+         return a.CTMultiply(FLAT_VECTOR);
       }
 
       /// <summary>
@@ -1383,7 +1427,7 @@ namespace Crosstales
       /// Convert it to a Color.
       /// </summary>
       /// <param name="rgb">Vector3-instance to convert (RGB = xyz).</param>
-      /// <param name="alpha">Alpha-value of the color (default: 1, optional).</param>
+      /// <param name="alpha">Alpha-value of the color (optional, default: 1).</param>
       /// <returns>Color from RGB.</returns>
       public static Color CTColorRGB(this Vector3 rgb, float alpha = 1f)
       {
@@ -1505,8 +1549,8 @@ namespace Crosstales
       /// <param name="transform">RectTransform-instance.</param>
       /// <param name="fourCornersArray">Corners for the RectTransform.</param>
       /// <param name="canvas">Relevant canvas.</param>
-      /// <param name="inset">Inset from the corners (default: 0, optional).</param>
-      /// <param name="corrected">Automatically adjust scaling (default: false, optional).</param>
+      /// <param name="inset">Inset from the corners (optional, default: 0).</param>
+      /// <param name="corrected">Automatically adjust scaling (optional, default: false).</param>
       public static void CTGetLocalCorners(this RectTransform transform, Vector3[] fourCornersArray, Canvas canvas, float inset = 0, bool corrected = false)
       {
          if (transform == null)
@@ -1553,8 +1597,8 @@ namespace Crosstales
       /// </summary>
       /// <param name="transform">RectTransform-instance.</param>
       /// <param name="canvas">Relevant canvas.</param>
-      /// <param name="inset">Inset from the corners (default: 0, optional).</param>
-      /// <param name="corrected">Automatically adjust scaling (default: false, optional).</param>
+      /// <param name="inset">Inset from the corners (optional, default: 0).</param>
+      /// <param name="corrected">Automatically adjust scaling (optional, default: false).</param>
       /// <returns>Array of the four local corners of the RectTransform.</returns>
       public static Vector3[] CTGetLocalCorners(this RectTransform transform, Canvas canvas, float inset = 0, bool corrected = false)
       {
@@ -1572,8 +1616,8 @@ namespace Crosstales
       /// <param name="transform">RectTransform-instance.</param>
       /// <param name="fourCornersArray">Corners for the RectTransform.</param>
       /// <param name="canvas">Relevant canvas.</param>
-      /// <param name="inset">Inset from the corners (default: 0, optional).</param>
-      /// <param name="corrected">Automatically adjust scaling (default: false, optional).</param>
+      /// <param name="inset">Inset from the corners (optional, default: 0).</param>
+      /// <param name="corrected">Automatically adjust scaling (optional, default: false).</param>
       public static void CTGetScreenCorners(this RectTransform transform, Vector3[] fourCornersArray, Canvas canvas, float inset = 0, bool corrected = false)
       {
          if (transform == null)
@@ -1631,8 +1675,8 @@ namespace Crosstales
       /// </summary>
       /// <param name="transform">RectTransform-instance.</param>
       /// <param name="canvas">Relevant canvas.</param>
-      /// <param name="inset">Inset from the corners (default: 0, optional).</param>
-      /// <param name="corrected">Automatically adjust scaling (default: false, optional).</param>
+      /// <param name="inset">Inset from the corners (optional, default: 0).</param>
+      /// <param name="corrected">Automatically adjust scaling (optional, default: false).</param>
       /// <returns>Array of the four screen (world) corners of the RectTransform.</returns>
       public static Vector3[] CTGetScreenCorners(this RectTransform transform, Canvas canvas, float inset = 0, bool corrected = false)
       {
@@ -1648,7 +1692,7 @@ namespace Crosstales
       /// Returns the bounds of a RectTransform including the children.
       /// </summary>
       /// <param name="transform">RectTransform to calculate the bounds.</param>
-      /// <param name="uiScaleFactor">Scale of the UI (default: 1.0, optional).</param>
+      /// <param name="uiScaleFactor">Scale of the UI (optional, default: 1.0).</param>
       /// <returns>Bounds of the RectTransform.</returns>
       public static Bounds CTGetBounds(this RectTransform transform, float uiScaleFactor = 1f)
       {
@@ -2127,7 +2171,7 @@ namespace Crosstales
       /// Converts a Texture to a Sprite.
       /// </summary>
       /// <param name="texture">Texture to convert.</param>
-      /// <param name="pixelsPerUnit">Pixels per unit for the Sprite (default: 100, optional).</param>
+      /// <param name="pixelsPerUnit">Pixels per unit for the Sprite (optional, default: 100).</param>
       /// <returns>Converted Texture as Sprite.</returns>
       public static Sprite CTToSprite(this Texture2D texture, float pixelsPerUnit = 100f)
       {
@@ -2346,6 +2390,37 @@ namespace Crosstales
       #endregion
 
 
+      #region C# specific
+
+#if (!UNITY_WSA && !UNITY_WEBGL && !UNITY_XBOXONE) || UNITY_EDITOR
+      /// <summary>
+      /// Extension method for Thread.
+      /// Aborts a Thread safely and optional silently
+      /// </summary>
+      /// <param name="thread">Thread to abort.</param>
+      /// <param name="silent">Silently abort the Thread (optional, default: true).</param>
+      public static void CTAbort(this System.Threading.Thread thread, bool silent = true)
+      {
+         if (thread == null)
+            return;
+
+         if (thread.IsAlive)
+         {
+            try
+            {
+               thread.Abort();
+            }
+            catch (System.Exception ex)
+            {
+               if (!silent)
+                  Debug.LogWarning(ex);
+            }
+         }
+      }
+#endif
+
+      #endregion
+
       #region Unity specific
 
       /// <summary>
@@ -2500,4 +2575,4 @@ namespace Crosstales
   */
    }
 }
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

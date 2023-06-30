@@ -58,6 +58,8 @@ namespace Crosstales.RTVoice.Provider
 
       public override bool hasVoicesInEditor => true;
 
+      public override int MaxSimultaneousSpeeches => 50;
+
       #endregion
 
 
@@ -431,8 +433,8 @@ namespace Crosstales.RTVoice.Provider
                         {
                            string name = match.Groups[1].ToString();
                            voices.Add(new Crosstales.RTVoice.Model.Voice(name, match.Groups[3].ToString(),
-                              Crosstales.RTVoice.Util.Helper.AppleVoiceNameToGender(name), "unknown",
-                              match.Groups[2].ToString().Replace('_', '-'), string.Empty, "Apple"));
+                              Crosstales.RTVoice.Util.Helper.AppleVoiceNameToGender(name), Crosstales.RTVoice.Util.Constants.VOICE_AGE_UNKNOWN,
+                              match.Groups[2].ToString(), "", "Apple"));
                         }
                      }
                   }
@@ -674,8 +676,8 @@ namespace Crosstales.RTVoice.Provider
                            {
                               string name = match.Groups[1].ToString();
                               voices.Add(new Crosstales.RTVoice.Model.Voice(match.Groups[1].ToString(), match.Groups[3].ToString(),
-                                 Crosstales.RTVoice.Util.Helper.AppleVoiceNameToGender(name), "unknown",
-                                 match.Groups[2].ToString().Replace('_', '-')));
+                                 Crosstales.RTVoice.Util.Helper.AppleVoiceNameToGender(name), Crosstales.RTVoice.Util.Constants.VOICE_AGE_UNKNOWN,
+                                 match.Groups[2].ToString(), "", "Apple"));
                            }
                         }
                      }
@@ -711,4 +713,4 @@ namespace Crosstales.RTVoice.Provider
    }
 }
 #endif
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

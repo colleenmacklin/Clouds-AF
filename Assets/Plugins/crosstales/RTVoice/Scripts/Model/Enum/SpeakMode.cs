@@ -3,8 +3,8 @@
    /// <summary>Available Speak-modes.</summary>
    public enum SpeakMode
    {
-      Speak,
-      SpeakNative
+      Speak = 0,
+      SpeakNative = 1
    }
 }
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

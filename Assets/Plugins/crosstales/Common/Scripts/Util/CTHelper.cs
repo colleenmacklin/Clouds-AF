@@ -1,11 +1,19 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 
 namespace Crosstales.Common.Util
 {
    /// <summary>Helper to reset the necessary settings.</summary>
    public class CTHelper : MonoBehaviour
    {
+      #region Properties
+
       public static CTHelper Instance { get; private set; }
+
+      #endregion
+
+
+      #region Initalize methods
 
       [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
       private static void initialize()
@@ -28,12 +36,17 @@ namespace Crosstales.Common.Util
          }
       }
 
+      #endregion
+
+
+      #region MonoBehaviour methods
+
       private void Awake()
       {
          Instance = this;
       }
 
-/*
+      /*
       private void OnApplicationQuit()
       {
          Debug.Log("OnApplicationQuit", this);
@@ -45,6 +58,8 @@ namespace Crosstales.Common.Util
          //Debug.Log("OnDestroy", this);
          Crosstales.Common.Util.BaseHelper.ApplicationIsPlaying = false;
       }
+
+      #endregion
    }
 
 #if UNITY_EDITOR
@@ -53,9 +68,10 @@ namespace Crosstales.Common.Util
    {
       public override void OnInspectorGUI()
       {
-         UnityEditor.EditorGUILayout.HelpBox("This helper ensures the flawless working of the assets from 'crosstales LLC'.\nPlease do not delete it from the hierarchy.", UnityEditor.MessageType.Info);
+         UnityEditor.EditorGUILayout.HelpBox("This helper ensures the flawless working of the assets from 'crosstales LLC' inside the Editor.\nPlease do not delete it from the hierarchy.", UnityEditor.MessageType.Info);
       }
    }
 #endif
 }
-// © 2020-2022 crosstales LLC (https://www.crosstales.com)
+#endif
+// © 2020-2023 crosstales LLC (https://www.crosstales.com)

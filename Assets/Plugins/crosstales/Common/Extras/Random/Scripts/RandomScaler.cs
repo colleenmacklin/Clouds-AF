@@ -27,12 +27,12 @@ namespace Crosstales.Common.Util
       ///<summary>Set the object to a random scale at Start (default: false).</summary>
       [Tooltip("Set the object to a random scale at Start (default: false).")] public bool RandomScaleAtStart;
 
-      private Transform tf;
-      private Vector3 startScale;
-      private Vector3 endScale;
-      private float elapsedTime;
-      private float changeTime;
-      private float lerpTime;
+      private Transform _tf;
+      private Vector3 _startScale;
+      private Vector3 _endScale;
+      private float _elapsedTime;
+      private float _changeTime;
+      private float _lerpTime;
 
       #endregion
 
@@ -41,28 +41,28 @@ namespace Crosstales.Common.Util
 
       private void Start()
       {
-         tf = transform;
+         _tf = transform;
 
-         elapsedTime = changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
+         _elapsedTime = _changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
 
          if (RandomScaleAtStart)
          {
             if (Uniform)
             {
-               startScale.x = startScale.y = startScale.z = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
+               _startScale.x = _startScale.y = _startScale.z = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
             }
             else
             {
-               startScale.x = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
-               startScale.y = Random.Range(ScaleMin.y, Mathf.Abs(ScaleMax.y));
-               startScale.z = Random.Range(ScaleMin.z, Mathf.Abs(ScaleMax.z));
+               _startScale.x = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
+               _startScale.y = Random.Range(ScaleMin.y, Mathf.Abs(ScaleMax.y));
+               _startScale.z = Random.Range(ScaleMin.z, Mathf.Abs(ScaleMax.z));
             }
 
-            tf.localScale = startScale;
+            _tf.localScale = _startScale;
          }
          else
          {
-            startScale = tf.localScale;
+            _startScale = _tf.localScale;
          }
       }
 
@@ -70,35 +70,35 @@ namespace Crosstales.Common.Util
       {
          if (UseInterval)
          {
-            elapsedTime += Time.deltaTime;
+            _elapsedTime += Time.deltaTime;
 
-            if (elapsedTime > changeTime)
+            if (_elapsedTime > _changeTime)
             {
-               lerpTime = elapsedTime = 0f;
+               _lerpTime = _elapsedTime = 0f;
 
                if (Uniform)
                {
-                  endScale.x = endScale.y = endScale.z = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
+                  _endScale.x = _endScale.y = _endScale.z = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
                }
                else
                {
-                  endScale.x = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
-                  endScale.y = Random.Range(ScaleMin.y, Mathf.Abs(ScaleMax.y));
-                  endScale.z = Random.Range(ScaleMin.z, Mathf.Abs(ScaleMax.z));
+                  _endScale.x = Random.Range(ScaleMin.x, Mathf.Abs(ScaleMax.x));
+                  _endScale.y = Random.Range(ScaleMin.y, Mathf.Abs(ScaleMax.y));
+                  _endScale.z = Random.Range(ScaleMin.z, Mathf.Abs(ScaleMax.z));
                }
 
-               changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
+               _changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
             }
 
-            tf.localScale = Vector3.Lerp(startScale, endScale, lerpTime);
+            _tf.localScale = Vector3.Lerp(_startScale, _endScale, _lerpTime);
 
-            if (lerpTime < 1f)
+            if (_lerpTime < 1f)
             {
-               lerpTime += Time.deltaTime / (changeTime - 0.1f);
+               _lerpTime += Time.deltaTime / (_changeTime - 0.1f);
             }
             else
             {
-               startScale = tf.localScale;
+               _startScale = _tf.localScale;
             }
          }
       }
@@ -106,4 +106,4 @@ namespace Crosstales.Common.Util
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

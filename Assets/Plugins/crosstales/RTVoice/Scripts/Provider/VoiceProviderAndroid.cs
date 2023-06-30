@@ -14,7 +14,7 @@ namespace Crosstales.RTVoice.Provider
       private static bool isInitialized;
       private static AndroidJavaObject ttsHandler;
 
-      private static bool isSSML;
+      private static bool isSSML; //>M (API level 23) = true
 
       private readonly WaitForSeconds wfs = new WaitForSeconds(0.1f);
 
@@ -61,6 +61,8 @@ namespace Crosstales.RTVoice.Provider
 
       /// <summary> Returns all installed TTS engines on Android.</summary>
       public System.Collections.Generic.List<string> Engines => cachedEngines;
+
+      public override int MaxSimultaneousSpeeches => 0;
 
       #endregion
 
@@ -203,7 +205,7 @@ namespace Crosstales.RTVoice.Provider
                      yield return wfs;
                   } while (!silence && ttsHandler.CallStatic<bool>("isWorking"));
 
-                  yield return playAudioFile(wrapper, Crosstales.Common.Util.NetworkHelper.ValidURLFromFilePath(outputFile), outputFile);
+                  yield return playAudioFile(wrapper, Crosstales.Common.Util.NetworkHelper.GetURLFromFile(outputFile), outputFile);
                }
             }
          }
@@ -315,7 +317,7 @@ namespace Crosstales.RTVoice.Provider
 
          if (success)
          {
-            System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice> voices = new System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice>(350);
+            System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice> voices = new System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice>(600);
 
             foreach (string voice in stringVoices)
             {
@@ -339,7 +341,7 @@ namespace Crosstales.RTVoice.Provider
                   }
 
                   string name = currentVoiceData[0];
-                  voices.Add(new Crosstales.RTVoice.Model.Voice(name, "Android voice: " + voice, Crosstales.RTVoice.Util.Helper.AndroidVoiceNameToGender(name), "unknown", currentVoiceData[1]));
+                  voices.Add(new Crosstales.RTVoice.Model.Voice(name, "Android voice: " + voice, Crosstales.RTVoice.Util.Helper.AndroidVoiceNameToGender(name), Crosstales.RTVoice.Util.Constants.VOICE_AGE_UNKNOWN, currentVoiceData[1], "", "unknown", 0, isNeural(name)));
                }
             }
 
@@ -403,7 +405,7 @@ namespace Crosstales.RTVoice.Provider
          //TEST
          //wrapper.ForceSSML = false;
 
-         if (wrapper.ForceSSML && !Speaker.Instance.AutoClearTags)
+         if (isSSML && wrapper.ForceSSML && !Speaker.Instance.AutoClearTags)
          {
             System.Text.StringBuilder sbXML = new System.Text.StringBuilder();
 
@@ -439,6 +441,11 @@ namespace Crosstales.RTVoice.Provider
       }
 #endif
 
+      private static bool isNeural(string name)
+      {
+         return name.CTContains("wavenet") || name.CTContains("neural");
+      }
+
       #endregion
 
 
@@ -462,4 +469,4 @@ namespace Crosstales.RTVoice.Provider
    }
 }
 #endif
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

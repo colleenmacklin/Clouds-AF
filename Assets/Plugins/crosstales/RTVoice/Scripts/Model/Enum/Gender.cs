@@ -3,9 +3,9 @@
    /// <summary>The genders for voices.</summary>
    public enum Gender
    {
-      MALE,
-      FEMALE,
-      UNKNOWN
+      MALE = 0,
+      FEMALE = 1,
+      UNKNOWN = 2
    }
 }
-// © 2018-2022 crosstales LLC (https://www.crosstales.com)
+// © 2018-2023 crosstales LLC (https://www.crosstales.com)

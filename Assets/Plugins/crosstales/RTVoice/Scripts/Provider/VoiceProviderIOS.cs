@@ -17,6 +17,7 @@ namespace Crosstales.RTVoice.Provider
       private static bool isPaused;
       private static string[] speechTextArray;
       private static int wordIndex;
+      private static bool isLoading;
 
       #endregion
 
@@ -58,6 +59,8 @@ namespace Crosstales.RTVoice.Provider
 
       public override bool hasVoicesInEditor => false;
 
+      public override int MaxSimultaneousSpeeches => 1;
+
       #endregion
 
 
@@ -79,7 +82,7 @@ namespace Crosstales.RTVoice.Provider
             {
                string name = voices[ii + 1];
                string culture = voices[ii + 2];
-               Crosstales.RTVoice.Model.Voice newVoice = new Crosstales.RTVoice.Model.Voice(name, "iOS voice: " + name + " " + culture, Crosstales.RTVoice.Util.Helper.AppleVoiceNameToGender(name), "unknown", culture, voices[ii], "Apple");
+               Crosstales.RTVoice.Model.Voice newVoice = new Crosstales.RTVoice.Model.Voice(name, "iOS voice: " + name + " " + culture, Crosstales.RTVoice.Util.Helper.AppleVoiceNameToGender(name), Crosstales.RTVoice.Util.Constants.VOICE_AGE_UNKNOWN, culture, voices[ii], "Apple");
 
                voicesList.Add(newVoice);
             }
@@ -94,6 +97,7 @@ namespace Crosstales.RTVoice.Provider
             Debug.LogWarning($"Voice-string contains wrong number of elements: {voices.Length}");
          }
 
+         isLoading = false;
          Instance.onVoicesReady();
 
          //NativeMethods.FreeMemory();
@@ -121,8 +125,8 @@ namespace Crosstales.RTVoice.Provider
       /// <summary>Called every time a new word is spoken.</summary>
       public static void WordSpoken(string word)
       {
-         //if (Crosstales.RTVoice.Util.Constants.DEV_DEBUG)
-         Debug.Log($"Word spoken: {word}"); //TODO test word from iOS!
+         if (Crosstales.RTVoice.Util.Constants.DEV_DEBUG)
+            Debug.Log($"Word spoken: {word}");
 
          if (wrapperNative != null)
          {
@@ -144,7 +148,11 @@ namespace Crosstales.RTVoice.Provider
 #if !UNITY_EDITOR || CT_DEVELOP
          if (cachediOSVoices?.Count == 0 || forceReload)
          {
-            NativeMethods.RTVGetVoices();
+            if (!isLoading)
+            {
+               isLoading = true;
+               NativeMethods.RTVGetVoices();
+            }
          }
          else
          {
@@ -345,4 +353,4 @@ namespace Crosstales.RTVoice.Provider
    }
 }
 #endif
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

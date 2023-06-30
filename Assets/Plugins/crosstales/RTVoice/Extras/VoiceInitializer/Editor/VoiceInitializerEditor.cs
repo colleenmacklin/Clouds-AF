@@ -29,7 +29,7 @@ namespace Crosstales.RTVoice.EditorExtension
          {
             if (script.AllVoices || script.VoiceNames?.Length > 0)
             {
-               if (!Speaker.Instance.isTTSAvailable && Crosstales.RTVoice.EditorUtil.EditorHelper.isRTVoiceInScene)
+               if (Speaker.Instance != null && !Speaker.Instance.isTTSAvailable && Crosstales.RTVoice.EditorUtil.EditorHelper.isRTVoiceInScene)
                {
                   Crosstales.RTVoice.EditorUtil.EditorHelper.SeparatorUI();
                   Crosstales.RTVoice.EditorUtil.EditorHelper.NoVoicesUI();
@@ -38,7 +38,7 @@ namespace Crosstales.RTVoice.EditorExtension
             else
             {
                Crosstales.RTVoice.EditorUtil.EditorHelper.SeparatorUI();
-               EditorGUILayout.HelpBox("Please add an entry to 'Voice Names'!", MessageType.Warning);
+               EditorGUILayout.HelpBox("Please add an entry to 'Voice Names' or select 'All Voices'!", MessageType.Warning);
             }
          }
          else
@@ -52,4 +52,4 @@ namespace Crosstales.RTVoice.EditorExtension
    }
 }
 #endif
-// © 2017-2022 crosstales LLC (https://www.crosstales.com)
+// © 2017-2023 crosstales LLC (https://www.crosstales.com)

@@ -69,6 +69,7 @@ namespace Crosstales.RTVoice
 
       private int speechCount;
       private int busyCount;
+      private int realSpeechCount;
       private bool deleted; //ignore in reset!
 
       private static readonly char[] splitCharWords = { ' ' };
@@ -481,6 +482,21 @@ namespace Crosstales.RTVoice
          }
       }
 
+      /// <summary>Maximal number of simultaneous speeches (0 = unlimited).</summary>
+      /// <returns>The maximal number of simultaneous speeches.</returns>
+      public int MaxSimultaneousSpeeches
+      {
+         get
+         {
+            if (voiceProvider != null)
+               return voiceProvider.MaxSimultaneousSpeeches;
+
+            logVPIsNull();
+
+            return 0;
+         }
+      }
+
       /// <summary>Get all available cultures from the current TTS-system (ISO 639-1).</summary>
       /// <returns>All available cultures (alphabetically ordered by 'Culture') as a list.</returns>
       public System.Collections.Generic.List<string> Cultures
@@ -701,13 +717,7 @@ namespace Crosstales.RTVoice
          */
 
 #if (!UNITY_WSA && !UNITY_XBOXONE && !UNITY_WEBGL) || UNITY_EDITOR
-         if (deleteWorker?.IsAlive == true)
-         {
-            if (Crosstales.RTVoice.Util.Constants.DEV_DEBUG)
-               Debug.Log("Killing worker", this);
-
-            deleteWorker.Abort(); //TODO dangerous - find a better solution!
-         }
+         deleteWorker.CTAbort();
 #endif
 
          base.OnApplicationQuit();
@@ -758,6 +768,8 @@ namespace Crosstales.RTVoice
          DeleteInstance();
          loggedVPIsNull = false;
       }
+
+      #region Voices
 
       /// <summary>
       /// Approximates the speech length in seconds of a given text and rate.
@@ -1191,25 +1203,9 @@ namespace Crosstales.RTVoice
          return result;
       }
 
-      /// <summary>Speaks a text with a given voice (native mode).</summary>
-      /// <param name="text">Text to speak.</param>
-      /// <param name="voice">Voice to speak (optional).</param>
-      /// <param name="rate">Speech rate of the speaker in percent (1 = 100%, values: 0.01-3, default: 1, optional).</param>
-      /// <param name="pitch">Pitch of the speech in percent (1 = 100%, values: 0-2, default: 1, optional).</param>
-      /// <param name="volume">Volume of the speaker in percent (1 = 100%, values: 0.01-1, default: 1, optional).</param>
-      /// <param name="forceSSML">Force SSML on supported platforms (default: true, optional).</param>
-      /// <returns>UID of the speaker.</returns>
-      public string SpeakNative(string text, Crosstales.RTVoice.Model.Voice voice = null, float rate = 1f, float pitch = 1f, float volume = 1f, bool forceSSML = true)
-      {
-         if (this != null && !isActiveAndEnabled)
-            return "disabled";
+      #endregion
 
-         Crosstales.RTVoice.Model.Wrapper wrapper = new Crosstales.RTVoice.Model.Wrapper(text, voice, rate, pitch, volume, forceSSML);
-
-         SpeakNativeWithUID(wrapper);
-
-         return wrapper.Uid;
-      }
+      #region SpeakNative
 
       /// <summary>Speaks a text with a given voice (native mode).</summary>
       /// <param name="wrapper">Speak wrapper.</param>
@@ -1256,7 +1252,15 @@ namespace Crosstales.RTVoice
                         wrapper.SpeakImmediately = true; //must always speak immediately
                      }
 
-                     StartCoroutine(voiceProvider.SpeakNative(wrapper));
+                     if (SpeechCount <= 1)
+                     {
+                        realSpeechCount++;
+                        StartCoroutine(voiceProvider.SpeakNative(wrapper));
+                     }
+                     else
+                     {
+                        Debug.LogWarning($"Maximum one native speech per time! Please wait for the speech to complete or stop it.");
+                     }
                   }
                }
                else
@@ -1269,6 +1273,26 @@ namespace Crosstales.RTVoice
          {
             logWrapperIsNull();
          }
+      }
+
+      /// <summary>Speaks a text with a given voice (native mode).</summary>
+      /// <param name="text">Text to speak.</param>
+      /// <param name="voice">Voice to speak (optional).</param>
+      /// <param name="rate">Speech rate of the speaker in percent (1 = 100%, values: 0.01-3, default: 1, optional).</param>
+      /// <param name="pitch">Pitch of the speech in percent (1 = 100%, values: 0-2, default: 1, optional).</param>
+      /// <param name="volume">Volume of the speaker in percent (1 = 100%, values: 0.01-1, default: 1, optional).</param>
+      /// <param name="forceSSML">Force SSML on supported platforms (default: true, optional).</param>
+      /// <returns>UID of the speaker.</returns>
+      public string SpeakNative(string text, Crosstales.RTVoice.Model.Voice voice = null, float rate = 1f, float pitch = 1f, float volume = 1f, bool forceSSML = true)
+      {
+         if (this != null && !isActiveAndEnabled)
+            return "disabled";
+
+         Crosstales.RTVoice.Model.Wrapper wrapper = new Crosstales.RTVoice.Model.Wrapper(text, voice, rate, pitch, volume, forceSSML);
+
+         SpeakNativeWithUID(wrapper);
+
+         return wrapper.Uid;
       }
 
       /// <summary>Speaks a text with a given wrapper (native mode).</summary>
@@ -1291,28 +1315,9 @@ namespace Crosstales.RTVoice
          return string.Empty;
       }
 
-      /// <summary>Speaks a text with a given voice.</summary>
-      /// <param name="text">Text to speak.</param>
-      /// <param name="source">AudioSource for the output (optional).</param>
-      /// <param name="voice">Voice to speak (optional).</param>
-      /// <param name="speakImmediately">Speak the text immediately (default: true). Only works if 'Source' is not null.</param>
-      /// <param name="rate">Speech rate of the speaker in percent (1 = 100%, values: 0.01-3, default: 1, optional).</param>
-      /// <param name="pitch">Pitch of the speech in percent (1 = 100%, values: 0-2, default: 1, optional).</param>
-      /// <param name="volume">Volume of the speaker in percent (1 = 100%, values: 0.01-1, default: 1, optional).</param>
-      /// <param name="outputFile">Saves the generated audio to an output file (without extension, optional).</param>
-      /// <param name="forceSSML">Force SSML on supported platforms (default: true, optional).</param>
-      /// <returns>UID of the speaker.</returns>
-      public string Speak(string text, AudioSource source = null, Crosstales.RTVoice.Model.Voice voice = null, bool speakImmediately = true, float rate = 1f, float pitch = 1f, float volume = 1f, string outputFile = "", bool forceSSML = true)
-      {
-         if (this != null && !isActiveAndEnabled)
-            return "disabled";
+      #endregion
 
-         Crosstales.RTVoice.Model.Wrapper wrapper = new Crosstales.RTVoice.Model.Wrapper(text, voice, rate, pitch, volume, source, speakImmediately, outputFile, forceSSML);
-
-         SpeakWithUID(wrapper);
-
-         return wrapper.Uid;
-      }
+      #region Speak
 
       /// <summary>Speaks a text with a given voice.</summary>
       /// <param name="wrapper">Speak wrapper.</param>
@@ -1362,10 +1367,6 @@ namespace Crosstales.RTVoice
                         }
 
                         wrapper.Source.mute = isMuted;
-
-                        //TODO activate in providers (waiting for it)
-                        //if (isPaused)
-                        //    wrapper.Source.Pause();
                      }
 
                      if (Caching && GlobalCache.Instance.Clips.ContainsKey(wrapper))
@@ -1379,12 +1380,22 @@ namespace Crosstales.RTVoice
                      }
                      else
                      {
-                        if (Crosstales.RTVoice.Util.Config.DEBUG)
-                           Debug.Log($"Wrapper NOT cached: {wrapper}", this);
+                        if (MaxSimultaneousSpeeches == 0 || realSpeechCount <= MaxSimultaneousSpeeches)
+                        {
+                           realSpeechCount++;
 
-                        Crosstales.RTVoice.Util.Context.NumberOfNonCachedSpeeches++;
+                           if (Crosstales.RTVoice.Util.Config.DEBUG)
+                              Debug.Log($"Wrapper NOT cached: {wrapper}", this);
 
-                        StartCoroutine(voiceProvider.Speak(wrapper));
+                           Crosstales.RTVoice.Util.Context.NumberOfNonCachedSpeeches++;
+
+                           StartCoroutine(voiceProvider.Speak(wrapper));
+                        }
+                        else
+                        {
+                           //Debug.Log(realSpeechCount);
+                           Debug.LogWarning($"Maximum number of simultaneous speeches ({MaxSimultaneousSpeeches}) exceeded! Please wait for the speeches to complete or stop at least one of them.");
+                        }
                      }
                   }
                }
@@ -1398,6 +1409,29 @@ namespace Crosstales.RTVoice
          {
             logWrapperIsNull();
          }
+      }
+
+      /// <summary>Speaks a text with a given voice.</summary>
+      /// <param name="text">Text to speak.</param>
+      /// <param name="source">AudioSource for the output (optional).</param>
+      /// <param name="voice">Voice to speak (optional).</param>
+      /// <param name="speakImmediately">Speak the text immediately (default: true). Only works if 'Source' is not null.</param>
+      /// <param name="rate">Speech rate of the speaker in percent (1 = 100%, values: 0.01-3, default: 1, optional).</param>
+      /// <param name="pitch">Pitch of the speech in percent (1 = 100%, values: 0-2, default: 1, optional).</param>
+      /// <param name="volume">Volume of the speaker in percent (1 = 100%, values: 0.01-1, default: 1, optional).</param>
+      /// <param name="outputFile">Saves the generated audio to an output file (without extension, optional).</param>
+      /// <param name="forceSSML">Force SSML on supported platforms (default: true, optional).</param>
+      /// <returns>UID of the speaker.</returns>
+      public string Speak(string text, AudioSource source = null, Crosstales.RTVoice.Model.Voice voice = null, bool speakImmediately = true, float rate = 1f, float pitch = 1f, float volume = 1f, string outputFile = "", bool forceSSML = true)
+      {
+         if (this != null && !isActiveAndEnabled)
+            return "disabled";
+
+         Crosstales.RTVoice.Model.Wrapper wrapper = new Crosstales.RTVoice.Model.Wrapper(text, voice, rate, pitch, volume, source, speakImmediately, outputFile, forceSSML);
+
+         SpeakWithUID(wrapper);
+
+         return wrapper.Uid;
       }
 
       /// <summary>Speaks a text with a given wrapper.</summary>
@@ -1465,7 +1499,6 @@ namespace Crosstales.RTVoice
          }
       }
 
-
       /// <summary>Speaks and marks a text with a given voice and tracks the word position.</summary>
       /// <param name="uid">UID of the speaker</param>
       /// <param name="text">Text to speak.</param>
@@ -1489,6 +1522,10 @@ namespace Crosstales.RTVoice
       //
       //         return result;
       //      }
+
+      #endregion
+
+      #region Generate
 
       /// <summary>Generates an audio file from a given wrapper.</summary>
       /// <param name="wrapper">Speak wrapper.</param>
@@ -1522,7 +1559,15 @@ namespace Crosstales.RTVoice
                      }
                      else
                      {
-                        StartCoroutine(voiceProvider.Generate(wrapper));
+                        if (MaxSimultaneousSpeeches == 0 || realSpeechCount <= MaxSimultaneousSpeeches)
+                        {
+                           realSpeechCount++;
+                           StartCoroutine(voiceProvider.Generate(wrapper));
+                        }
+                        else
+                        {
+                           Debug.LogWarning($"Maximum number of simultaneous speeches ({MaxSimultaneousSpeeches}) exceeded! Please wait for the speeches to complete or stop at least one of them.");
+                        }
                      }
                   }
 
@@ -1559,6 +1604,10 @@ namespace Crosstales.RTVoice
 
          return Generate(wrapper);
       }
+
+      #endregion
+
+      #region Other methods
 
       /// <summary>Silence all active TTS-voices (optional with a UID).</summary>
       /// <param name="uid">UID of the speaker (optional)</param>
@@ -1897,28 +1946,21 @@ namespace Crosstales.RTVoice
       public void DeleteAudioFiles()
       {
 #if (!UNITY_XBOXONE && !UNITY_WEBGL) || UNITY_EDITOR
-         if (!Crosstales.RTVoice.Util.Helper.isWebPlatform)
-         {
             //string path = Application.persistentDataPath;
             string path = Application.temporaryCachePath;
 
 #if !UNITY_WSA || UNITY_EDITOR
-            if (deleteWorker?.IsAlive == true)
-            {
-               if (Crosstales.RTVoice.Util.Constants.DEV_DEBUG)
-                  Debug.Log("Killing worker", this);
-
-               deleteWorker.Abort(); //TODO dangerous - find a better solution!
-            }
+            deleteWorker.CTAbort();
 
             deleteWorker = new System.Threading.Thread(() => deleteAudioFiles(path));
             deleteWorker.Start();
 #else
             deleteAudioFiles(path);
 #endif
-         }
 #endif
       }
+
+      #endregion
 
       #endregion
 
@@ -1962,6 +2004,7 @@ namespace Crosstales.RTVoice
 
          SpeechCount = 0;
          BusyCount = 0;
+         realSpeechCount = 0;
       }
 
       private void deleteAudioFiles(string audioDataPath)
@@ -2261,6 +2304,7 @@ namespace Crosstales.RTVoice
 
          SpeechCount--;
          BusyCount--;
+         realSpeechCount--;
          Crosstales.RTVoice.Util.Context.NumberOfSpeeches++;
 
          //if (wrapper.isNative)
@@ -2419,4 +2463,4 @@ namespace Crosstales.RTVoice
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

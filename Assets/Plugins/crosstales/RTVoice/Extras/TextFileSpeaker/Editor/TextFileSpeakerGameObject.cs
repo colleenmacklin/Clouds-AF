@@ -14,4 +14,4 @@ namespace Crosstales.RTVoice.EditorIntegration
    }
 }
 #endif
-// © 2021-2022 crosstales LLC (https://www.crosstales.com)
+// © 2021-2023 crosstales LLC (https://www.crosstales.com)

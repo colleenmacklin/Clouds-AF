@@ -67,6 +67,8 @@ namespace Crosstales.RTVoice.Provider
 
       public override bool hasVoicesInEditor => true;
 
+      public override int MaxSimultaneousSpeeches => 0;
+
       #endregion
 
 /*
@@ -324,7 +326,7 @@ namespace Crosstales.RTVoice.Provider
 
                         if (process.ExitCode == 0)
                         {
-                           yield return playAudioFile(wrapper, Crosstales.Common.Util.NetworkHelper.ValidURLFromFilePath(outputFile), outputFile);
+                           yield return playAudioFile(wrapper, Crosstales.Common.Util.NetworkHelper.GetURLFromFile(outputFile), outputFile);
                         }
                         else
                         {
@@ -665,7 +667,7 @@ namespace Crosstales.RTVoice.Provider
       {
          get
          {
-            string appName = System.IntPtr.Size == 4 || (Speaker.Instance != null && Speaker.Instance.WindowsForce32bit) ? dataPath + Crosstales.RTVoice.Util.Constants.TTS_WINDOWS_x86_SUBPATH : dataPath + Crosstales.RTVoice.Util.Constants.TTS_WINDOWS_SUBPATH;
+            string appName = System.IntPtr.Size == 4 || (Speaker.Instance != null && Speaker.Instance.WindowsForce32bit) ? dataPath + Crosstales.RTVoice.Util.Constants.WINDOWS_TTS_x86_SUBPATH : dataPath + Crosstales.RTVoice.Util.Constants.WINDOWS_TTS_SUBPATH;
 
             if (appName.Contains("'"))
             {
@@ -1106,4 +1108,4 @@ namespace Crosstales.RTVoice.Provider
    }
 }
 #endif
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

@@ -13,18 +13,18 @@ namespace Crosstales.Common.EditorTask
 
          try
          {
-            if (System.IO.Directory.Exists(sourceFolder))
+            if (Crosstales.Common.Util.FileHelper.ExistsDirectory(sourceFolder))
             {
                exists = true;
 
-               if (!System.IO.Directory.Exists(targetFolder))
-                  System.IO.Directory.CreateDirectory(targetFolder);
+               if (!Crosstales.Common.Util.FileHelper.ExistsDirectory(targetFolder))
+                  Crosstales.Common.Util.FileHelper.CreateDirectory(targetFolder);
 
                System.IO.DirectoryInfo dirSource = new System.IO.DirectoryInfo(sourceFolder);
 
                foreach (System.IO.FileInfo file in dirSource.GetFiles("*"))
                {
-                  if (System.IO.File.Exists(targetFolder + file.Name))
+                  if (Crosstales.Common.Util.FileHelper.ExistsFile(targetFolder + file.Name))
                   {
                      if (Crosstales.Common.Util.BaseConstants.DEV_DEBUG)
                         Debug.Log($"File exists: {file}");
@@ -41,8 +41,8 @@ namespace Crosstales.Common.EditorTask
                //dirSource.Delete(true);
                dirSource.Delete();
 
-               if (System.IO.File.Exists(metafile))
-                  System.IO.File.Delete(metafile);
+               if (Crosstales.Common.Util.FileHelper.ExistsFile(metafile))
+                  Crosstales.Common.Util.FileHelper.DeleteFile(metafile);
             }
          }
          catch (System.Exception ex)
@@ -59,4 +59,4 @@ namespace Crosstales.Common.EditorTask
    }
 }
 #endif
-// © 2018-2022 crosstales LLC (https://www.crosstales.com)
+// © 2018-2023 crosstales LLC (https://www.crosstales.com)

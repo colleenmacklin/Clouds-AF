@@ -8,22 +8,22 @@ namespace Crosstales.Common.Util
       #region Variables
 
       /// <summary>The cache as byte[]</summary>
-      private byte[] cache;
+      private byte[] _cache;
 
       /// <summary>The write position within the stream.</summary>
-      private long writePosition;
+      private long _writePosition;
 
       /// <summary>The read position within the stream.</summary>
-      private long readPosition;
+      private long _readPosition;
 
       /// <summary>Stream length. Indicates where the end of the stream is.</summary>
-      private long length;
+      private long _length;
 
       /// <summary>Cache size in bytes</summary>
-      private int size;
+      private int _size;
 
       /// <summary>Maximum cache size in bytes</summary>
-      private readonly int maxSize;
+      private readonly int _maxSize;
 
       #endregion
 
@@ -35,9 +35,9 @@ namespace Crosstales.Common.Util
       /// <param name="maxCacheSize">Maximum cache size of the stream in bytes.</param>
       public MemoryCacheStream(int cacheSize = 64 * Crosstales.Common.Util.BaseConstants.FACTOR_KB, int maxCacheSize = 64 * Crosstales.Common.Util.BaseConstants.FACTOR_MB)
       {
-         length = writePosition = readPosition = 0;
-         size = cacheSize;
-         maxSize = maxCacheSize;
+         _length = _writePosition = _readPosition = 0;
+         _size = cacheSize;
+         _maxSize = maxCacheSize;
 
          createCache();
 
@@ -61,7 +61,7 @@ namespace Crosstales.Common.Util
       /// <summary>Gets or sets the current stream position.</summary>
       public override long Position
       {
-         get => readPosition;
+         get => _readPosition;
 
          set
          {
@@ -70,13 +70,12 @@ namespace Crosstales.Common.Util
                throw new System.ArgumentOutOfRangeException(nameof(value), "Non-negative number required.");
             }
 
-            //writePosition = readPosition = value; //TODO only readPosition?
-            readPosition = value;
+            _readPosition = value;
          }
       }
 
       /// <summary>Gets the current stream length.</summary>
-      public override long Length => length;
+      public override long Length => _length;
 
       #endregion
 
@@ -107,7 +106,7 @@ namespace Crosstales.Common.Util
             }
             case System.IO.SeekOrigin.End:
             {
-               long newPos = unchecked(length + offset);
+               long newPos = unchecked(_length + offset);
                if (newPos < 0L)
                   throw new System.IO.IOException("An attempt was made to move the position before the beginning of the stream.");
                Position = newPos;
@@ -126,10 +125,10 @@ namespace Crosstales.Common.Util
       {
          int _size = (int)value;
 
-         if (size != _size)
+         if (this._size != _size)
          {
-            size = _size;
-            length = Position = 0;
+            this._size = _size;
+            _length = Position = 0;
 
             createCache();
          }
@@ -147,7 +146,7 @@ namespace Crosstales.Common.Util
          }
 
          // Test for end of stream (or beyond end)
-         return readPosition >= length ? 0 : read(buffer, offset, count);
+         return _readPosition >= _length ? 0 : read(buffer, offset, count);
       }
 
       public override void Write(byte[] buffer, int offset, int count)
@@ -156,7 +155,7 @@ namespace Crosstales.Common.Util
             throw new System.ArgumentOutOfRangeException(nameof(offset), "Non-negative number required.");
          if (count < 0)
             throw new System.ArgumentOutOfRangeException(nameof(count), "Non-negative number required.");
-         if (count > size)
+         if (count > _size)
             throw new System.ArgumentOutOfRangeException(nameof(count), "Value is larger than the cache size.");
          if (buffer.Length - offset < count)
          {
@@ -180,65 +179,65 @@ namespace Crosstales.Common.Util
       /// <summary>Read bytes from the memory stream into the provided buffer.</summary>
       private int read(byte[] buff, int offset, int count)
       {
-         int arrayPosition = (int)(readPosition % size);
+         int arrayPosition = (int)(_readPosition % _size);
 
-         if (arrayPosition + count > size)
+         if (arrayPosition + count > _size)
          {
-            int countEnd = size - arrayPosition;
+            int countEnd = _size - arrayPosition;
             int countStart = count - countEnd;
 
-            System.Array.Copy(cache, arrayPosition, buff, offset, countEnd);
+            System.Array.Copy(_cache, arrayPosition, buff, offset, countEnd);
 
-            System.Array.Copy(cache, 0, buff, offset + countEnd, countStart);
+            System.Array.Copy(_cache, 0, buff, offset + countEnd, countStart);
          }
          else
          {
-            System.Array.Copy(cache, arrayPosition, buff, offset, count);
+            System.Array.Copy(_cache, arrayPosition, buff, offset, count);
          }
 
-         readPosition += count;
+         _readPosition += count;
          return count;
       }
 
       /// <summary>Write bytes into the memory stream.</summary>
       private void write(byte[] buff, int offset, int count)
       {
-         int arrayPosition = (int)(writePosition % size);
+         int arrayPosition = (int)(_writePosition % _size);
 
-         if (arrayPosition + count > size)
+         if (arrayPosition + count > _size)
          {
-            int countEnd = size - arrayPosition;
+            int countEnd = _size - arrayPosition;
             int countStart = count - countEnd;
 
-            System.Array.Copy(buff, offset, cache, arrayPosition, countEnd);
+            System.Array.Copy(buff, offset, _cache, arrayPosition, countEnd);
 
-            System.Array.Copy(buff, offset + countEnd, cache, 0, countStart);
+            System.Array.Copy(buff, offset + countEnd, _cache, 0, countStart);
          }
          else
          {
-            System.Array.Copy(buff, offset, cache, arrayPosition, count);
+            System.Array.Copy(buff, offset, _cache, arrayPosition, count);
          }
 
-         writePosition += count;
+         _writePosition += count;
 
-         length = writePosition;
+         _length = _writePosition;
       }
 
       /// <summary>Create the cache</summary>
       private void createCache()
       {
-         if (size > maxSize)
+         if (_size > _maxSize)
          {
-            cache = new byte[maxSize];
+            _cache = new byte[_maxSize];
             Debug.LogWarning("'size' is larger than 'maxSize'! Using 'maxSize' as cache!");
          }
          else
          {
-            cache = new byte[size];
+            _cache = new byte[_size];
          }
       }
 
       #endregion
    }
 }
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

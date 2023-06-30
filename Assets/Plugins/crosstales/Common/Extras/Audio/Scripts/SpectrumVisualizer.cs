@@ -25,12 +25,12 @@ namespace Crosstales.Common.Audio
       ///<summary>Opacity of the material of the prefab (default: 1).</summary>
       [Tooltip("Opacity of the material of the prefab (default: 1).")] [Range(0f, 1f)] public float Opacity = 1f;
 
-      private Transform tf;
-      private Transform[] visualTransforms;
+      private Transform _tf;
+      private Transform[] _visualTransforms;
 
-      private Vector3 visualPos = Vector3.zero;
+      private Vector3 _visualPos = Vector3.zero;
 
-      private int samplesPerChannel;
+      private int _samplesPerChannel;
 
       #endregion
 
@@ -39,43 +39,43 @@ namespace Crosstales.Common.Audio
 
       private void Start()
       {
-         tf = transform;
-         samplesPerChannel = Analyzer.Samples.Length / 2;
-         visualTransforms = new Transform[samplesPerChannel];
+         _tf = transform;
+         _samplesPerChannel = Analyzer.Samples.Length / 2;
+         _visualTransforms = new Transform[_samplesPerChannel];
 
-         for (int ii = 0; ii < samplesPerChannel; ii++)
+         for (int ii = 0; ii < _samplesPerChannel; ii++)
          {
             //cut the upper frequencies >11000Hz
             GameObject tempCube;
 
             if (LeftToRight)
             {
-               Vector3 position = tf.position;
+               Vector3 position = _tf.position;
                tempCube = Instantiate(VisualPrefab, new Vector3(position.x + ii * Width, position.y, position.z), Quaternion.identity);
             }
             else
             {
-               Vector3 position = tf.position;
+               Vector3 position = _tf.position;
                tempCube = Instantiate(VisualPrefab, new Vector3(position.x - ii * Width, position.y, position.z), Quaternion.identity);
             }
 
-            tempCube.GetComponent<Renderer>().material.color = Crosstales.Common.Util.BaseHelper.HSVToRGB(360f / samplesPerChannel * ii, 1f, 1f, Opacity);
+            tempCube.GetComponent<Renderer>().material.color = Crosstales.Common.Util.BaseHelper.HSVToRGB(360f / _samplesPerChannel * ii, 1f, 1f, Opacity);
 
-            visualTransforms[ii] = tempCube.GetComponent<Transform>();
-            visualTransforms[ii].parent = tf;
+            _visualTransforms[ii] = tempCube.GetComponent<Transform>();
+            _visualTransforms[ii].parent = _tf;
          }
       }
 
       private void Update()
       {
-         for (int ii = 0; ii < visualTransforms.Length; ii++)
+         for (int ii = 0; ii < _visualTransforms.Length; ii++)
          {
-            visualPos.Set(Width, Analyzer.Samples[ii] * Gain, Width);
-            visualTransforms[ii].localScale = visualPos;
+            _visualPos.Set(Width, Analyzer.Samples[ii] * Gain, Width);
+            _visualTransforms[ii].localScale = _visualPos;
          }
       }
 
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

@@ -14,7 +14,6 @@ namespace Crosstales.Common.Util
       [Tooltip("Random change interval between min (= x) and max (= y) in seconds (default: x = 5, y = 10).")]
       public Vector2 ChangeInterval = new Vector2(5, 10);
 
-
       ///<summary>Random hue range between min (= x) and max (= y) (default: x = 0, y = 1).</summary>
       [Tooltip("Random hue range between min (= x) and max (= y) (default: x = 0, y = 1).")] public Vector2 HueRange = new Vector2(0f, 1f);
 
@@ -31,23 +30,22 @@ namespace Crosstales.Common.Util
       [Tooltip("Use gray scale colors (default: false).")] public bool GrayScale;
 
       ///<summary>Modify the color of a material instead of the Renderer (default: not set, optional).</summary>
-      [Tooltip("Modify the color of a material instead of the Renderer (default: not set, optional).")]
-      public Material Material;
+      [Tooltip("Modify the color of a material instead of the Renderer (default: not set, optional).")] public Material Material;
 
       ///<summary>Set the object to a random color at Start (default: false).</summary>
       [Tooltip("Set the object to a random color at Start (default: false).")] public bool RandomColorAtStart;
 
-      private float elapsedTime;
-      private float changeTime;
-      private Renderer currentRenderer;
+      private float _elapsedTime;
+      private float _changeTime;
+      private Renderer _currentRenderer;
 
-      private Color32 startColor;
-      private Color32 endColor;
+      private Color32 _startColor;
+      private Color32 _endColor;
 
-      private float lerpProgress;
-      private static readonly int colorID = Shader.PropertyToID("_Color");
+      private float _lerpProgress;
+      private bool _existsMaterial;
 
-      private bool existsMaterial;
+      private static readonly int COLOR_ID = Shader.PropertyToID("_Color");
 
       #endregion
 
@@ -56,42 +54,42 @@ namespace Crosstales.Common.Util
 
       private void Start()
       {
-         existsMaterial = Material != null;
+         _existsMaterial = Material != null;
 
-         elapsedTime = changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
+         _elapsedTime = _changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
 
          if (RandomColorAtStart)
          {
             if (GrayScale)
             {
                float grayScale = Random.Range(HueRange.x, HueRange.y);
-               startColor = new Color(grayScale, grayScale, grayScale, Random.Range(AlphaRange.x, AlphaRange.y));
+               _startColor = new Color(grayScale, grayScale, grayScale, Random.Range(AlphaRange.x, AlphaRange.y));
             }
             else
             {
-               startColor = Random.ColorHSV(HueRange.x, HueRange.y, SaturationRange.x, SaturationRange.y, ValueRange.x, ValueRange.y, AlphaRange.x, AlphaRange.y);
+               _startColor = Random.ColorHSV(HueRange.x, HueRange.y, SaturationRange.x, SaturationRange.y, ValueRange.x, ValueRange.y, AlphaRange.x, AlphaRange.y);
             }
 
-            if (existsMaterial)
+            if (_existsMaterial)
             {
-               Material.SetColor(colorID, startColor);
+               Material.SetColor(COLOR_ID, _startColor);
             }
             else
             {
-               currentRenderer = GetComponent<Renderer>();
-               currentRenderer.material.color = startColor;
+               _currentRenderer = GetComponent<Renderer>();
+               _currentRenderer.material.color = _startColor;
             }
          }
          else
          {
-            if (existsMaterial)
+            if (_existsMaterial)
             {
-               startColor = Material.GetColor(colorID);
+               _startColor = Material.GetColor(COLOR_ID);
             }
             else
             {
-               currentRenderer = GetComponent<Renderer>();
-               startColor = currentRenderer.material.color;
+               _currentRenderer = GetComponent<Renderer>();
+               _startColor = _currentRenderer.material.color;
             }
          }
       }
@@ -100,41 +98,41 @@ namespace Crosstales.Common.Util
       {
          if (UseInterval)
          {
-            elapsedTime += Time.deltaTime;
+            _elapsedTime += Time.deltaTime;
 
-            if (elapsedTime > changeTime)
+            if (_elapsedTime > _changeTime)
             {
-               lerpProgress = elapsedTime = 0f;
+               _lerpProgress = _elapsedTime = 0f;
 
                if (GrayScale)
                {
                   float grayScale = Random.Range(HueRange.x, HueRange.y);
-                  endColor = new Color(grayScale, grayScale, grayScale, Random.Range(AlphaRange.x, AlphaRange.y));
+                  _endColor = new Color(grayScale, grayScale, grayScale, Random.Range(AlphaRange.x, AlphaRange.y));
                }
                else
                {
-                  endColor = Random.ColorHSV(HueRange.x, HueRange.y, SaturationRange.x, SaturationRange.y, ValueRange.x, ValueRange.y, AlphaRange.x, AlphaRange.y);
+                  _endColor = Random.ColorHSV(HueRange.x, HueRange.y, SaturationRange.x, SaturationRange.y, ValueRange.x, ValueRange.y, AlphaRange.x, AlphaRange.y);
                }
 
-               changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
+               _changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
             }
 
-            if (existsMaterial)
+            if (_existsMaterial)
             {
-               Material.SetColor(colorID, Color.Lerp(startColor, endColor, lerpProgress));
+               Material.SetColor(COLOR_ID, Color.Lerp(_startColor, _endColor, _lerpProgress));
             }
             else
             {
-               currentRenderer.material.color = Color.Lerp(startColor, endColor, lerpProgress);
+               _currentRenderer.material.color = Color.Lerp(_startColor, _endColor, _lerpProgress);
             }
 
-            if (lerpProgress < 1f)
+            if (_lerpProgress < 1f)
             {
-               lerpProgress += Time.deltaTime / (changeTime - 0.1f);
+               _lerpProgress += Time.deltaTime / (_changeTime - 0.1f);
             }
             else
             {
-               startColor = existsMaterial ? Material.GetColor(colorID) : currentRenderer.material.color;
+               _startColor = _existsMaterial ? Material.GetColor(COLOR_ID) : _currentRenderer.material.color;
             }
          }
       }
@@ -142,4 +140,4 @@ namespace Crosstales.Common.Util
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

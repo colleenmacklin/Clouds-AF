@@ -55,8 +55,8 @@ namespace Crosstales.RTVoice.EditorExtension
 
             Crosstales.RTVoice.EditorUtil.EditorHelper.SeparatorUI();
 
-            if (GUILayout.Button(new GUIContent(" Clear", Crosstales.RTVoice.EditorUtil.EditorHelper.Icon_Delete, "Clears the cache.")))
-               script.ClearCache();
+            if (GUILayout.Button(new GUIContent(" Clear", Crosstales.RTVoice.EditorUtil.EditorHelper.Icon_Delete, "Clears and deletes the cache.")))
+               script.ClearAndDeleteCache();
          }
          else
          {
@@ -73,4 +73,4 @@ namespace Crosstales.RTVoice.EditorExtension
    }
 }
 #endif
-// © 2020-2022 crosstales LLC (https://www.crosstales.com)
+// © 2020-2023 crosstales LLC (https://www.crosstales.com)

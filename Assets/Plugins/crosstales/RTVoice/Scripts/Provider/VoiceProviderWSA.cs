@@ -47,6 +47,8 @@ namespace Crosstales.RTVoice.Provider
 
       public override bool hasVoicesInEditor => false;
 
+      public override int MaxSimultaneousSpeeches => 0;
+
       #endregion
 
 
@@ -158,7 +160,7 @@ namespace Crosstales.RTVoice.Provider
       {
          try
          {
-            System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice> voices = new System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice>(70);
+            System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice> voices = new System.Collections.Generic.List<Crosstales.RTVoice.Model.Voice>(100);
             string[] myStringVoices = ttsHandler.Voices;
             string name;
 
@@ -166,7 +168,7 @@ namespace Crosstales.RTVoice.Provider
             {
                string[] currentVoiceData = voice.Split(';');
                name = currentVoiceData[0];
-               Crosstales.RTVoice.Model.Voice newVoice = new Crosstales.RTVoice.Model.Voice(name, "UWP voice: " + voice, Crosstales.RTVoice.Util.Helper.WSAVoiceNameToGender(name), "unknown", currentVoiceData[1]);
+               Crosstales.RTVoice.Model.Voice newVoice = new Crosstales.RTVoice.Model.Voice(name, "UWP voice: " + voice, Crosstales.RTVoice.Util.Helper.WSAVoiceNameToGender(name), Crosstales.RTVoice.Util.Constants.VOICE_AGE_UNKNOWN, currentVoiceData[1], "", "Microsoft");
                voices.Add(newVoice);
             }
 
@@ -405,4 +407,4 @@ namespace Crosstales.RTVoice.Provider
    }
 }
 #endif
-// © 2016-2022 crosstales LLC (https://www.crosstales.com)
+// © 2016-2023 crosstales LLC (https://www.crosstales.com)

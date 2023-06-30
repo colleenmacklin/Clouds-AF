@@ -30,13 +30,13 @@ namespace Crosstales.Common.Util
       ///<summary>Random direction per axis (default: true).</summary>
       [Tooltip("Random direction per axis (default: true).")] public bool RandomDirectionPerAxis = true;
 
-      private Transform tf;
-      private Vector3 speed;
-      private float elapsedTime;
-      private float changeTime;
+      private Transform _tf;
+      private Vector3 _speed;
+      private float _elapsedTime;
+      private float _changeTime;
 
-      private Vector3 elapsedTimeAxis = Vector3.zero;
-      private Vector3 changeTimeAxis;
+      private Vector3 _elapsedTimeAxis = Vector3.zero;
+      private Vector3 _changeTimeAxis;
 
       #endregion
 
@@ -45,21 +45,21 @@ namespace Crosstales.Common.Util
 
       private void Start()
       {
-         tf = transform;
+         _tf = transform;
 
          if (RandomChangeIntervalPerAxis)
          {
-            elapsedTimeAxis.x = changeTimeAxis.x = Random.Range(ChangeInterval.x, ChangeInterval.y);
-            elapsedTimeAxis.y = changeTimeAxis.y = Random.Range(ChangeInterval.x, ChangeInterval.y);
-            elapsedTimeAxis.z = changeTimeAxis.z = Random.Range(ChangeInterval.x, ChangeInterval.y);
+            _elapsedTimeAxis.x = _changeTimeAxis.x = Random.Range(ChangeInterval.x, ChangeInterval.y);
+            _elapsedTimeAxis.y = _changeTimeAxis.y = Random.Range(ChangeInterval.x, ChangeInterval.y);
+            _elapsedTimeAxis.z = _changeTimeAxis.z = Random.Range(ChangeInterval.x, ChangeInterval.y);
          }
          else
          {
-            elapsedTime = changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
+            _elapsedTime = _changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
          }
 
          if (RandomRotationAtStart)
-            tf.localRotation = Random.rotation;
+            _tf.localRotation = Random.rotation;
       }
 
       private void Update()
@@ -68,54 +68,54 @@ namespace Crosstales.Common.Util
          {
             if (RandomChangeIntervalPerAxis)
             {
-               elapsedTimeAxis.x += Time.deltaTime;
-               elapsedTimeAxis.y += Time.deltaTime;
-               elapsedTimeAxis.z += Time.deltaTime;
+               _elapsedTimeAxis.x += Time.deltaTime;
+               _elapsedTimeAxis.y += Time.deltaTime;
+               _elapsedTimeAxis.z += Time.deltaTime;
 
-               if (elapsedTimeAxis.x > changeTimeAxis.x)
+               if (_elapsedTimeAxis.x > _changeTimeAxis.x)
                {
-                  elapsedTimeAxis.x = 0f;
+                  _elapsedTimeAxis.x = 0f;
 
-                  speed.x = Random.Range(SpeedMin.x, SpeedMax.x) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
-                  changeTimeAxis.x = Random.Range(ChangeInterval.x, ChangeInterval.y);
+                  _speed.x = Random.Range(SpeedMin.x, SpeedMax.x) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
+                  _changeTimeAxis.x = Random.Range(ChangeInterval.x, ChangeInterval.y);
                }
 
-               if (elapsedTimeAxis.y > changeTimeAxis.y)
+               if (_elapsedTimeAxis.y > _changeTimeAxis.y)
                {
-                  elapsedTimeAxis.y = 0f;
+                  _elapsedTimeAxis.y = 0f;
 
-                  speed.y = Random.Range(SpeedMin.y, SpeedMax.y) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
-                  changeTimeAxis.y = Random.Range(ChangeInterval.x, ChangeInterval.y);
+                  _speed.y = Random.Range(SpeedMin.y, SpeedMax.y) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
+                  _changeTimeAxis.y = Random.Range(ChangeInterval.x, ChangeInterval.y);
                }
 
-               if (elapsedTimeAxis.z > changeTimeAxis.z)
+               if (_elapsedTimeAxis.z > _changeTimeAxis.z)
                {
-                  elapsedTimeAxis.z = 0f;
+                  _elapsedTimeAxis.z = 0f;
 
-                  speed.z = Random.Range(SpeedMin.z, SpeedMax.z) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
-                  changeTimeAxis.z = Random.Range(ChangeInterval.x, ChangeInterval.y);
+                  _speed.z = Random.Range(SpeedMin.z, SpeedMax.z) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
+                  _changeTimeAxis.z = Random.Range(ChangeInterval.x, ChangeInterval.y);
                }
             }
             else
             {
-               elapsedTime += Time.deltaTime;
+               _elapsedTime += Time.deltaTime;
 
-               if (elapsedTime > changeTime)
+               if (_elapsedTime > _changeTime)
                {
-                  elapsedTime = 0f;
+                  _elapsedTime = 0f;
 
-                  speed.x = Random.Range(SpeedMin.x, SpeedMax.x) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
-                  speed.y = Random.Range(SpeedMin.y, SpeedMax.y) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
-                  speed.z = Random.Range(SpeedMin.z, SpeedMax.z) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
-                  changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
+                  _speed.x = Random.Range(SpeedMin.x, SpeedMax.x) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
+                  _speed.y = Random.Range(SpeedMin.y, SpeedMax.y) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
+                  _speed.z = Random.Range(SpeedMin.z, SpeedMax.z) * (!RandomDirectionPerAxis || Random.Range(0, 2) == 0 ? 1 : -1);
+                  _changeTime = Random.Range(ChangeInterval.x, ChangeInterval.y);
                }
             }
 
-            tf.Rotate(speed.x * Time.deltaTime, speed.y * Time.deltaTime, speed.z * Time.deltaTime);
+            _tf.Rotate(_speed.x * Time.deltaTime, _speed.y * Time.deltaTime, _speed.z * Time.deltaTime);
          }
       }
 
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

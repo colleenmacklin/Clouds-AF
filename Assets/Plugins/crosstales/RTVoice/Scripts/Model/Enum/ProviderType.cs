@@ -3,14 +3,14 @@
    /// <summary>Available provider types.</summary>
    public enum ProviderType
    {
-      Windows,
-      macOS,
-      Android,
-      iOS,
-      WSA,
-      Linux,
-      Custom, //TODO not used atm
-      Any
+      Windows = 0,
+      macOS = 1,
+      Android = 2,
+      iOS = 3,
+      WSA = 4,
+      Linux = 5,
+      Custom = 6, //TODO not used atm
+      Any = 7
    }
 }
-// © 2017-2022 crosstales LLC (https://www.crosstales.com)
+// © 2017-2023 crosstales LLC (https://www.crosstales.com)

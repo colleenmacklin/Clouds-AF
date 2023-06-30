@@ -21,8 +21,7 @@ namespace Crosstales.Common.Util
       ///<summary>Selected scripts for the controller.</summary>
       [Header("MonoBehaviour Scripts")] [Tooltip("Selected scripts for the controller.")] public MonoBehaviour[] Scripts;
 
-
-      protected Crosstales.Common.Model.Enum.Platform currentPlatform;
+      protected Crosstales.Common.Model.Enum.Platform _currentPlatform;
 
       #endregion
 
@@ -47,7 +46,7 @@ namespace Crosstales.Common.Util
 
       protected void selectPlatform()
       {
-         currentPlatform = Crosstales.Common.Util.BaseHelper.CurrentPlatform;
+         _currentPlatform = Crosstales.Common.Util.BaseHelper.CurrentPlatform;
 
          activateGameObjects();
          activateScripts();
@@ -57,7 +56,7 @@ namespace Crosstales.Common.Util
       {
          if (Objects?.Length > 0)
          {
-            bool active = Platforms.Contains(currentPlatform) ? Active : !Active;
+            bool active = Platforms.Contains(_currentPlatform) ? Active : !Active;
 
             foreach (GameObject go in Objects.Where(go => go != null))
             {
@@ -70,7 +69,7 @@ namespace Crosstales.Common.Util
       {
          if (Scripts?.Length > 0)
          {
-            bool active = Platforms.Contains(currentPlatform) ? Active : !Active;
+            bool active = Platforms.Contains(_currentPlatform) ? Active : !Active;
 
             foreach (MonoBehaviour script in Scripts.Where(script => script != null))
             {
@@ -82,4 +81,4 @@ namespace Crosstales.Common.Util
       #endregion
    }
 }
-// © 2017-2022 crosstales LLC (https://www.crosstales.com)
+// © 2017-2023 crosstales LLC (https://www.crosstales.com)

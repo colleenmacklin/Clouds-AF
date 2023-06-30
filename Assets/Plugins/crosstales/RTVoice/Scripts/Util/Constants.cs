@@ -14,16 +14,16 @@ namespace Crosstales.RTVoice.Util
       public const string ASSET_NAME_SHORT = "RTV PRO";
 
       /// <summary>Version of the asset.</summary>
-      public const string ASSET_VERSION = "2022.1.0";
+      public const string ASSET_VERSION = "2023.2.0";
 
       /// <summary>Build number of the asset.</summary>
-      public const int ASSET_BUILD = 20220324;
+      public const int ASSET_BUILD = 20230630;
 
       /// <summary>Create date of the asset (YYYY, MM, DD).</summary>
       public static readonly System.DateTime ASSET_CREATED = new System.DateTime(2015, 4, 29);
 
       /// <summary>Change date of the asset (YYYY, MM, DD).</summary>
-      public static readonly System.DateTime ASSET_CHANGED = new System.DateTime(2022, 3, 24);
+      public static readonly System.DateTime ASSET_CHANGED = new System.DateTime(2023, 6, 30);
 
       /// <summary>URL of the PRO asset in UAS.</summary>
       public const string ASSET_PRO_URL = "https://assetstore.unity.com/packages/slug/41068?aid=1011lNGT";
@@ -137,12 +137,12 @@ namespace Crosstales.RTVoice.Util
       // Technical settings
 
       /// <summary>Sub-path to the TTS-wrapper under Windows.</summary>
-      //public static string TTS_WINDOWS_SUBPATH = "Libraries/Windows/RTVoiceTTSWrapper.exe";
-      public static string TTS_WINDOWS_SUBPATH = "RTVoiceTTSWrapper.exe";
+      //public static string WINDOWS_TTS_SUBPATH = "Libraries/Windows/RTVoiceTTSWrapper.exe";
+      public static string WINDOWS_TTS_SUBPATH = "RTVoiceTTSWrapper.exe";
 
       /// <summary>Sub-path to the TTS-wrapper (32bit) under Windows.</summary>
-      //public static string TTS_WINDOWS_x86_SUBPATH = "Libraries/Windows/RTVoiceTTSWrapper_x86.exe";
-      public static string TTS_WINDOWS_x86_SUBPATH = "RTVoiceTTSWrapper_x86.exe";
+      //public static string WINDOWS_TTS_x86_SUBPATH = "Libraries/Windows/RTVoiceTTSWrapper_x86.exe";
+      public static string WINDOWS_TTS_x86_SUBPATH = "RTVoiceTTSWrapper_x86.exe";
 
       /// <summary>Female modifier for eSpeak.</summary>
       public static string ESPEAK_FEMALE_MODIFIER = "+f3";
@@ -153,7 +153,20 @@ namespace Crosstales.RTVoice.Util
       /// <summary>Defines the speed of 'Speak'-calls in seconds.</summary>
       public static float SPEAK_CALL_SPEED = 0.5f;
 
+
+      /// <summary>Voice age for adults.</summary>
+      public static string VOICE_AGE_ADULT = "adult";
+
+      /// <summary>Voice age for children.</summary>
+      public static string VOICE_AGE_CHILD = "child";
+
+      /// <summary>Voice age for elderly people.</summary>
+      public static string VOICE_AGE_ELDERLY = "elderly";
+      
+      /// <summary>Unknown voice age.</summary>
+      public static string VOICE_AGE_UNKNOWN = "unknown";
+
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

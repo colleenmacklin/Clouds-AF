@@ -16,7 +16,10 @@ namespace Crosstales.RTVoice.UI
       [Tooltip("Delay in seconds before the speech starts (default: 1.5)."), Range(0f, 10f), SerializeField]
       private float delay = 1.5f;
 
-      [Tooltip("Speak the text only once (default: false)."), SerializeField] private bool speakOnlyOnce;
+      [Tooltip("Always speak the text if the content changed (default: false)."), SerializeField] private bool speakIfChanged;
+
+      [Tooltip("Speak the text only once the user hovered over the component (default: false)."), SerializeField]
+      private bool speakOnlyOnce;
 
       [Tooltip("Silence the speech once exit (default: true)."), SerializeField] private bool silenceOnExit = true;
 
@@ -36,6 +39,7 @@ namespace Crosstales.RTVoice.UI
       protected string uid;
       protected bool isInside;
       protected bool spoken;
+      protected bool isSpeaking;
 
       #endregion
 
@@ -63,7 +67,14 @@ namespace Crosstales.RTVoice.UI
          set => delay = Mathf.Abs(value);
       }
 
-      /// <summary>Speak the text only once.</summary>
+      /// <summary>Always speak the text if the content changed.</summary>
+      public bool SpeakIfChanged
+      {
+         get => speakIfChanged;
+         set => speakIfChanged = value;
+      }
+
+      /// <summary>Speak the text only once the user hovered over the component.</summary>
       public bool SpeakOnlyOnce
       {
          get => speakOnlyOnce;
@@ -110,9 +121,19 @@ namespace Crosstales.RTVoice.UI
 
       #region MonoBehaviour methods
 
-      private void Start()
+      protected virtual void Start()
       {
+         Speaker.Instance.OnSpeakAudioGenerationStart += onSpeakStart;
          Speaker.Instance.OnSpeakComplete += onSpeakComplete;
+      }
+
+      private void OnDestroy()
+      {
+         if (Speaker.Instance != null)
+         {
+            Speaker.Instance.OnSpeakAudioGenerationStart -= onSpeakStart;
+            Speaker.Instance.OnSpeakComplete -= onSpeakComplete;
+         }
       }
 
       #endregion
@@ -157,18 +178,29 @@ namespace Crosstales.RTVoice.UI
             : Speaker.Instance.SpeakNative(text, Voices.Voice, Rate, Pitch, Volume);
       }
 
+      protected virtual void onSpeakStart(Crosstales.RTVoice.Model.Wrapper wrapper)
+      {
+         if (wrapper.Uid == uid)
+         {
+            //Debug.Log($"onSpeakStart: {wrapper}", this);
+            isSpeaking = true;
+         }
+      }
+
       protected virtual void onSpeakComplete(Crosstales.RTVoice.Model.Wrapper wrapper)
       {
          if (wrapper.Uid == uid)
          {
+            //Debug.Log($"onSpeakComplete: {wrapper}", this);
             isInside = false;
             spoken = true;
             elapsedTime = 0f;
             uid = null;
+            isSpeaking = false;
          }
       }
 
       #endregion
    }
 }
-// © 2021-2022 crosstales LLC (https://www.crosstales.com)
+// © 2021-2023 crosstales LLC (https://www.crosstales.com)

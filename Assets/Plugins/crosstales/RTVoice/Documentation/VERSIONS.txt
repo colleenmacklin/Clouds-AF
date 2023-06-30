@@ -1,5 +1,48 @@
 ﻿# RT-Voice PRO - Release notes
 
+## 2023.2.0 - 30.06.2023
+* macOS/iOS: genders for new voices added
+* AWS Polly: 28 new voices added and option for additional voices
+* Azure: support for speaking styles/roles and option for additional voices
+* Google Cloud: option for additional voices
+* Voice-class has a new variable called "isNeural"
+* Threading improved
+* Enums improved
+* Updated to Common 2023.2.2
+
+## 2023.1.0 - 26.01.2023
+* Adventure Creator: updated to 1.76.1 and integration improved
+* Code cleanup
+* Support for Unity 2023
+* Updated to Common 2023.1.0
+
+## 2022.2.2 - 02.12.2022
+* Project cleanup
+* Updated to Common 2022.2.2
+
+## 2022.2.1 - 06.11.2022
+* Android: SSML detection improved
+* Editor integration improved
+* "Check for Update..." added to the menu
+* Updated to Common 2022.2.1
+
+## 2022.2.0 - 15.08.2022
+* Azure-provider improved for long lasting connections
+* "SpeakIfChanged" added to the SpeakUI-components 
+* Minimal supported version is now Unity 2019.4 or newer
+* Updated to Common 2022.2.0
+
+## 2022.1.2 - 30.05.2022
+* Fixes for import of packages
+
+## 2022.1.1 - 28.05.2022
+* Providers updated (field "MaxSimultaneousSpeeches" added)
+* "Google Cloud Speech" provider updated for latest version
+* Automatic installation of packages improved
+* Editor-folders moved to Scripts
+* GetHashCode-method improved
+* Updated to Common 2022.1.2
+
 ## 2022.1.0 - 24.03.2022
 * Speaker: "Force 32bit" for Windows added
 * Editor integration improved

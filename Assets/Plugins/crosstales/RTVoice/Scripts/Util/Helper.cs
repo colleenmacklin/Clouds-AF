@@ -10,45 +10,58 @@ namespace Crosstales.RTVoice.Util
 
       private static readonly string[] appleFemales =
       {
-         "Alice", //iOS
+         "Alice",
          "Alva",
-         "Amelie", //macOS
-         "Amélie", //iOS
+         "Amelie", //old
+         "Amélie",
          "Anna",
          "Carmit",
          "Catherine", //iOS
          "Damayanti",
          "Ellen",
-         "Fiona", //macOS
+         "Flo",
+         "Fiona", //old?
+         "Grandma",
          "Helena", //iOS
-         "Ioana", //iOS
+         "Ioana",
          "Joana",
          "Kanya",
          "Karen",
+         "Kathy",
          "Kyoko",
+         "Lana",
          "Laura",
          "Lekha",
+         "Lesya",
          "Li-mu", //iOS
+         "Linh",
          "Luciana",
          "Marie", //iOS
-         "Mariska",
+         "Mariska", //old?
          "Martha", //iOS
-         "Mei-Jia",
+         "Meijia",
+         "Mei-Jia", //old?
          "Melina",
          "Milena",
          "Moira",
-         "Monica", //macOS
-         "Mónica", //iOS
+         "Monica", //old?
+         "Mónica",
+         "Montse",
          "Nicky", //iOS
          "Nora",
          "O-ren", //iOS
          "Paulina",
          "Samantha",
+         "Sandy",
          "Sara",
          "Satu",
-         "Sin-ji",
+         "Shelley",
+         "Sinji",
+         "Sin-ji", //old?
          "Tessa",
-         "Ting-Ting", //macOS
+         "Tingting",
+         "Ting-Ting", //old?
+         "Tünde",
          "Veena", //macOS
          "Victoria", //macOS
          "Yelda",
@@ -60,25 +73,32 @@ namespace Crosstales.RTVoice.Util
 
       private static readonly string[] appleMales =
       {
-         "Aaron", //???
-         "Alex", //???
+         "Aaron", //iOS
+         "Albert",
+         "Alex", //old?
          "Arthur", //iOS
          "Daniel",
-         "Diego", //macOS
+         "Diego", //old?
+         "Eddy",
          "Fred",
-         "Gordon", //iOS
+         "Grandpa",
+         "Gordon", //old?
          "Hattori", //iOS
-         "Jorge", //macOS
-         "Juan", //macOS
+         "Jacques",
+         "Jester",
+         "Jorge", //old?
+         "Juan", //old?
+         "Majed",
          "Luca", //macOS
          "Maged",
          "Martin", //iOS
+         "Ralph",
+         "Reed",
+         "Rishi",
+         "Rocko",
          "Thomas",
          "Xander",
-         "Yuri" //macOS
-
-         //Rishi;UNKNOWN;en-IN
-         //Tian-Tian;UNKNOWN;zh-CN
+         "Yuri" //old?
       };
 
       private static readonly string[] wsaFemales =
@@ -264,7 +284,7 @@ namespace Crosstales.RTVoice.Util
          LocaleCodes.Add(1041, "ja");
          LocaleCodes.Add(1042, "ko");
          LocaleCodes.Add(1043, "nl-nl");
-         LocaleCodes.Add(1044, "no-no");
+         LocaleCodes.Add(1044, "nb-no");
          LocaleCodes.Add(1045, "pl");
          LocaleCodes.Add(1046, "pt-br");
          LocaleCodes.Add(1047, "rm");
@@ -603,4 +623,4 @@ namespace Crosstales.RTVoice.Util
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

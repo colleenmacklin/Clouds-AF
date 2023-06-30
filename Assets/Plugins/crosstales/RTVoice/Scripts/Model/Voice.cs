@@ -11,6 +11,9 @@ namespace Crosstales.RTVoice.Model
       /// <summary>Name of the voice.</summary>
       [Tooltip("Name of the voice.")] public string Name;
 
+      /// <summary>Culture of the voice.</summary>
+      [Tooltip("Culture of the voice voice."), SerializeField] private string culture;
+
       /// <summary>Description of the voice.</summary>
       [Tooltip("Description of the voice.")] public string Description;
 
@@ -26,14 +29,11 @@ namespace Crosstales.RTVoice.Model
       /// <summary>Vendor of the voice.</summary>
       [Tooltip("Vendor of the voice.")] public string Vendor = string.Empty;
 
-      /// <summary>Version of the voice.</summary>
-      [Tooltip("Version of the voice.")] public string Version = string.Empty;
-
       /// <summary>Sample rate in Hz of the voice.</summary>
       [Tooltip("Sample rate in Hz of the voice.")] public int SampleRate;
 
-      private string culture;
-      private string simplifiedCulture;
+      /// <summary>Is the voice neural?</summary>
+      [Tooltip("Is the voice neural?.")] public bool isNeural;
 
       #endregion
 
@@ -48,10 +48,7 @@ namespace Crosstales.RTVoice.Model
          set
          {
             if (value != null)
-            {
                culture = value.Trim().Replace('_', '-');
-               SimplifiedCulture = culture;
-            }
          }
       }
 
@@ -60,16 +57,7 @@ namespace Crosstales.RTVoice.Model
 
       /// <summary>Simplified culture of the voice.</summary>
       [System.Xml.Serialization.XmlIgnoreAttribute]
-      public string SimplifiedCulture
-      {
-         get => simplifiedCulture;
-
-         private set
-         {
-            if (value != null)
-               simplifiedCulture = value.Replace("-", string.Empty);
-         }
-      }
+      public string SimplifiedCulture => culture.Replace("-", string.Empty);
 
       #endregion
 
@@ -90,9 +78,9 @@ namespace Crosstales.RTVoice.Model
       /// <param name="culture">Culture of the voice.</param>
       /// <param name="id">Identifier of the voice (optional).</param>
       /// <param name="vendor">Vendor of the voice (optional).</param>
-      /// <param name="version">Version of the voice (optional).</param>
       /// <param name="sampleRate">Sample rate in Hz of the voice (optional).</param>
-      public Voice(string name, string description, Crosstales.RTVoice.Model.Enum.Gender gender, string age, string culture, string id = "", string vendor = "unknown", string version = "unknown", int sampleRate = 0)
+      /// <param name="neural">Is the voice neural (optional).</param>
+      public Voice(string name, string description, Crosstales.RTVoice.Model.Enum.Gender gender, string age, string culture, string id = "", string vendor = "unknown", int sampleRate = 0, bool neural = false)
       {
          Name = name;
          Description = description;
@@ -101,19 +89,14 @@ namespace Crosstales.RTVoice.Model
          Culture = culture;
          Identifier = id;
          Vendor = vendor;
-         Version = version;
          SampleRate = sampleRate;
+         isNeural = neural;
       }
 
       #endregion
 
 
       #region Overridden methods
-
-      public override string ToString()
-      {
-         return $"{Name} ({Culture}, {Gender})";
-      }
 
       public override bool Equals(object obj)
       {
@@ -128,8 +111,8 @@ namespace Crosstales.RTVoice.Model
                 Age == o.Age &&
                 Identifier == o.Identifier &&
                 Vendor == o.Vendor &&
-                Version == o.Version &&
-                SampleRate == o.SampleRate;
+                SampleRate == o.SampleRate &&
+                isNeural == o.isNeural;
       }
 
       public override int GetHashCode()
@@ -147,11 +130,15 @@ namespace Crosstales.RTVoice.Model
             hash += Identifier.GetHashCode();
          if (Vendor != null)
             hash += Vendor.GetHashCode();
-         if (Version != null)
-            hash += Version.GetHashCode();
          hash += SampleRate * 17;
 
          return hash;
+      }
+
+
+      public override string ToString()
+      {
+         return $"{Name} ({Culture}, {Gender})";
       }
 
       /*
@@ -205,4 +192,4 @@ namespace Crosstales.RTVoice.Model
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

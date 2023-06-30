@@ -19,6 +19,8 @@ namespace Crosstales.RTVoice.UI
       private Color originalColor;
       private Color originalPHColor;
 
+      private string lastText;
+
       #endregion
 
 
@@ -31,36 +33,64 @@ namespace Crosstales.RTVoice.UI
          originalPHColor = InputComponent.placeholder.color;
       }
 
+      protected override void Start()
+      {
+         base.Start();
+         lastText = InputComponent.textComponent.text;
+      }
+
       private void Update()
       {
-         if (isInside)
+         if (SpeakIfChanged && !isSpeaking && lastText != InputComponent.textComponent.text)
          {
-            elapsedTime += Time.deltaTime;
-
-            if (elapsedTime > Delay && uid == null && (!SpeakOnlyOnce || !spoken))
-            {
-               string text;
-               if (!string.IsNullOrEmpty(InputComponent.textComponent.text))
-               {
-                  if (ChangeColor)
-                     InputComponent.textComponent.color = TextColor;
-                  text = InputComponent.textComponent.text;
-               }
-               else
-               {
-                  if (ChangeColor)
-                     InputComponent.placeholder.color = TextColor;
-                  text = InputComponent.placeholder.GetComponent<Text>().text;
-               }
-
-               uid = speak(ClearTags ? text.CTClearTags() : text);
-               elapsedTime = 0f;
-            }
+            string text = InputComponent.textComponent.text;
+            isSpeaking = true;
+            lastText = text;
+            uid = speak(ClearTags ? text.CTClearTags() : text);
+            elapsedTime = 0f;
          }
          else
          {
-            elapsedTime = 0f;
+            if (isInside)
+            {
+               elapsedTime += Time.deltaTime;
+
+               if (elapsedTime > Delay && !isSpeaking && (!SpeakOnlyOnce || !spoken))
+               {
+                  string text = getText();
+                  uid = speak(ClearTags ? text.CTClearTags() : text);
+                  elapsedTime = 0f;
+               }
+            }
+            else
+            {
+               elapsedTime = 0f;
+            }
          }
+      }
+
+      #endregion
+
+
+      #region Private methods
+
+      private string getText()
+      {
+         string text = InputComponent.textComponent.text;
+         if (!string.IsNullOrEmpty(text) && text.Length > 1)
+         {
+            if (ChangeColor)
+               InputComponent.textComponent.color = TextColor;
+         }
+         else
+         {
+            if (ChangeColor)
+               InputComponent.placeholder.color = TextColor;
+
+            text = InputComponent.placeholder.GetComponent<Text>().text;
+         }
+
+         return text;
       }
 
       #endregion
@@ -90,4 +120,4 @@ namespace Crosstales.RTVoice.UI
       #endregion
    }
 }
-// © 2021-2022 crosstales LLC (https://www.crosstales.com)
+// © 2021-2023 crosstales LLC (https://www.crosstales.com)

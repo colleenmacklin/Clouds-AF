@@ -78,6 +78,12 @@ namespace Crosstales.RTVoice.EditorIntegration
          Crosstales.Common.Util.NetworkHelper.OpenURL(Crosstales.RTVoice.Util.Constants.ASSET_3P_URL);
       }
 
+      [MenuItem("Tools/" + Crosstales.RTVoice.Util.Constants.ASSET_NAME + "/Check for Update...", false, Crosstales.RTVoice.EditorUtil.EditorHelper.MENU_ID + 750)]
+      private static void ShowUpdateCheck()
+      {
+         Crosstales.RTVoice.EditorTask.UpdateCheck.UpdateCheckWithDialog();
+      }
+
       [MenuItem("Tools/" + Crosstales.RTVoice.Util.Constants.ASSET_NAME + "/About/Unity AssetStore", false, Crosstales.RTVoice.EditorUtil.EditorHelper.MENU_ID + 800)]
       private static void ShowUAS()
       {
@@ -97,7 +103,7 @@ namespace Crosstales.RTVoice.EditorIntegration
             "Version: " + Crosstales.RTVoice.Util.Constants.ASSET_VERSION +
             System.Environment.NewLine +
             System.Environment.NewLine +
-            "© 2015-2022 by " + Crosstales.RTVoice.Util.Constants.ASSET_AUTHOR +
+            "© 2015-2023 by " + Crosstales.RTVoice.Util.Constants.ASSET_AUTHOR +
             System.Environment.NewLine +
             System.Environment.NewLine +
             Crosstales.RTVoice.Util.Constants.ASSET_AUTHOR_URL +
@@ -106,4 +112,4 @@ namespace Crosstales.RTVoice.EditorIntegration
    }
 }
 #endif
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

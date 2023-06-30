@@ -8,9 +8,9 @@ namespace Crosstales.Common.Util
    /// <summary>Post processor for macOS.</summary>
    public static class CTPMacOSPostProcessor
    {
-      private const string id = "com.crosstales.procstart";
+      private const string ID = "com.crosstales.procstart";
 
-      private const bool rewriteBundle = true; //change it to false if the bundle should not be changed
+      private const bool REWRITE_BUNDLE = true; //change it to false if the bundle should not be changed
 
       [PostProcessBuildAttribute(1)]
       public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
@@ -25,7 +25,7 @@ namespace Crosstales.Common.Util
                foreach (string file in files)
                {
                   //Debug.Log(file);
-                  System.IO.File.Delete(file);
+                  FileHelper.DeleteFile(file);
                }
             }
             catch (System.Exception ex)
@@ -33,7 +33,7 @@ namespace Crosstales.Common.Util
                Debug.Log($"Could not delete files: {ex}");
             }
 
-            if (rewriteBundle)
+            if (REWRITE_BUNDLE)
             {
                //rewrite Info.plist
                files = FileHelper.GetFiles(pathToBuiltProject, true, "plist");
@@ -42,12 +42,12 @@ namespace Crosstales.Common.Util
                {
                   foreach (string file in files)
                   {
-                     string content = System.IO.File.ReadAllText(file);
+                     string content = FileHelper.ReadAllText(file);
 
-                     if (content.Contains(id))
+                     if (content.Contains(ID))
                      {
-                        content = content.Replace(id, $"{id}.{System.DateTime.Now:yyyyMMddHHmmss}");
-                        System.IO.File.WriteAllText(file, content);
+                        content = content.Replace(ID, $"{ID}.{System.DateTime.Now:yyyyMMddHHmmss}");
+                        FileHelper.WriteAllText(file, content);
                      }
                   }
                }
@@ -62,4 +62,4 @@ namespace Crosstales.Common.Util
    }
 }
 #endif
-// © 2021-2022 crosstales LLC (https://www.crosstales.com)
+// © 2021-2023 crosstales LLC (https://www.crosstales.com)

@@ -5,7 +5,7 @@ namespace Crosstales.RTVoice.Tool
 {
    /// <summary>Allows to configure voice providers per platform.</summary>
    //[ExecuteInEditMode]
-   [HelpURL("https://www.crosstales.com/media/data/assets/rtvoice/api/class_crosstales_1_1_r_t_voice_1_1_tool_1_1_paralanguage.html")] //TODO update URL
+   [HelpURL("https://www.crosstales.com/media/data/assets/rtvoice/api/class_crosstales_1_1_r_t_voice_1_1_tool_1_1_platform_provider.html")]
    public class PlatformProvider : MonoBehaviour
    {
       [Header("Configuration Settings"), Tooltip("Platform specific provider for the app (empty provider = default of the OS).")]
@@ -94,4 +94,4 @@ namespace Crosstales.RTVoice.Tool
       public Crosstales.RTVoice.Provider.BaseCustomVoiceProvider CustomVoiceProvider;
    }
 }
-// © 2021-2022 crosstales LLC (https://www.crosstales.com)
+// © 2021-2023 crosstales LLC (https://www.crosstales.com)

@@ -72,7 +72,7 @@ public class TextBoxController : MonoBehaviour
     void Start()
     {
         //TODO: INdieCade Change voices for each model
-
+        Debug.Log("telling RTVoice to use this voice: "+ModelInfo.ModelName);
         switch (ModelInfo.ModelName)
         {
             case ("philosopher"):

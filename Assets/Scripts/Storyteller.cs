@@ -140,13 +140,16 @@ public class Storyteller : MonoBehaviour
         story_file = ModelInfo.storyFile;
         */
         //check to see that the modelURL was passed on from the opening, and if so, assign public vars
-        if (string.IsNullOrEmpty(ModelInfo.modelURL))
+        if (string.IsNullOrEmpty(ModelInfo.modelURL)|| string.IsNullOrEmpty(ModelInfo.ModelName))
         {
-            Debug.Log("No model URL, defaulting to Philosopher");
-            model_name = "philosopher";
-            model_url = "https://api-inference.huggingface.co/models/Triangles/fantastic_philosopher_124_4000"; //default to philosopher
-            //hf_api_key = "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";
-            hf_api_key = "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";
+            Debug.Log("No model URL or name, defaulting to Philosopher");
+            ModelInfo.ModelName = "philosopher";
+            ModelInfo.modelURL = "https://api-inference.huggingface.co/models/Triangles/fantastic_philosopher_124_4000";
+            ModelInfo.hf_api_key = "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";
+
+            model_name = ModelInfo.ModelName;
+            model_url = ModelInfo.modelURL;
+            hf_api_key = ModelInfo.hf_api_key;
         }
 
         string filename = "Text/" + model_name + "_storiesbound";

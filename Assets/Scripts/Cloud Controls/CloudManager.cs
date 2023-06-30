@@ -154,14 +154,14 @@ public class CloudManager : MonoBehaviour
     }
     void Awake()
     {
-        model_name = ModelInfo.ModelName;
 
         //check to see that the modelURL was passed on from the opening, and if so, assign public vars
         if (string.IsNullOrEmpty(ModelInfo.ModelName))
         {
             Debug.Log("No model URL, defaulting to Philosopher");
-            model_name = "philosopher";
+            ModelInfo.ModelName = "philosopher";
         }
+        model_name = ModelInfo.ModelName;
 
         SetTextureArrays(model_name); //more intensive(?), so we do this in awake
     }
@@ -198,18 +198,17 @@ public class CloudManager : MonoBehaviour
         cloudGenericsArray = Resources.LoadAll("Cloud_Natural", typeof(Texture2D)).Cast<Texture2D>().ToArray();
     }
 
-    //Basically make sure we always have updated images in our array
-    void OnValidate()
-    {
-        model_name = ModelInfo.ModelName;
+   
+    void OnValidate()    //called in the editor only
 
+    {
         //check to see that the modelURL was passed on from the opening, and if so, assign public vars
         if (string.IsNullOrEmpty(ModelInfo.ModelName))
         {
             Debug.Log("No model URL, defaulting to Philosopher");
-            model_name = "philosopher";
+            ModelInfo.ModelName = "philosopher";
         }
-
+        model_name = ModelInfo.ModelName;
         SetTextureArrays(model_name);
     }
 

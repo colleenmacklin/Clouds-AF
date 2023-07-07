@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -43,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8cecc508c5f3eb43aa6fb5eedba53c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: http://mary.dfki.de
-  port: 59125
-  username: 
-  password: 
+  url: https://marytts.crosstales.com/
+  port: 443
+  username: CloudTheory
+  password: IUB2fsYrgJk9wHR1
   type: 2

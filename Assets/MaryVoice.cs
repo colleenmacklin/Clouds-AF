@@ -13,7 +13,7 @@ public class MaryVoice : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.G))
         {
-
+            Debug.Log(speaker.Voices.Count);
             Voice voice = speaker.Voices[5];
             speaker.Speak("this is me waaa wooo woo bladeee rap lyricccs", null, voice);
         }

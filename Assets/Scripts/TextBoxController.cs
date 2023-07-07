@@ -5,6 +5,7 @@ using TMPro;
 using Crosstales.RTVoice;
 using System;
 using UnityEngine.UI;
+using Crosstales.RTVoice.Model;
 
 [RequireComponent(typeof(AudioSource))]
 public class TextBoxController : MonoBehaviour
@@ -32,7 +33,7 @@ public class TextBoxController : MonoBehaviour
     string activeLine;
     public Speaker speaker;
     public Crosstales.RTVoice.Model.Voice voice;
-    public bool isPC = false;
+  //  public bool isPC = false; removing this to changeover to marytts voice
 
     [SerializeField]
     string currentLine = "";
@@ -198,15 +199,22 @@ public class TextBoxController : MonoBehaviour
             //set the next active line
             activeLine = linesList[textLineIndex];
 
-            if (isPC) {
-                speaker.Speak(activeLine, null);
-            }
-            else
-            {
-                speaker.Speak(activeLine, null, voice);
-            }
 
-            
+            //removing this because setting up mary tts server to have platform consistancy and more voice options 
+            /* if (isPC)
+             {
+                 speaker.Speak(activeLine, null);
+             }
+             else
+             {
+                 speaker.Speak(activeLine, null, voice);
+             }
+            */
+            List<Voice> voices = speaker.Voices;
+
+            //proxy voice for now
+            speaker.Speak(activeLine, null, speaker.Voices[11]);
+
             //textField.text = "";
             //show line
             if (typeLines)
@@ -273,15 +281,20 @@ public class TextBoxController : MonoBehaviour
         CopyLines(newLines);
         activeLine = linesList[0]; //set active to first line
         Debug.Log("ReadNEwLines: "+ activeLine);
-        if (isPC)
-        {
-            speaker.Speak(activeLine, null);
-        }
-        else
-        {
-            speaker.Speak(activeLine, null, voice);
-        }
-
+        //removing this because setting up mary tts server to have platform consistancy and more voice options 
+        /* if (isPC)
+         {
+             speaker.Speak(activeLine, null);
+         }
+         else
+         {
+             speaker.Speak(activeLine, null, voice);
+         }
+        */
+        List<Voice> voices = speaker.Voices;
+        
+        //proxy voice for now
+        speaker.Speak(activeLine, null, speaker.Voices[11]);
 
         if (typeLines)
         {

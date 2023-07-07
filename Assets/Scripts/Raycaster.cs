@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityTemplateProjects;
@@ -12,6 +13,11 @@ Movement of the mouse should be made relative to the screen rect bounds.
 */
 public class Raycaster : MonoBehaviour
 {
+    public event Action<GameObject> OnHoverOverTargetCloud;
+    public event Action OnHoverExit;
+
+
+   
 
     //maybe this needs to be more available than what it is.
     public GameObject Selected
@@ -51,9 +57,10 @@ public class Raycaster : MonoBehaviour
     Coroutine activeCoroutine;
     void Start()
     {
+        Cursor.visible = false;
         mask = LayerMask.GetMask("Clouds");
-        gazeMover.enabled = false;
-        initialCameraRot = Camera.main.transform.localRotation;
+       gazeMover.enabled = false;
+       // initialCameraRot = Camera.main.transform.localRotation;
     }
 
     void OnEnable()
@@ -61,6 +68,8 @@ public class Raycaster : MonoBehaviour
         EventManager.StartListening("ConversationEnded", StartGazeTracking);
         EventManager.StartListening("Musing", StopGazeTracking);
         EventManager.StartListening("Cutscene", ReadingMode);
+
+       
     }
 
     void OnDisable()
@@ -73,6 +82,7 @@ public class Raycaster : MonoBehaviour
     void ReadingMode()
     {
         state = MouseState.READING;
+        StartGazeTracking();
     }
 
     //None of the tracking should be doing as many mutations as it is now
@@ -85,22 +95,22 @@ public class Raycaster : MonoBehaviour
             StopCoroutine(activeCoroutine);
 
         }
-        activeCoroutine = StartCoroutine(ReturnToDefaultView());
+       // activeCoroutine = StartCoroutine(ReturnToDefaultView());
 
         gazeMover.enabled = true;
         state = MouseState.EMPTY;
 
     }
-    IEnumerator ReturnToDefaultView()
+ /*   IEnumerator ReturnToDefaultView()
     {
         while (Quaternion.Angle(Camera.main.transform.localRotation, Quaternion.identity) > 10f)
         {
-            Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.identity, focusOutSpeed);
+           // Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.identity, focusOutSpeed);
 
             //returning to center
             yield return null;
         }
-    }
+    }*/
     void StopGazeTracking()
     {
         ReadingMode();
@@ -109,15 +119,15 @@ public class Raycaster : MonoBehaviour
             StopCoroutine(activeCoroutine);
         }
         gazeMover.enabled = false;
-        activeCoroutine = StartCoroutine(LookAtSelection());
-        EventManager.TriggerEvent("closeEye");
+       // activeCoroutine = StartCoroutine(LookAtSelection());
+        //EventManager.TriggerEvent("closeEye");
     }
 
     //Look directly at target
     //Does not end because the Quaternion Angle is in the wrong relative space (local to world angle comparison gives high values like 60 degrees).
-    IEnumerator LookAtSelection()
-    {
-        Quaternion rot = Quaternion.LookRotation(Selected.transform.position, Camera.main.transform.up);
+   // IEnumerator LookAtSelection()
+   // {
+      /*  Quaternion rot = Quaternion.LookRotation(Selected.transform.position, Camera.main.transform.up);
 
         while (Quaternion.Angle(rot, Camera.main.transform.localRotation) > 1f)// these values are just wrong
         {
@@ -125,10 +135,10 @@ public class Raycaster : MonoBehaviour
 
             //Debug.Log($"looking at target, {rot},{Camera.main.transform.localRotation}");
             yield return null;
-        }
-
-        Debug.Log("TargetFound");
-    }
+        }s
+      */
+      //  Debug.Log("TargetFound");
+   // }
     void Update()
     {
         //always cast the ray
@@ -141,34 +151,60 @@ public class Raycaster : MonoBehaviour
                 //if empty and hit, then switch to hovering
                 if (hit.transform)
                 {
+                   
                     state = MouseState.HOVERING;
-                    EventManager.TriggerEvent("openEye");
+                    //EventManager.TriggerEvent("openEye");
+                    //callback to start butterfly glow - when entering cloud over hover
+                    OnHoverOverTargetCloud?.Invoke(hit.transform.gameObject);
+                }
+                else
+                {
+                    OnHoverExit?.Invoke();
                 }
                 break;
             case MouseState.HOVERING:
                 //if hovering and no hit, then switch to empty
                 if (!hit.transform)
                 {
+                    
                     state = MouseState.EMPTY;
                     Selected = null;
-                    EventManager.TriggerEvent("closeEye");
+                    //EventManager.TriggerEvent("closeEye");
+                    //if exit cloud then stop glow 
+                    OnHoverExit?.Invoke();
                 }
-                if (Input.GetMouseButtonDown(0))
+                else
                 {
-                    Selected = hit.transform.gameObject;
-                    lookAtSelected = Selected.transform.position - Camera.main.transform.position;
-                    EventManager.TriggerEvent("Respond");
+                    OnHoverOverTargetCloud?.Invoke(hit.transform.gameObject);
                 }
+
+
+               
                 break;
             case MouseState.READING:
 
                 if (Input.GetMouseButtonDown(0))
                 {
+                    Debug.Log("mouseState = Reading");
                     //in the future this should be some sort of reading state input
                     textBoxControl.Check();//bad mutation management.
                 }
                 break;
         }
+
+
+    }
+
+    public void StartCloudTalking()
+    {
+        Selected = hit.transform.gameObject;
+
+        GameObject c = Selected;
+
+        Actions.GetClickedCloud(c); //lets cloudmanager know which cloud has been clicked
+
+       
+        EventManager.TriggerEvent("Respond");
     }
 
 }

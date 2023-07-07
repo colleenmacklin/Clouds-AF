@@ -28,6 +28,9 @@ public class CloudSubcontroller : MonoBehaviour
     private float srcHeight;
     private float minWidth = 10f; //hardcoded
     private float minHeight = 10f; //hardcoded
+    private float maxWidth = 30f; //hardcoded
+    private float maxHeight = 30f; //hardcoded
+
 
 
     Renderer rend;

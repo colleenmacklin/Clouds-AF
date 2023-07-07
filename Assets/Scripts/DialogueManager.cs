@@ -94,13 +94,13 @@ public class DialogueManager : MonoBehaviour
             return;
         }
         ReadSelection();
+        //Debug.Log(selectedTarget);
         Teller.RespondToShape(selectedTarget);
     }
 
     void ConversationalPauseTransition()
     {
         Debug.Log("---ending dialogue, conversational pause---");
-
         StartCoroutine(TransitionToNextCloud());
     }
     IEnumerator TransitionToNextCloud()

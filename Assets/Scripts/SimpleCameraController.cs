@@ -17,6 +17,11 @@ namespace UnityTemplateProjects
         [Range(0.01f, 1f)]
         public float followSpeed = .2f;
 
+
+        private void Awake()
+        {
+            Cursor.visible = false;
+        }
         void Start()
         {
             initialEulerAngle = new Vector3(-66, 0, 0);
@@ -24,6 +29,7 @@ namespace UnityTemplateProjects
 
         void Update()
         {
+            Cursor.visible = false; 
             Vector2 mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToViewportPoint(mousePos);
             mousePos.x = Mathf.Clamp01(mousePos.x);

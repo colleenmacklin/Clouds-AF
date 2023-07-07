@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using SimpleJSON;
 
 
 /*
@@ -31,6 +32,9 @@ public class NarratorSO : ScriptableObject
 
     [Tooltip("File that has all the dialogue.")]
     public TextAsset narratorFile;
+    public TextAsset storyFile;
+
+    public JSONNode storyData;
 
     [Tooltip("Column delimiter, can be anything, default is |")]
     public string ColumnDelimiter = "|";
@@ -39,6 +43,7 @@ public class NarratorSO : ScriptableObject
     public string DialogueDelimiter = "==";
 
     public List<Story> StoryData = new List<Story>();
+    public List<string> keys = new List<string>();
 
     public bool ProcessNarratorFile(TextAsset dataFile = null)
     {
@@ -46,7 +51,25 @@ public class NarratorSO : ScriptableObject
         if (dataFile == null)
         {
             dataFile = narratorFile;
+            storyData = JSON.Parse(storyFile.text);
         }
+
+        //Debug.Log(storyData["stories"]);
+        for (int i = 0; i < 32; i++)
+        {
+            string newString = storyData["stories"][i]["name"].ToString();
+            //int index = newString.Length;
+            //newString = newString.Remove(0, 1);
+            //newString = newString.Remove(index - 2, 1);
+            //Debug.Log(newString.Length);
+            keys.Add(newString);
+            //Debug.Log(keys[i].Length);
+        }
+
+        string[] keyArray = keys.ToArray();
+
+        //Debug.Log(keyArray[21]);
+
 
         //create split operators
         string[] columnOperator = { ColumnDelimiter };
@@ -54,21 +77,25 @@ public class NarratorSO : ScriptableObject
 
         //split new lines
         string[] records = dataFile.text.Split('\n');
+        //Debug.Log(records.Length);
 
         //first line is in format: 
         //nothing, Story 1, Story 2, Story 3
         //Get all the first titles
         string[] storyTitles = records[0].Split(columnOperator, StringSplitOptions.None);
+        //keys.ToArray();
+        //Debug.Log(storyTitles[5]);
 
         //create list of all data
         //where 0 is story 1, 1 is story 2, 2 is story 3
         //this is a vertical list of all the data, where indices are off by 1
-        List<Dictionary<string, string[]>> data = new List<Dictionary<string, string[]>>();
+        List < Dictionary<string, string[]>> data = new List<Dictionary<string, string[]>>();
         for (int i = 1; i < records.Length; i++)
         {
             //second line is in format:
             //key, story 1 text, story 2 text, story 3 text
             string[] keyedText = records[i].Split(columnOperator, StringSplitOptions.None);//break line on |
+            //Debug.Log(keyedText[0]);
 
             //now add dictionary entries for every story
             //started from j = 1 because the 0 position is just the key
@@ -76,6 +103,7 @@ public class NarratorSO : ScriptableObject
             {
                 string key = keyedText[0];
                 string[] dialogue = keyedText[j].Split(dialogueOperator, StringSplitOptions.None);
+                //Debug.Log(dialogue[0]);
                 //add string keys per entry
                 //if dictionary is not present, create dictionary
                 //over time, assemble the list of data which is all those dictionaries
@@ -89,10 +117,15 @@ public class NarratorSO : ScriptableObject
             }
 
         }
-
         //Add all stories into the list of stories with keys
         for (int i = 1; i < storyTitles.Length; i++)
         {
+            //Debug.Log(storyTitles[i]+ data[i - 1]);
+            //string newString = storyTitles[i];
+            //int index = newString.Length;
+            //newString = newString.Remove(0, 1);
+            //newString = newString.Remove(index - 2, 1);
+            //Debug.Log(newString + data[i - 1]);
             StoryData.Add(new Story(storyTitles[i], data[i - 1]));
         }
 

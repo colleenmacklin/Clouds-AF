@@ -56,7 +56,8 @@ public class ScreenshotUtility : MonoBehaviour
     //For reference http://docs.unity3d.com/ScriptReference/Application.CaptureScreenshot.html
     private void TakeScreenshot()
     {
-        current_shape = GameObject.Find("Game_Cloud").GetComponent<Training_Cloud_Layer>().curr_Shape.name;
-        ScreenCapture.CaptureScreenshot(_filepath + current_shape + _screenshotNumber++.ToString() + ".png", _screenshotResolutionScaleFactor);
+        //current_shape = GameObject.Find("Game_Cloud").GetComponent<Training_Cloud_Layer>().curr_Shape.name;
+        ScreenCapture.CaptureScreenshot(_filepath + "ak" + _screenshotNumber++.ToString() + ".png", _screenshotResolutionScaleFactor);
+
     }
 }

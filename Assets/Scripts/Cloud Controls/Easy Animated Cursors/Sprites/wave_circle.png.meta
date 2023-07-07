@@ -381,7 +381,7 @@ TextureImporter:
       213: 21300250
     second: wave_circle_125
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -401,6 +401,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -409,12 +411,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -432,10 +434,14 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 1
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -463,6 +469,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -3132,6 +3150,133 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      wave_circle_39: 21300078
+      wave_circle_103: 21300206
+      wave_circle_25: 21300050
+      wave_circle_85: 21300170
+      wave_circle_110: 21300220
+      wave_circle_18: 21300036
+      wave_circle_106: 21300212
+      wave_circle_8: 21300016
+      wave_circle_66: 21300132
+      wave_circle_50: 21300100
+      wave_circle_51: 21300102
+      wave_circle_21: 21300042
+      wave_circle_72: 21300144
+      wave_circle_119: 21300238
+      wave_circle_57: 21300114
+      wave_circle_87: 21300174
+      wave_circle_64: 21300128
+      wave_circle_2: 21300004
+      wave_circle_43: 21300086
+      wave_circle_97: 21300194
+      wave_circle_90: 21300180
+      wave_circle_28: 21300056
+      wave_circle_91: 21300182
+      wave_circle_12: 21300024
+      wave_circle_124: 21300248
+      wave_circle_42: 21300084
+      wave_circle_73: 21300146
+      wave_circle_41: 21300082
+      wave_circle_52: 21300104
+      wave_circle_56: 21300112
+      wave_circle_63: 21300126
+      wave_circle_118: 21300236
+      wave_circle_29: 21300058
+      wave_circle_83: 21300166
+      wave_circle_27: 21300054
+      wave_circle_47: 21300094
+      wave_circle_89: 21300178
+      wave_circle_55: 21300110
+      wave_circle_94: 21300188
+      wave_circle_24: 21300048
+      wave_circle_100: 21300200
+      wave_circle_95: 21300190
+      wave_circle_80: 21300160
+      wave_circle_37: 21300074
+      wave_circle_70: 21300140
+      wave_circle_5: 21300010
+      wave_circle_9: 21300018
+      wave_circle_111: 21300222
+      wave_circle_112: 21300224
+      wave_circle_49: 21300098
+      wave_circle_88: 21300176
+      wave_circle_16: 21300032
+      wave_circle_99: 21300198
+      wave_circle_125: 21300250
+      wave_circle_31: 21300062
+      wave_circle_48: 21300096
+      wave_circle_13: 21300026
+      wave_circle_14: 21300028
+      wave_circle_121: 21300242
+      wave_circle_123: 21300246
+      wave_circle_68: 21300136
+      wave_circle_33: 21300066
+      wave_circle_44: 21300088
+      wave_circle_92: 21300184
+      wave_circle_116: 21300232
+      wave_circle_79: 21300158
+      wave_circle_84: 21300168
+      wave_circle_98: 21300196
+      wave_circle_81: 21300162
+      wave_circle_69: 21300138
+      wave_circle_108: 21300216
+      wave_circle_107: 21300214
+      wave_circle_59: 21300118
+      wave_circle_109: 21300218
+      wave_circle_105: 21300210
+      wave_circle_3: 21300006
+      wave_circle_76: 21300152
+      wave_circle_102: 21300204
+      wave_circle_40: 21300080
+      wave_circle_46: 21300092
+      wave_circle_0: 21300000
+      wave_circle_36: 21300072
+      wave_circle_19: 21300038
+      wave_circle_10: 21300020
+      wave_circle_17: 21300034
+      wave_circle_1: 21300002
+      wave_circle_38: 21300076
+      wave_circle_53: 21300106
+      wave_circle_122: 21300244
+      wave_circle_60: 21300120
+      wave_circle_101: 21300202
+      wave_circle_62: 21300124
+      wave_circle_74: 21300148
+      wave_circle_26: 21300052
+      wave_circle_4: 21300008
+      wave_circle_58: 21300116
+      wave_circle_34: 21300068
+      wave_circle_30: 21300060
+      wave_circle_117: 21300234
+      wave_circle_114: 21300228
+      wave_circle_22: 21300044
+      wave_circle_61: 21300122
+      wave_circle_96: 21300192
+      wave_circle_93: 21300186
+      wave_circle_23: 21300046
+      wave_circle_75: 21300150
+      wave_circle_20: 21300040
+      wave_circle_45: 21300090
+      wave_circle_7: 21300014
+      wave_circle_11: 21300022
+      wave_circle_67: 21300134
+      wave_circle_54: 21300108
+      wave_circle_115: 21300230
+      wave_circle_32: 21300064
+      wave_circle_120: 21300240
+      wave_circle_35: 21300070
+      wave_circle_82: 21300164
+      wave_circle_104: 21300208
+      wave_circle_113: 21300226
+      wave_circle_78: 21300156
+      wave_circle_15: 21300030
+      wave_circle_65: 21300130
+      wave_circle_86: 21300172
+      wave_circle_6: 21300012
+      wave_circle_77: 21300154
+      wave_circle_71: 21300142
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

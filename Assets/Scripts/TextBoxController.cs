@@ -33,7 +33,7 @@ public class TextBoxController : MonoBehaviour
     string activeLine;
     public Speaker speaker;
     public Crosstales.RTVoice.Model.Voice voice;
-  //  public bool isPC = false; removing this to changeover to marytts voice
+  public bool isPC = false;//removing this to changeover to marytts voice
 
     [SerializeField]
     string currentLine = "";
@@ -201,7 +201,7 @@ public class TextBoxController : MonoBehaviour
 
 
             //removing this because setting up mary tts server to have platform consistancy and more voice options 
-            /* if (isPC)
+            if (isPC)
              {
                  speaker.Speak(activeLine, null);
              }
@@ -209,11 +209,11 @@ public class TextBoxController : MonoBehaviour
              {
                  speaker.Speak(activeLine, null, voice);
              }
-            */
+           
             List<Voice> voices = speaker.Voices;
 
             //proxy voice for now
-            speaker.Speak(activeLine, null, speaker.Voices[11]);
+        //    speaker.Speak(activeLine, null, speaker.Voices[11]);
 
             //textField.text = "";
             //show line
@@ -282,7 +282,7 @@ public class TextBoxController : MonoBehaviour
         activeLine = linesList[0]; //set active to first line
         Debug.Log("ReadNEwLines: "+ activeLine);
         //removing this because setting up mary tts server to have platform consistancy and more voice options 
-        /* if (isPC)
+        if (isPC)
          {
              speaker.Speak(activeLine, null);
          }
@@ -290,11 +290,11 @@ public class TextBoxController : MonoBehaviour
          {
              speaker.Speak(activeLine, null, voice);
          }
-        */
-        List<Voice> voices = speaker.Voices;
+       
+      //  List<Voice> voices = speaker.Voices;
         
         //proxy voice for now
-        speaker.Speak(activeLine, null, speaker.Voices[11]);
+      //  speaker.Speak(activeLine, null, speaker.Voices[11]);
 
         if (typeLines)
         {

@@ -20,7 +20,11 @@ public class GlowButterfly : MonoBehaviour
 
     private MeshRenderer[] _meshRenderers = null;
 
-    private Animator _animator;
+    //flapping animator
+    private Animator _idleAnimator;
+
+    //circling animator
+    private Animator _circlingAnimator;
 
     private Color _glowCol;
     private Color _startCol;
@@ -59,8 +63,31 @@ public class GlowButterfly : MonoBehaviour
     {
         _meshRenderers = GetComponentsInChildren<MeshRenderer>();
         _startCol = _meshRenderers[1].material.GetColor("_Color");
-        _animator = GetComponentInChildren<Animator>();
-        SetButterflySpeed(_butterflyIdleSpeed);
+
+        Animator[] animators = GetComponentsInChildren<Animator>();
+
+         foreach ( Animator a  in animators)
+                {
+                    if (a.tag == "circle")
+                    {
+                        _circlingAnimator = a;
+                        if (_circlingAnimator != null)
+                        {
+                            _circlingAnimator.speed = 0;
+                        }
+
+                        Debug.Log("circle animator is " + _circlingAnimator.gameObject.name);
+                    }
+
+                    if (a.tag == "idle")
+                    {
+                        _idleAnimator = a;
+
+                        Debug.Log(" idle animator is " + _idleAnimator.gameObject.name);
+                    }
+                }      
+
+        SetButterflySpeed(_butterflyIdleSpeed);                  
     }
 
 
@@ -79,7 +106,17 @@ public class GlowButterfly : MonoBehaviour
 
             _selectedCloudObject = cloud;
         }
-       
+
+        CircleButterfly();   
+    }
+
+    private void CircleButterfly()
+    {
+        if (_circlingAnimator != null)
+            {        
+                //play butterfly animation
+                _circlingAnimator.speed = 1;
+            }
     }
 
     public void DeGlow()
@@ -186,7 +223,7 @@ public class GlowButterfly : MonoBehaviour
     private void SetButterflySpeed(float speed)
     {
 
-        _animator.speed = speed;
+        _idleAnimator.speed = speed;
     }
 
 

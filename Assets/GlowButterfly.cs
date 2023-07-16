@@ -21,10 +21,7 @@ public class GlowButterfly : MonoBehaviour
     private MeshRenderer[] _meshRenderers = null;
 
     //flapping animator
-    private Animator _idleAnimator;
-
-    //circling animator
-    private Animator _circlingAnimator;
+    private Animator _animator;
 
     private Color _glowCol;
     private Color _startCol;
@@ -47,7 +44,7 @@ public class GlowButterfly : MonoBehaviour
         {
             _raycasterOpening.OnHoverOverTargetCloud += StartGlow;
             _raycasterOpening.OnHoverExit += DeGlow;
-           
+
         }
     }
 
@@ -63,31 +60,9 @@ public class GlowButterfly : MonoBehaviour
     {
         _meshRenderers = GetComponentsInChildren<MeshRenderer>();
         _startCol = _meshRenderers[1].material.GetColor("_Color");
+        _animator = GetComponentInChildren<Animator>();
 
-        Animator[] animators = GetComponentsInChildren<Animator>();
-
-         foreach ( Animator a  in animators)
-                {
-                    if (a.tag == "circle")
-                    {
-                        _circlingAnimator = a;
-                        if (_circlingAnimator != null)
-                        {
-                            _circlingAnimator.speed = 0;
-                        }
-
-                        Debug.Log("circle animator is " + _circlingAnimator.gameObject.name);
-                    }
-
-                    if (a.tag == "idle")
-                    {
-                        _idleAnimator = a;
-
-                        Debug.Log(" idle animator is " + _idleAnimator.gameObject.name);
-                    }
-                }      
-
-        SetButterflySpeed(_butterflyIdleSpeed);                  
+        SetButterflySpeed(_butterflyIdleSpeed);
     }
 
 
@@ -99,6 +74,7 @@ public class GlowButterfly : MonoBehaviour
         {
             if (!_isGlowing)
             {
+
                 StopAllCoroutines();
                 StartCoroutine(glowBut());
 
@@ -106,27 +82,19 @@ public class GlowButterfly : MonoBehaviour
 
             _selectedCloudObject = cloud;
         }
-
-        CircleButterfly();   
-    }
-
-    private void CircleButterfly()
-    {
-        if (_circlingAnimator != null)
-            {        
-                //play butterfly animation
-                _circlingAnimator.speed = 1;
-            }
     }
 
     public void DeGlow()
     {
 
-            StopAllCoroutines();
+        StopAllCoroutines();
         if (transform.childCount > 0)
         {
             //TODO make this a fade out 
             _isGlowing = false;
+
+            //re-enable following-cursor script on ButterflyPrefab
+            GetComponentInChildren<FollowCursor>().enabled = true;
 
             if (_meshRenderers != null)
             {
@@ -140,13 +108,22 @@ public class GlowButterfly : MonoBehaviour
                 SetButterflySpeed(_butterflyIdleSpeed);
             }
         }
-      
+
+        //disable circling script on ButterflyContainer
+        GetComponent<ButterflyCircle>().enabled = false;
 
     }
+
 
     private IEnumerator glowBut()
     {
         _isGlowing = true;
+
+        //switch butterfly transform method by disabling ButterflyPrefab following-cursor script
+        GetComponentInChildren<FollowCursor>().enabled = false;
+        //and enabling ButterflyContainer circling script
+        GetComponent<ButterflyCircle>().enabled = true;
+
         //TODO: Don't change underlying cloud while glowing
         float i = 0;
         float j = 0;
@@ -156,7 +133,6 @@ public class GlowButterfly : MonoBehaviour
         float speed = _butterflyIdleSpeed;
         while (j < 1)
         {
-
             _currentCol = Vector4.Lerp(_startCol, _glowCol, i);
 
 
@@ -165,18 +141,18 @@ public class GlowButterfly : MonoBehaviour
                 foreach (MeshRenderer m in _meshRenderers)
                 {
                     if (m)
-                    m.material.SetColor("_Color", _currentCol);
+                        m.material.SetColor("_Color", _currentCol);
                     if (i > 0.7f)
                     {
                         if (m)
-                        m.material.SetFloat("_Amount", j);
+                            m.material.SetFloat("_Amount", j);
                         j += 0.02f;
                     }
 
                 }
                 SetButterflySpeed(speed);
             }
-            
+
             yield return new WaitForSeconds(.05f);
             i += 0.01f;
             speed += 0.2f;
@@ -210,20 +186,19 @@ public class GlowButterfly : MonoBehaviour
 
         else
         {
-            if (GetComponentInChildren<FollowCursor>()!= null)
+            if (GetComponentInChildren<FollowCursor>() != null)
             {
                 GameObject buttefly = GetComponentInChildren<FollowCursor>().gameObject;
                 buttefly.SetActive(false);
             }
-           
+
         }
-        
+
     }
 
     private void SetButterflySpeed(float speed)
     {
-
-        _idleAnimator.speed = speed;
+        _animator.speed = speed;
     }
 
 

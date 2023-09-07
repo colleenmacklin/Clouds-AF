@@ -10,6 +10,8 @@ public class SimpleRTVoiceExample : MonoBehaviour
    public string Text = "Hello world, I am RT-Voice!";
    public string Culture = "en";
    public bool SpeakWhenReady;
+   public AudioSource Audio;
+   public bool UseNative;
 
    private string uid; //Unique id of the speech
 
@@ -34,7 +36,14 @@ public class SimpleRTVoiceExample : MonoBehaviour
 
    public void Speak()
    {
-      uid = Speaker.Instance.Speak(Text, null, Speaker.Instance.VoiceForCulture(Culture)); //Speak with the first voice matching the given culture
+      if (UseNative)
+      {
+         uid = Speaker.Instance.SpeakNative(Text, Speaker.Instance.VoiceForCulture(Culture)); //Speak (native TTS) with the first voice matching the given culture
+      }
+      else
+      {
+         uid = Speaker.Instance.Speak(Text, Audio, Speaker.Instance.VoiceForCulture(Culture)); //Speak (audio file) with the first voice matching the given culture
+      }
    }
 
    private void voicesReady()
@@ -57,4 +66,4 @@ public class SimpleRTVoiceExample : MonoBehaviour
          Debug.Log($"RT-Voice: speak completed: {wrapper}");
    }
 }
-// © 2022 crosstales LLC (https://www.crosstales.com)
+// © 2022-2023 crosstales LLC (https://www.crosstales.com)

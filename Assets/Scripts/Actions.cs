@@ -17,4 +17,7 @@ public static class Actions
     public static Action<String> GetModel;
     public static Action<List<string>> SetEndingClouds;
     public static Action<TextAsset> SetStory;
+    public static Action MoveButterfly;
+    public static Action<GameObject> Destroy;
+    public static Action Shake;
 }

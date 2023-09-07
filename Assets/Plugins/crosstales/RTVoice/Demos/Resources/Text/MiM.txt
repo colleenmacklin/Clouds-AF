@@ -1,0 +1,11 @@
+#Text;Output file (without extension);Voice name;Rate;Pitch;Volume
+In welchen Stock müssen wir, Mama?;_MiM/1-01_Agathe;Ingrid;1;1.1
+In den 3ten!;_MiM/1-02_Klara;Katja
+Hier steht aber...;_MiM/1-03_Agathe;Ingrid;1;1.1
+Egal was dort steht, wir müssen zu meiner Puppe Justine, und die wohnt im dritten Stock. Drück' jetzt auf den Knopf, Agathe!;_MiM/1-04_Klara;Katja
+Versprich mir, dass wir nicht ewig machen hier drin.;_MiM/1-05_Agathe;Ingrid;1;1.1
+Ja, abgemacht...;_MiM/1-06_Klara;Katja
+Mama, du hast mir versprochen, dass wir heute für einmal nicht ins Puppenmuseum gehen...;_MiM/1-07_Agathe;Ingrid;1;1.1
+Aber dann habe ich halt heute morgen einen dringenden Brief von Justine erhalten! ...Und es heisst SPIELZEUG WELTEN MUSEUM!;_MiM/1-08_Klara;Katja
+Ja, mein' ich ja... Aber kurz, versprochen!?;_MiM/1-09_Agathe;Ingrid;1;1.1
+Hast Du jetzt die '3' gedrückt?... Ja, ist ja gut, versprochen!;_MiM/1-10_Klara;Katja

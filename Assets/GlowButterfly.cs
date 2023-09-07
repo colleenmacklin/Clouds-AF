@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static ButterflyController;
 
 public class GlowButterfly : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class GlowButterfly : MonoBehaviour
     [SerializeField]
     private Opening _opening;
 
+    public ButterflyController butterflyController;
+
     private MeshRenderer[] _meshRenderers = null;
 
     //flapping animator
@@ -32,6 +35,16 @@ public class GlowButterfly : MonoBehaviour
 
     private float _butterflyIdleSpeed = 1.3f;
     private bool _isGlowing = false;
+    public Camera _camera;
+    public Vector3 v3Pos;
+    private Vector3 velocity = Vector3.zero;
+    public float rotationSpeed = 1.0f;
+    public float smoothTime = 0.9f; //0.3f
+    float angle;
+    public float maxTurnSpeed = 90;
+
+
+
     private void Awake()
     {
         if (_raycasterScript)
@@ -46,6 +59,15 @@ public class GlowButterfly : MonoBehaviour
             _raycasterOpening.OnHoverExit += DeGlow;
 
         }
+
+        foreach (Camera c in Camera.allCameras)
+        {
+            if (c.gameObject.name == "Main Camera")
+            {
+                _camera = c;
+            }
+        }
+
     }
 
 
@@ -53,6 +75,8 @@ public class GlowButterfly : MonoBehaviour
     {
 
         _glowCol = new Color(60f, 60f, 60f, 60f);
+        //Debug.Log("random point: " + v3Pos);
+
 
     }
 
@@ -81,17 +105,22 @@ public class GlowButterfly : MonoBehaviour
             }
 
             _selectedCloudObject = cloud;
+
         }
     }
 
     public void DeGlow()
     {
-
-        StopAllCoroutines();
         if (transform.childCount > 0)
         {
-            //TODO make this a fade out 
-            _isGlowing = false;
+            if (_isGlowing)
+            {
+
+                StopAllCoroutines();
+                StartCoroutine(UnglowBut());
+
+            }
+
 
             //re-enable following-cursor script on ButterflyPrefab
             GetComponentInChildren<FollowCursor>().enabled = true;
@@ -114,15 +143,17 @@ public class GlowButterfly : MonoBehaviour
 
     }
 
+   
 
     private IEnumerator glowBut()
     {
         _isGlowing = true;
 
         //switch butterfly transform method by disabling ButterflyPrefab following-cursor script
-        GetComponentInChildren<FollowCursor>().enabled = false;
+        //GetComponentInChildren<FollowCursor>().enabled = false;
         //and enabling ButterflyContainer circling script
-        GetComponent<ButterflyCircle>().enabled = true;
+        //GetComponent<ButterflyCircle>().enabled = true;
+
 
         //TODO: Don't change underlying cloud while glowing
         float i = 0;
@@ -153,7 +184,8 @@ public class GlowButterfly : MonoBehaviour
                 SetButterflySpeed(speed);
             }
 
-            yield return new WaitForSeconds(.05f);
+            yield return new WaitForSeconds(.02f);//cm sped up from .05f
+
             i += 0.01f;
             speed += 0.2f;
 
@@ -162,8 +194,9 @@ public class GlowButterfly : MonoBehaviour
 
         if (_raycasterScript)
         {
-
             _raycasterScript.StartCloudTalking();
+            butterflyController.talkingButterfly();
+
         }
         if (_raycasterOpening)
         {
@@ -171,13 +204,65 @@ public class GlowButterfly : MonoBehaviour
         }
         _isGlowing = false;
 
-        DestroyButterfly();
+        //fly offscreen
+
+        //Actions.MoveButterfly();
+        //butterflyController._bstate = ButterflyState.OFFSCREEN;
+
+        //DestroyButterfly(); //this seems to happen before the MoveButterfly CoRoutine is finished - might need to call it from that script
         yield return null;
     }
 
+
+    private IEnumerator UnglowBut()
+    {
+        _isGlowing = false;
+
+        //TODO: Don't change underlying cloud while glowing
+        float i = 0;
+        float j = 0;
+
+        float speed = _butterflyIdleSpeed;
+        while (j < 1)
+        {
+            _currentCol = Vector4.Lerp(_glowCol, _startCol, i);
+
+
+            if (_meshRenderers != null)
+            {
+                foreach (MeshRenderer m in _meshRenderers)
+                {
+                    if (m)
+                        m.material.SetColor("_Color", _startCol);
+                    if (i > 0.7f)
+                    {
+                        if (m)
+                            m.material.SetFloat("_Amount", j);
+                        j += 0.02f;
+                    }
+
+                }
+                SetButterflySpeed(speed);
+            }
+
+            yield return new WaitForSeconds(.02f);//cm sped up from .05f
+
+            i += 0.01f;
+            speed += 0.2f;
+
+        }
+        //invoke Deglow is finished
+        yield return null;
+    }
+
+
+
+    //TODO: Move to Butterfly Controller
     public void DestroyButterfly()
     {
+        Debug.Log("Destroy!!!Butterfly!!!!");
         StopAllCoroutines();
+
         if (_raycasterScript)
         {
             GameObject g = this.gameObject;

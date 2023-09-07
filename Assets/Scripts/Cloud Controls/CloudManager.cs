@@ -505,18 +505,18 @@ public class CloudManager : MonoBehaviour
         //TODO might want to check on the type of shape the cloud is (generic or target) and then change accordingly
         //TODO adjust the timing
         //TODO decide whether to make this cloud a shape or a generic
-        Debug.Log("cloud shape is: "+c.currentShape);
+        //Debug.Log("cloud shape is: "+c.currentShape);
 
         if (c.isTarget)
         {
             cloudsActiveHistory.Remove(c.CurrentShapeName);
             SetSingleCloudToGenericShape(c);
-            Debug.Log("Cloud: " + c + "Is ready");
+            //Debug.Log("Cloud: " + c + "Is ready");
         }
         else
         {
             SetSingleCloudToShape(c);
-            Debug.Log("Cloud: " + c + "Is ready");
+            //Debug.Log("Cloud: " + c + "Is ready");
         }
     }
 

@@ -58,9 +58,6 @@ namespace Crosstales.RTVoice.Demo
 
          //isCustomProvider = Speaker.Instance.CustomMode;
 
-         if (Cultures != null)
-            Cultures.text = string.Join(", ", Speaker.Instance.Cultures.ToArray());
-
          if (Speaker.Instance.isSSMLSupported)
          {
             if (Input != null)
@@ -90,8 +87,6 @@ namespace Crosstales.RTVoice.Demo
             buildVoicesList();
 
             lastCulture = Culture.text;
-
-            Cultures.text = string.Join(", ", Speaker.Instance.Cultures.ToArray());
          }
       }
 
@@ -155,6 +150,9 @@ namespace Crosstales.RTVoice.Demo
       {
          //Debug.Log("+++ Voices ready... +++");
          lastCulture = forceUpdate; //force update
+
+         if (Cultures != null)
+            Cultures.text = string.Join(", ", Speaker.Instance.Cultures.ToArray());
       }
 
       private void clearVoicesList()
@@ -252,9 +250,11 @@ namespace Crosstales.RTVoice.Demo
 
          if (Voices != null)
             Voices.text = "Voices (" + items.Count + ")";
+
+         onVoicesReady();
       }
 
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

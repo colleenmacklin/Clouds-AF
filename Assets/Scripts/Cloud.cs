@@ -128,6 +128,8 @@ public class Cloud : MonoBehaviour
 
     }
 
+    //TODO: make sure we don't need this and then delete - too many mouse calls! 7/31/2023 - cm
+    /*
     private void OnMouseDown()
     {
         Debug.Log("clicked on: " + this.gameObject.name);
@@ -150,6 +152,7 @@ public class Cloud : MonoBehaviour
         //rend.material.SetColor("_TintColor", m_OriginalColor);
         EventManager.TriggerEvent("closeEye");
     }
+    */
 
     public void turnOff()
     {

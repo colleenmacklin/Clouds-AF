@@ -162,6 +162,7 @@ public class RaycasterOpening : MonoBehaviour
                     OnHoverExit?.Invoke();
                 }
                 break;
+
             case MouseState.HOVERING:
                 //if hovering and no hit, then switch to empty
                 if (!hit.transform)

@@ -40,7 +40,10 @@ namespace Crosstales.RTVoice.Demo
             NoVoices.SetActive(Speaker.Instance.Voices.Count <= 0);
 
          if (Errors != null)
+         {
+            Errors.gameObject.SetActive(false);
             Errors.text = string.Empty;
+         }
       }
 
       private void Update()
@@ -103,22 +106,31 @@ namespace Crosstales.RTVoice.Demo
             NoVoices.SetActive(Speaker.Instance.Voices.Count <= 0);
 
          if (Errors != null)
+         {
+            Errors.gameObject.SetActive(false);
             Errors.text = string.Empty;
+         }
       }
 
       private void onErrorInfo(Crosstales.RTVoice.Model.Wrapper wrapper, string errorInfo)
       {
          if (Errors != null)
+         {
+            Errors.gameObject.SetActive(true);
             Errors.text = errorInfo;
+         }
       }
 
       private void onSpeakStart(Crosstales.RTVoice.Model.Wrapper wrapper)
       {
          if (Errors != null)
+         {
+            Errors.gameObject.SetActive(false);
             Errors.text = string.Empty;
+         }
       }
 
       #endregion
    }
 }
-// © 2015-2022 crosstales LLC (https://www.crosstales.com)
+// © 2015-2023 crosstales LLC (https://www.crosstales.com)

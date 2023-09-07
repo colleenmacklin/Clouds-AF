@@ -1,25 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using static UnityEngine.GraphicsBuffer;
 
 public class FollowCursor : MonoBehaviour
 {
-    private Vector3 _mousePos;
-
-    private Vector3 _butterflyRotInitial;
-
+    public Vector3 _mousePos;
     private Camera _camera;
 
-
-    private Vector3 _normalizedMousePos;
 
     private void Awake()
     {
 
-        _butterflyRotInitial = this.transform.eulerAngles;
         
-
         foreach(Camera c in Camera.allCameras)
         {
             if (c.gameObject.name == "ButterflyCam")
@@ -30,24 +28,15 @@ public class FollowCursor : MonoBehaviour
        
     }
 
-    Vector3 delta = Vector3.zero;
-    Vector3 lastPos = Vector3.zero;
-
-    float ver = 0;
-    float hor = 0;
     private void Update()
     {
-        _mousePos = Input.mousePosition;
-        Vector3 newPos = _camera.ScreenToWorldPoint(_mousePos);
-       
-        transform.position = _camera.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 100)) ;
-
-       
+        _mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
+        var mouseVector = new Vector3(_mousePos.x, _mousePos.y, 100);
+        transform.position = mouseVector; //set the butterfly to the mouse cursor
     }
 
-
 }
-        
+
 
 
 

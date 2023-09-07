@@ -4,36 +4,22 @@ using UnityEditor;
 
 namespace Crosstales.RTVoice.Demo
 {
-   /// <summary>Installs the 'UI'-package from Common.</summary>
+   /// <summary>Installs the packages from Common.</summary>
    [InitializeOnLoad]
-   public static class ZInstaller
+   public abstract class ZInstaller : Crosstales.Common.EditorTask.BaseInstaller
    {
       #region Constructor
 
       static ZInstaller()
       {
+         string path = $"{Application.dataPath}{Crosstales.RTVoice.EditorUtil.EditorConfig.ASSET_PATH}";
+
 #if !CT_UI && !CT_DEVELOP
-         string pathInstaller = Application.dataPath + "/Plugins/crosstales/Common/Extras/";
+         InstallUI(path);
+#endif
 
-         try
-         {
-            string package = pathInstaller + "UI.unitypackage";
-
-            if (System.IO.File.Exists(package))
-            {
-               AssetDatabase.ImportPackage(package, false);
-
-               Crosstales.Common.EditorTask.BaseCompileDefines.AddSymbolsToAllTargets("CT_UI");
-            }
-            else
-            {
-               Debug.LogWarning("Package not found: " + package);
-            }
-         }
-         catch (System.Exception ex)
-         {
-            Debug.LogError("Could not import the 'UI'-package: " + ex);
-         }
+#if !CT_RTV_DEMO && !CT_DEVELOP
+         Crosstales.Common.EditorTask.BaseCompileDefines.AddSymbolsToAllTargets("CT_RTV_DEMO");
 #endif
       }
 
@@ -41,4 +27,4 @@ namespace Crosstales.RTVoice.Demo
    }
 }
 #endif
-// © 2020-2022 crosstales LLC (https://www.crosstales.com)
+// © 2020-2023 crosstales LLC (https://www.crosstales.com)
